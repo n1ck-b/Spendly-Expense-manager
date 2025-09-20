@@ -69,37 +69,37 @@
 ## 2.2 Интерфейс пользователя
 Главный экран приложения, на котором отображается история расходов за выбранный период времени, а также есть возможность добавления нового расхода  
 
-![Главный экран приложения](docs/mockups/ExpanseHistoryScreen.png)  
+![Главный экран приложения](mockups/ExpanseHistoryScreen.png)  
 
 
 Экран добавления расхода  
 
-![Экран добавления расхода](docs/mockups/AddingExpanseScreen.png) 
+![Экран добавления расхода](mockups/AddingExpanseScreen.png) 
 
 
 Экран изменения и удаления расхода  
 
-![Экран изменения и удаления расхода](docs/mockups/EditingExpanseScreen.png)  
+![Экран изменения и удаления расхода](mockups/EditingExpanseScreen.png)  
 
 
 Экран, который отображает все категории расходов, суммы по категориям за выбранный период времени, а также позволяет добавить, изменить или удалить категорию  
 
-![Экран категорий расходов](docs/mockups/CategoriesScreen.png)  
+![Экран категорий расходов](mockups/CategoriesScreen.png)  
 
 
 Экран добавления категории  
 
-![Экран добавления категории](docs/mockups/AddingCategorieScreen.png)  
+![Экран добавления категории](mockups/AddingCategorieScreen.png)  
 
 
 Экран изменения и удаления категории  
 
-![Экран изменения и удаления категории](docs/mockups/EditingCategoryScreen.png)  
+![Экран изменения и удаления категории](mockups/EditingCategoryScreen.png)  
 
 
 Экран со статистикой расходов за выбранный период времени  
 
-![Экран со статистикой](docs/mockups/StatisticsScreen.png)  
+![Экран со статистикой](mockups/StatisticsScreen.png)  
 
 ## 2.3 Характеристики пользователей
 
