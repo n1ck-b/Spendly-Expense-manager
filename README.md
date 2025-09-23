@@ -16,3 +16,5 @@ Spendly — это мобильное приложение для учёта л�
 
 ## Документация
 [SRS](./docs/SRS.md)  
+
+[Mockups](./docs/mockups)
