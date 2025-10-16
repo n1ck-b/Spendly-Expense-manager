@@ -360,11 +360,12 @@
 - **Android**
   - Приложение Spendly  
   - Локальная база данных Room 
-- **Внешний сервер API (ExchangeRate-API)**  
+- **Внешний сервер API ([ExchangeRate-API](https://www.exchangerate-api.com/docs/overview))**  
 
 **Диаграмма развёртывания**  
 ![Диаграмма развёртывания](images/deployment_diagram.png)
 
 
 ---
+
 
