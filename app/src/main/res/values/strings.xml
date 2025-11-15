@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Spendly</string>
+    <string name="BYN_description">Belarusian Ruble</string>
+    <string name="USD_description">United States Dollar</string>
+    <string name="EUR_description">Euro</string>
+    <string name="CNY_description">Chinese Yuan</string>
+    <string name="GBP_description">Pound Sterling</string>
+    <string name="PLN_description">Polish Zloty</string>
+    <string-array name="time_periods">
+        <item>Today</item>
+        <item>This week</item>
+        <item>This month</item>
+        <item>This year</item>
+    </string-array>
+    <string name="expense_amount_header">Your expenses for selected period</string>
+    <string name="category_screen_header">Categories of expenses</string>
+    <string name="statistics_screen_header">Statistics of expenses</string>
+    <string name="adding_expense_screen_header">New expense</string>
+    <string name="adding_expense_screen_amount_text_field_label">Amount</string>
+    <string name="adding_expense_screen_amount_text_field_placeholder">100.00</string>
+    <string name="adding_expense_screen_category_dropdown_label">Category</string>
+    <string name="adding_expense_screen_currency_dropdown_label">Currency</string>
+    <string name="adding_expense_screen_note_text_field_label">Note</string>
+    <string name="adding_expense_screen_note_text_field_placeholder">Description of expense</string>
+    <string name="adding_expense_screen_date_text_field_label">Date</string>
+    <string name="adding_category_screen_header">New category</string>
+    <string name="adding_category_screen_name_text_field_label">Category name</string>
+    <string name="adding_category_screen_name_text_field_placeholder">Food</string>
+    <string name="adding_category_screen_select_icon">Select icon</string>
+    <string name="adding_category_screen_select_icon_color">Select icon color</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="save_button">Save</string>
+    <string name="select_button">Select</string>
+    <string name="expense_history_screen_name">Expenses</string>
+    <string name="categories_screen_name">Categories</string>
+    <string name="statistics_screen_name">Statistics</string>
+</resources>
