@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,9 +37,28 @@ import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
 import com.inb.spendly.ui.components.DropDownMenu
+import com.inb.spendly.viewmodels.SharedViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import co.yml.charts.ui.piechart.charts.PieChart
+import com.inb.spendly.models.relations.CategoryWithFilteredExpenses
+import com.inb.spendly.viewmodels.CategoryViewModel
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Composable
-fun StatisticsScreen(paddingValues: PaddingValues) {
+fun StatisticsScreen(
+    paddingValues: PaddingValues,
+    categoryViewModel: CategoryViewModel,
+    sharedViewModel: SharedViewModel
+) {
+
+    val selectedDateRange = sharedViewModel.selectedDateRange
+
+    val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
+
     Column(
         modifier = Modifier
             .padding(
@@ -47,12 +69,15 @@ fun StatisticsScreen(paddingValues: PaddingValues) {
             )
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         StatisticsScreenHeader()
-        Spacer(Modifier.height(10.dp))
-        DropDownMenu(stringArrayResource(R.array.time_periods).toList())
-        StatisticsByCategoriesList()
+        DateDropDown(
+            sharedViewModel = sharedViewModel,
+            selectedDateRange = selectedDateRange.collectAsState().value
+        )
+        StatisticsByCategoriesList(categoriesWithExpenses)
     }
 }
 
@@ -62,22 +87,28 @@ fun StatisticsScreenHeader() {
         text = stringResource(R.string.statistics_screen_header),
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier
-            .padding(top = 20.dp)
+            .padding(top = 20.dp, bottom = 15.dp)
     )
 }
 
 @Composable
-fun DonutChart() {
+fun DonutChart(categoriesWithExpenses: List<CategoryWithFilteredExpenses>) {
+
+    val slices = categoriesWithExpenses.map { category ->
+        PieChartData.Slice(
+            label = category.categoryName,
+            value = category.expenseAmount ?: 0.0f,
+            color = Color(category.categoryColor)
+        )
+    }
+
     val donutChartData = PieChartData(
-        slices = listOf(
-            PieChartData.Slice("Family", 450f, Color.Blue),
-            PieChartData.Slice("Food", 700f, Color.Cyan)
-        ),
+        slices = slices,
         plotType = PlotType.Donut
     )
 
     val donutChartConfig = PieChartConfig(
-        sliceLabelTextColor = Color.Black,
+        sliceLabelTextColor = MaterialTheme.colorScheme.onBackground,
         isSumVisible = true,
         strokeWidth = 120f,
         chartPadding = 20,
@@ -93,68 +124,116 @@ fun DonutChart() {
     DonutPieChart(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 10.dp),
+            .background(MaterialTheme.colorScheme.background),
         pieChartData = donutChartData,
         pieChartConfig = donutChartConfig
     )
 }
 
 @Composable
-fun StatisticsByCategoriesList() {
+fun NoDataToShow() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(30.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(50.dp),
+            painter = painterResource(R.drawable.baseline_insights_24),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            text = stringResource(R.string.no_expenses_for_selected_period),
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun StatisticsByCategoriesList(categoriesWithExpenses: List<CategoryWithFilteredExpenses>) {
+
+    val sumOfAllExpenses = categoriesWithExpenses.sumOf { it.expenseAmount?.toDouble() ?: 0.0 }
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        item {
-            DonutChart()
+        if(categoriesWithExpenses.isNotEmpty()) {
+            item {
+                DonutChart(categoriesWithExpenses)
+            }
+        } else {
+            item {
+                NoDataToShow()
+            }
         }
-        items(10) {
-            StatisticsByCategoriesListItem()
+        items(categoriesWithExpenses) { item ->
+            StatisticsByCategoriesListItem(item, sumOfAllExpenses)
+        }
+        item {
+            Spacer(Modifier.height(5.dp))
         }
     }
 }
 
 @Composable
-fun StatisticsByCategoriesListItem() {
-    Row(
+fun StatisticsByCategoriesListItem(item: CategoryWithFilteredExpenses, sumOfAllExpenses: Double) {
+
+    val percentage = (item.expenseAmount ?: 0f) / (sumOfAllExpenses.takeIf { it != 0.0 } ?: 1.0)
+
+    OutlinedCard(
         modifier = Modifier
-            .clip(RoundedCornerShape(15.dp))
-            .fillMaxWidth()
-            .background(Color.LightGray)
-            .padding(horizontal = 20.dp, vertical = 15.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        shape = RoundedCornerShape(15.dp),
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = Icons.Outlined.ShoppingCart,
-                contentDescription = null,
-                Modifier.size(30.dp),
-                tint = Color.Blue
-            )
-            Column(
-                modifier = Modifier
-                    .padding(start = 10.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Food",
-                    style = MaterialTheme.typography.titleMedium
+                Icon(
+                    painter = painterResource(item.categoryIconId),
+                    contentDescription = null,
+                    tint = Color(item.categoryColor),
+                    modifier = Modifier
+                        .size(30.dp)
                 )
-                Text(
-                    "750 Br"
-                )
+                Column(
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                ) {
+                    Text(
+                        text = item.categoryName,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        "${BigDecimal(item.expenseAmount?.toDouble() ?: 0.0)
+                            .setScale(2, RoundingMode.HALF_UP)} Br"
+                    )
+                }
             }
+            Text(
+                text = "${BigDecimal(percentage).setScale(2, RoundingMode.HALF_UP)}%",
+                style = MaterialTheme.typography.titleMedium
+            )
         }
-        Text(
-            text = "56%",
-            style = MaterialTheme.typography.titleMedium
-        )
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun StatisticsScreenPreview() {
-    StatisticsScreen(PaddingValues(30.dp))
+//    StatisticsScreen(PaddingValues(30.dp))
 }

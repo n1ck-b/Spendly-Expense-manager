@@ -13,6 +13,7 @@
         <item>This year</item>
     </string-array>
     <string name="expense_amount_header">Your expenses for selected period</string>
+    <string name="expense_history_screen_header">Expense history</string>
     <string name="category_screen_header">Categories of expenses</string>
     <string name="statistics_screen_header">Statistics of expenses</string>
     <string name="adding_expense_screen_header">New expense</string>
@@ -34,4 +35,7 @@
     <string name="expense_history_screen_name">Expenses</string>
     <string name="categories_screen_name">Categories</string>
     <string name="statistics_screen_name">Statistics</string>
+    <string name="no_expenses_for_selected_period">No expenses found for the selected period. Change period or add new expense</string>
+    <string name="no_categories">The list of categories is empty. Create the first category to get started</string>
+    <string name="no_data_for_statistics">No data to display for the selected period. Change period or add new expense</string>
 </resources>

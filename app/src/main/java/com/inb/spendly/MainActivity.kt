@@ -2,20 +2,28 @@ package com.inb.spendly
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.inb.spendly.navigation.CategoriesScreenRoute
 import com.inb.spendly.navigation.ExpenseHistoryScreenRoute
 import com.inb.spendly.navigation.NavGraph
 import com.inb.spendly.navigation.StatisticsScreenRoute
+import com.inb.spendly.repository.ExpenseDatabase
+import com.inb.spendly.screens.AddingCategoryDialog
+import com.inb.spendly.screens.AddingExpenseDialog
 import com.inb.spendly.ui.components.BottomNavBarItem
 import com.inb.spendly.ui.components.BottomNavigationBar
 import com.inb.spendly.ui.components.FloatingActionButtonAdd
 import com.inb.spendly.ui.theme.SpendlyTheme
+import com.inb.spendly.viewmodels.SharedViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,13 +32,22 @@ class MainActivity : ComponentActivity() {
 //            val response = RetrofitInstance.api.getExchangeRate("BYN")
 //            Log.d("ExchangeRates", "Response: ${response.body()?.conversionRates}")
 //        }
+
+        val expenseDatabase = ExpenseDatabase.getInstance(this)
+
         enableEdgeToEdge()
         setContent {
             SpendlyTheme {
 
+                val sharedViewModel = viewModel<SharedViewModel>(
+                    viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+
                 val navController = rememberNavController()
                 val backStackEntry = navController.currentBackStackEntryAsState()
                 val currentDestination = backStackEntry.value?.destination
+
+                val showAddingExpenseDialog = remember { mutableStateOf(false) }
+                val showAddingCategoryDialog = remember { mutableStateOf(false) }
 
                 val bottomNavBarItems = listOf(
                     BottomNavBarItem(
@@ -54,10 +71,10 @@ class MainActivity : ComponentActivity() {
                     floatingActionButton = {
                         when(currentDestination?.route?.let { Class.forName(it) }) {
                             ExpenseHistoryScreenRoute::class.java -> FloatingActionButtonAdd {
-
+                                showAddingExpenseDialog.value = true
                             }
                             CategoriesScreenRoute::class.java -> FloatingActionButtonAdd {
-
+                                showAddingCategoryDialog.value = true
                             }
                             StatisticsScreenRoute::class.java -> {}
                         }
@@ -66,7 +83,9 @@ class MainActivity : ComponentActivity() {
                         BottomNavigationBar(navController, bottomNavBarItems)
                     }
                 ) { padding ->
-                    NavGraph(navController, padding)
+                    NavGraph(navController, padding, expenseDatabase, sharedViewModel)
+                    AddingExpenseDialog(showAddingExpenseDialog)
+                    AddingCategoryDialog(showAddingCategoryDialog)
                 }
             }
         }

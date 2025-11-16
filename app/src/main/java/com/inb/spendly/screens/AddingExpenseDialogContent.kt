@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
@@ -41,7 +43,11 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun AddingExpenseScreen(paddingValues: PaddingValues) {
+fun AddingExpenseDialogContent(
+    paddingValues: PaddingValues,
+    onCancelButtonClicked: () -> Unit,
+    onSaveButtonClicked: () -> Unit
+) {
 
     val showDatePicker = remember { mutableStateOf(false) }
 
@@ -59,14 +65,10 @@ fun AddingExpenseScreen(paddingValues: PaddingValues) {
 
     Column(
         modifier = Modifier
-            .padding(
-                top = paddingValues.calculateTopPadding() + 20.dp,
-                bottom = paddingValues.calculateBottomPadding(),
-                start = 40.dp,
-                end = 40.dp
-            )
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+            .padding(paddingValues)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         AddingExpenseScreenHeader()
         ExpenseCurrencyDropDown()
@@ -85,8 +87,7 @@ fun AddingExpenseScreen(paddingValues: PaddingValues) {
         )
         NoteTextField()
         ExpenseCategoryDropDown()
-        CancelSaveButtons({}, {})
-
+        CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
 
 //        when {
 //            showDatePicker ->
@@ -220,7 +221,9 @@ fun ExpenseCategoryDropDown() {
                 "Family",
                 "Car",
                 "Sport"
-            )
+            ),
+            {},
+            ""
         )
     }
 }
@@ -234,7 +237,7 @@ fun ExpenseCurrencyDropDown() {
             text = stringResource(R.string.adding_expense_screen_currency_dropdown_label),
             style = MaterialTheme.typography.titleMedium
         )
-        DropDownMenu(Currencies.entries.map { it.name })
+        DropDownMenu(Currencies.entries.map { it.name }, {}, "")
     }
 }
 
@@ -280,10 +283,14 @@ fun NoteTextField() {
 }
 
 @Composable
-fun CancelSaveButtons(onSaveButtonClicked: () -> Unit, onCancelButtonClicked: () -> Unit) {
+fun CancelSaveButtons(
+    onCancelButtonClicked: () -> Unit,
+    onSaveButtonClicked: () -> Unit
+) {
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(top = 20.dp),
         verticalArrangement = Arrangement.Bottom
     ) {
         Row(
@@ -291,14 +298,14 @@ fun CancelSaveButtons(onSaveButtonClicked: () -> Unit, onCancelButtonClicked: ()
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedButton(
-                onClick = onSaveButtonClicked
+                onClick = onCancelButtonClicked
             ) {
                 Text(
                     text = stringResource(R.string.cancel_button)
                 )
             }
             Button(
-                onClick = onCancelButtonClicked
+                onClick = onSaveButtonClicked
             ) {
                 Text(
                     text = stringResource(R.string.save_button)
@@ -310,6 +317,6 @@ fun CancelSaveButtons(onSaveButtonClicked: () -> Unit, onCancelButtonClicked: ()
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun AddingExpenseScreenPreview() {
-    AddingExpenseScreen(PaddingValues(30.dp))
+fun AddingExpenseDialogContentPreview() {
+    AddingExpenseDialogContent(PaddingValues(30.dp), {}, {})
 }

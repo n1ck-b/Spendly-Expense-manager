@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Card
@@ -49,7 +51,11 @@ import com.inb.spendly.ui.theme.CategoryIcons
 import com.inb.spendly.ui.theme.DefaultIconColor
 
 @Composable
-fun AddingCategoryScreen(paddingValues: PaddingValues) {
+fun AddingCategoryDialogContent(
+    paddingValues: PaddingValues,
+    onCancelButtonClicked: () -> Unit,
+    onSaveButtonClicked: () -> Unit
+) {
 
     val selectedIcon = remember {
         mutableIntStateOf(R.drawable.outline_image_24)
@@ -64,13 +70,9 @@ fun AddingCategoryScreen(paddingValues: PaddingValues) {
 
     Column(
         modifier = Modifier
-            .padding(
-                top = paddingValues.calculateTopPadding() + 20.dp,
-                bottom = paddingValues.calculateBottomPadding(),
-                start = 40.dp,
-                end = 40.dp
-            )
-            .fillMaxSize(),
+            .padding(paddingValues)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         AddingCategoryScreenHeader()
@@ -97,6 +99,7 @@ fun AddingCategoryScreen(paddingValues: PaddingValues) {
                 showColorDialog.value = false
             }
         )
+        CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
     }
 }
 
@@ -163,7 +166,7 @@ fun ChoosingIconCard(selectedIcon: MutableState<Int>, selectedColor: MutableStat
         modifier = Modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.background
         ),
         shape = RoundedCornerShape(7.dp),
         onClick = onClick
@@ -249,7 +252,7 @@ fun IconsListDialog(onDismissRequest: () -> Unit, categoryIcons: List<Int>,
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(7.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             ) {
                 LazyVerticalGrid(
@@ -307,7 +310,7 @@ fun ColorsListDialog(onDismissRequest: () -> Unit, colors: List<Color>,
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(7.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             ) {
                 LazyVerticalGrid(
@@ -338,6 +341,6 @@ fun ColorsListDialog(onDismissRequest: () -> Unit, colors: List<Color>,
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun AddingCategoryScreenPreview() {
-    AddingCategoryScreen(PaddingValues(30.dp))
+fun AddingCategoryDialogContentPreview() {
+    AddingCategoryDialogContent(PaddingValues(30.dp), {}, {})
 }

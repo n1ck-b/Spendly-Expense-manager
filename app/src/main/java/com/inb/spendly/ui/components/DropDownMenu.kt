@@ -24,64 +24,55 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownMenu(items: List<String>) {
+fun DropDownMenu(items: List<String>, onItemClick: (String) -> Unit, selectedItem: String) {
 
     var expanded by remember  {
         mutableStateOf(false)
     }
 
-    var selectedItem by remember {
-        mutableStateOf(items[0])
-    }
+//    var selectedItem by remember {
+//        mutableStateOf(items[0])
+//    }
 
-    Row (
-        verticalAlignment = Alignment.CenterVertically
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
     ) {
-//        Icon(
-//            imageVector = Icons.Outlined.DateRange,
-//            contentDescription = null,
-//            modifier = Modifier.size(30.dp)
-//        )
-        ExposedDropdownMenuBox(
+        OutlinedTextField(
+            value = selectedItem,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+
+            modifier = Modifier
+                .menuAnchor(
+                    type = MenuAnchorType.PrimaryNotEditable,
+                    enabled = true
+                )
+                .width(170.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+
+            ),
+            shape = RoundedCornerShape(7.dp)
+
+        )
+        ExposedDropdownMenu(
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
-            OutlinedTextField(
-                value = selectedItem,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-
-                modifier = Modifier
-                    .menuAnchor(
-                        type = MenuAnchorType.PrimaryNotEditable,
-                        enabled = true
-                    )
-                    .width(170.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-
-                ),
-                shape = RoundedCornerShape(7.dp)
-
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.background(MaterialTheme.colorScheme.background)
-            ) {
-                items.forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(text = item) },
-                        onClick = {
-                            selectedItem = item
-                            expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
-                    )
-                }
+            items.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(text = item) },
+                    onClick = {
+                        onItemClick(item)
+                        expanded = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                )
             }
         }
     }

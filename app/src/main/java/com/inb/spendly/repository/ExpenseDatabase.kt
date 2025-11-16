@@ -12,12 +12,13 @@ import com.inb.spendly.models.Expense
         Expense::class,
         Category::class
     ],
-    version = 3,
+    version = 5,
     exportSchema = false,
 )
 abstract class ExpenseDatabase() : RoomDatabase() {
 
     abstract val expenseDao: ExpenseDao
+    abstract val categoryDao: CategoryDao
 
     companion object {
 

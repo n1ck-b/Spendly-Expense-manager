@@ -10,7 +10,7 @@ import java.util.Date
 @TypeConverters(ExpenseConverter::class)
 data class Expense(
     @PrimaryKey(autoGenerate = true)
-    var id: Long,
+    var id: Long = 0,
     var amount: Float,
     var date: Date,
     var categoryId: Long,
