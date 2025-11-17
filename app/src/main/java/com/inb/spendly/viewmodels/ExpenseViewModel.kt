@@ -1,7 +1,19 @@
 package com.inb.spendly.viewmodels
 
+import androidx.collection.mutableLongListOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.inb.spendly.api.RetrofitInstance
+import com.inb.spendly.models.Category
+import com.inb.spendly.models.ConversionRate
+import com.inb.spendly.models.Currencies
+import com.inb.spendly.models.ExchangeRates
+import com.inb.spendly.models.Expense
+import com.inb.spendly.repository.CategoryDao
 import com.inb.spendly.repository.ExpenseDao
 import com.inb.spendly.util.FilterType
 import com.inb.spendly.util.getTimestampForEndOfThisMonth
@@ -12,14 +24,27 @@ import com.inb.spendly.util.getTimestampForStartOfThisMonth
 import com.inb.spendly.util.getTimestampForStartOfThisWeek
 import com.inb.spendly.util.getTimestampForStartOfThisYear
 import com.inb.spendly.util.getTimestampForStartOfToday
+import com.inb.spendly.util.hasInternetConnection
+import com.inb.spendly.viewmodels.state.ExpenseState
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import retrofit2.Response
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExpenseViewModel(
-    val expenseDao: ExpenseDao,
+    private val expenseDao: ExpenseDao,
+    private val categoryDao: CategoryDao,
     private val sharedViewModel: SharedViewModel
 ): ViewModel() {
 
@@ -50,4 +75,129 @@ class ExpenseViewModel(
                 }
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val _events = MutableSharedFlow<UiEvent>()
+    val events = _events.asSharedFlow()
+
+    private val _state = MutableStateFlow(ExpenseState())
+    val state = _state.asStateFlow()
+
+    var selectedCurrency = mutableStateOf(Currencies.BYN)
+        private set
+
+    var selectedFromListExpenseId = mutableLongStateOf(0)
+        private set
+
+    val categoriesList = categoryDao.getAllCategories()
+
+    fun updateExpenseAmount(newAmount: Float) {
+        _state.update { it.copy(
+            amount = newAmount
+        ) }
+    }
+
+    fun updateExpenseDate(newTimestamp: Long?) {
+
+        val newDate =
+            if (newTimestamp == null) null
+            else Date(newTimestamp)
+
+        _state.update { it.copy(
+            date = newDate
+        ) }
+    }
+
+    fun updateExpenseNote(newNote: String?) {
+        _state.update { it.copy(
+            note = newNote
+        ) }
+    }
+
+    fun updateExpenseCategoryName(newName: String) {
+        _state.update { it.copy(
+            categoryName = newName
+        ) }
+    }
+
+    fun updateSelectedCurrency(newCurrency: String) {
+        selectedCurrency.value = Currencies.valueOf(newCurrency)
+    }
+
+    fun saveExpense() {
+        if(_state.value.categoryName == null || _state.value.date == null) {
+            viewModelScope.launch {
+                _events.emit(UiEvent.ShowToastNotAllFieldsFilled)
+            }
+            return
+        }
+
+//        val coroutineExceptionHandler = CoroutineExceptionHandler{_, throwable ->
+//            throwable.printStackTrace()
+//        }
+
+        viewModelScope.launch(Dispatchers.IO /*+ coroutineExceptionHandler*/) {
+            val response: Response<ExchangeRates>
+            var exchangeRate: Map<String, Double>? = null
+
+            if(selectedCurrency.value != Currencies.BYN) {
+                try {
+                    response = RetrofitInstance
+                        .api.getExchangeRate(selectedCurrency.value.name)
+                    if (!response.isSuccessful) {
+                        _events.emit(UiEvent.ShowToastErrorGettingExchangeRates)
+                    }
+                    exchangeRate = response.body()?.conversionRates
+                } catch (e: Exception) {
+                    _events.emit(UiEvent.ShowToastErrorGettingExchangeRates)
+                    return@launch
+                }
+            }
+
+            val rateToBYN =
+                if(exchangeRate != null) exchangeRate["BYN"]
+                else 1.0
+
+            val category: Category? = categoryDao.getCategoryByName(_state.value.categoryName!!)
+
+            val expense = Expense(
+                id = _state.value.id,
+                amount = _state.value.amount * rateToBYN!!.toFloat(),
+                date = _state.value.date!!,
+                note = _state.value.note,
+                categoryId = category!!.id
+            )
+            expenseDao.upsertExpense(expense)
+            resetValues()
+            _events.emit(UiEvent.CloseDialog)
+        }
+    }
+
+    fun resetValues() {
+        _state.value = ExpenseState()
+        selectedCurrency.value = Currencies.BYN
+    }
+
+    fun updateSelectedExpenseId(newId: Long) {
+        selectedFromListExpenseId.longValue = newId
+    }
+
+    fun updateState() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val expenseWithCategory = expenseDao
+                .getExpenseWithCategoryById(selectedFromListExpenseId.longValue).stateIn(viewModelScope)
+            _state.value = ExpenseState(
+                id = expenseWithCategory.value.expense.id,
+                amount = expenseWithCategory.value.expense.amount,
+                date = expenseWithCategory.value.expense.date,
+                note = expenseWithCategory.value.expense.note,
+                categoryName = expenseWithCategory.value.category.name
+            )
+        }
+    }
+
+    fun deleteExpense() {
+        viewModelScope.launch(Dispatchers.IO) {
+            expenseDao.deleteExpense(selectedFromListExpenseId.longValue)
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.inb.spendly.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +58,8 @@ fun CategoriesScreen(
 
     val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
 
+    val showActionDialog = remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .padding(
@@ -73,7 +78,28 @@ fun CategoriesScreen(
             selectedDateRange = selectedDateRange.collectAsState().value,
             sharedViewModel = sharedViewModel
         )
-        CategoriesGrid(categoriesWithExpenses)
+        CategoriesGrid(
+            categoriesWithExpenses,
+            onLongItemClick = {
+                showActionDialog.value = true
+                categoryViewModel.updateSelectedCategoryId(it)
+            }
+        )
+        ActionDialog(
+            showDialog = showActionDialog.value,
+            onDismissRequest = {
+                showActionDialog.value = false
+            },
+            onEditButtonClicked = {
+                sharedViewModel.updateShowCategoryDialog(true)
+                categoryViewModel.updateState()
+                showActionDialog.value = false
+            },
+            onDeleteButtonClicked = {
+                categoryViewModel.deleteCategory()
+                showActionDialog.value = false
+            }
+        )
     }
 }
 
@@ -88,7 +114,10 @@ fun CategoriesScreenHeader() {
 }
 
 @Composable
-fun CategoriesGrid(categoriesWithExpenses: List<CategoryWithFilteredExpenses>) {
+fun CategoriesGrid(
+    categoriesWithExpenses: List<CategoryWithFilteredExpenses>,
+    onLongItemClick: (Long) -> Unit
+) {
 
     if(categoriesWithExpenses.isEmpty()) {
         NoCategoriesFound()
@@ -101,7 +130,7 @@ fun CategoriesGrid(categoriesWithExpenses: List<CategoryWithFilteredExpenses>) {
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(categoriesWithExpenses) { categoryWithExpenses ->
-            CategoriesGridItem(categoryWithExpenses)
+            CategoriesGridItem(categoryWithExpenses, onLongItemClick)
         }
     }
 }
@@ -123,7 +152,7 @@ fun NoCategoriesFound() {
             tint = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = stringResource(R.string.no_categories),
+            text = stringResource(R.string.no_categories_screen_warning),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
@@ -131,9 +160,19 @@ fun NoCategoriesFound() {
 }
 
 @Composable
-fun CategoriesGridItem(item: CategoryWithFilteredExpenses) {
+fun CategoriesGridItem(
+    item: CategoryWithFilteredExpenses,
+    onLongItemClick: (Long) -> Unit
+) {
 
     OutlinedCard(
+        modifier = Modifier
+            .combinedClickable(
+                onClick = {},
+                onLongClick = {
+                    onLongItemClick(item.categoryId)
+                }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -148,7 +187,8 @@ fun CategoriesGridItem(item: CategoryWithFilteredExpenses) {
             Icon(
                 painter = painterResource(item.categoryIconId),
                 contentDescription = null,
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
+                tint = Color(item.categoryColor)
             )
             Spacer(modifier = Modifier.size(10.dp))
             Column {

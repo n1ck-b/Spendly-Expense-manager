@@ -21,7 +21,9 @@ fun NavGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
     expenseDatabase: ExpenseDatabase,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    expenseViewModel: ExpenseViewModel,
+    categoryViewModel: CategoryViewModel
 ){
     NavHost(
         navController = navController,
@@ -29,23 +31,19 @@ fun NavGraph(
     ) {
         composable<ExpenseHistoryScreenRoute> {
 
-            val expenseViewModel = viewModel<ExpenseViewModel>(
-                factory = ExpenseViewModelFactory(expenseDatabase.expenseDao, sharedViewModel)
-            )
+//            val expenseViewModel = viewModel<ExpenseViewModel>(
+//                factory = ExpenseViewModelFactory(expenseDatabase.expenseDao, sharedViewModel)
+//            )
 
             ExpenseHistoryScreen(paddingValues, expenseViewModel, sharedViewModel)
         }
         composable<CategoriesScreenRoute> {
-            val categoryViewModel = viewModel<CategoryViewModel>(
-                factory = CategoryViewModelFactory(expenseDatabase.categoryDao, sharedViewModel)
-            )
-
             CategoriesScreen(paddingValues, categoryViewModel, sharedViewModel)
         }
         composable<StatisticsScreenRoute> {
-            val categoryViewModel = viewModel<CategoryViewModel>(
-                factory = CategoryViewModelFactory(expenseDatabase.categoryDao, sharedViewModel)
-            )
+//            val categoryViewModel = viewModel<CategoryViewModel>(
+//                factory = CategoryViewModelFactory(expenseDatabase.categoryDao, sharedViewModel)
+//            )
 
             StatisticsScreen(paddingValues, categoryViewModel, sharedViewModel)
         }

@@ -183,7 +183,7 @@ fun StatisticsByCategoriesList(categoriesWithExpenses: List<CategoryWithFiltered
 @Composable
 fun StatisticsByCategoriesListItem(item: CategoryWithFilteredExpenses, sumOfAllExpenses: Double) {
 
-    val percentage = (item.expenseAmount ?: 0f) / (sumOfAllExpenses.takeIf { it != 0.0 } ?: 1.0)
+    val percentage = ((item.expenseAmount ?: 0f) / (sumOfAllExpenses.takeIf { it != 0.0 } ?: 1.0)) * 100
 
     OutlinedCard(
         modifier = Modifier

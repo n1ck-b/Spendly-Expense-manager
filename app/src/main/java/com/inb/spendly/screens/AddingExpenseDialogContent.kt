@@ -1,5 +1,6 @@
 package com.inb.spendly.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -23,45 +24,87 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.inb.spendly.R
+import com.inb.spendly.models.Category
 import com.inb.spendly.models.Currencies
 import com.inb.spendly.ui.components.DatePickerModal
 import com.inb.spendly.ui.components.DropDownMenu
+import com.inb.spendly.viewmodels.ExpenseViewModel
+import com.inb.spendly.viewmodels.UiEvent
+import com.inb.spendly.viewmodels.state.ExpenseState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.exp
 
 @Composable
 fun AddingExpenseDialogContent(
     paddingValues: PaddingValues,
     onCancelButtonClicked: () -> Unit,
-    onSaveButtonClicked: () -> Unit
+    onSaveButtonClicked: () -> Unit,
+    viewModel: ExpenseViewModel
 ) {
+
+    val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
+
+    val errorGettingExchangeRatesWarning = stringResource(R.string.error_getting_exchange_rates)
+
+    val context = LocalContext.current
+
+    val showErrors = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+//            when (event) {
+//                is UiEvent.ShowToastNotAllFieldsFilled -> {
+//                    Toast.makeText(context, fillAllFieldsWarning, Toast.LENGTH_LONG).show()
+//                    showErrors.value = true
+//                }
+//                is UiEvent.ShowToastErrorGettingExchangeRates -> {
+//                    Toast.makeText(context, errorGettingExchangeRatesWarning, Toast.LENGTH_LONG).show()
+//                }
+//            }
+            if (event == UiEvent.ShowToastNotAllFieldsFilled) {
+                Toast.makeText(context, fillAllFieldsWarning, Toast.LENGTH_LONG).show()
+                showErrors.value = true
+            }
+            else if(event == UiEvent.ShowToastErrorGettingExchangeRates) {
+                Toast.makeText(context, errorGettingExchangeRatesWarning, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    val expenseState by viewModel.state.collectAsState()
+
+    val categories by viewModel.categoriesList.collectAsState(emptyList())
+
+    val selectedCurrency by viewModel.selectedCurrency
 
     val showDatePicker = remember { mutableStateOf(false) }
 
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
-
-//    var formattedDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
-
-    var formattedDate: String
-
-    if (selectedDate != null) {
-        val date = Date(selectedDate!!)
-        formattedDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date)
-    } else
-        formattedDate = ""
+    //    var selectedDate by remember { mutableStateOf<Long?>(null) }
+    val formattedDate =
+    if(expenseState.date != null)
+        SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(expenseState.date ?: Date())
+    else ""
 
     Column(
         modifier = Modifier
@@ -71,36 +114,54 @@ fun AddingExpenseDialogContent(
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         AddingExpenseScreenHeader()
-        ExpenseCurrencyDropDown()
-        AmountTextField()
+        ExpenseCurrencyDropDown(
+            selectedCurrency = selectedCurrency,
+            onItemClick = {
+                viewModel.updateSelectedCurrency(it)
+            }
+        )
+        AmountTextField (
+            currentAmount = expenseState.amount,
+            onValueChanged = {
+                viewModel.updateExpenseAmount(it.toFloatOrNull() ?: 0f)
+            },
+            onClearIconClick = {
+                viewModel.updateExpenseAmount(0f)
+            },
+            showErrors = showErrors.value
+        )
         DateTextField(
             formattedDate,
             showDatePicker,
             onDateSelected = {
-                selectedDate = it
+                 viewModel.updateExpenseDate(it)
                 showDatePicker.value = false
             },
             onDismiss = {
                 showDatePicker.value = false
             },
-            onClearIconClick = { selectedDate = null }
+            onClearIconClick = {
+                viewModel.updateExpenseDate(null)
+            },
+            showErrors = showErrors.value
         )
-        NoteTextField()
-        ExpenseCategoryDropDown()
+        NoteTextField(
+            currentNote = expenseState.note,
+            onValueChanged = {
+                viewModel.updateExpenseNote(it)
+            },
+            onClearIconClick = {
+                viewModel.updateExpenseNote(null)
+            }
+        )
+        ExpenseCategoryDropDown(
+            categories = categories,
+            onItemClick = {
+                viewModel.updateExpenseCategoryName(it)
+            },
+            selectedCategory = expenseState.categoryName ?: ""
+        )
         CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
-
-//        when {
-//            showDatePicker ->
-//                DatePickerModal(
-//                    onDateSelected = {
-//                        selectedDate = it
-//                        showDatePicker = false
-//                    },
-//                    onDismiss = {
-//                        showDatePicker = false
-//                    }
-//                )
-//        }
 
     }
 }
@@ -119,17 +180,35 @@ fun AddingExpenseScreenHeader() {
 }
 
 @Composable
-fun AmountTextField() {
+fun AmountTextField(
+    currentAmount: Float,
+    onValueChanged: (String) -> Unit,
+    onClearIconClick: () -> Unit,
+    showErrors: Boolean
+) {
 
-    var textFieldValue by remember {
-        mutableStateOf("")
+    var textFieldValue by remember(currentAmount) {
+        mutableStateOf(
+            if (currentAmount == 0f) ""
+        else if (currentAmount % 1 == 0f)
+            currentAmount.toInt().toString()
+        else
+            currentAmount.toString()
+        )
     }
+
+//    textFieldValue = if (currentAmount == 0f) ""
+//    else if (currentAmount % 1 == 0f)
+//        currentAmount.toInt().toString()
+//    else
+//        currentAmount.toString()
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = textFieldValue,
-        onValueChange = { newValue ->
-            textFieldValue = newValue
+        onValueChange = {
+            onValueChanged(it)
+            textFieldValue = it
         },
         label = {
             Text(
@@ -152,18 +231,26 @@ fun AmountTextField() {
                     imageVector = Icons.Outlined.Close,
                     contentDescription = null,
                     modifier = Modifier
-                        .clickable { textFieldValue = "" }
+                        .clickable {
+                            textFieldValue = ""
+                            onClearIconClick()
+                        }
                 )
             }
         },
-        shape = RoundedCornerShape(7.dp)
+        shape = RoundedCornerShape(7.dp),
+        isError = (textFieldValue.isBlank() || textFieldValue.isEmpty()) && showErrors
     )
 }
 
 @Composable
 fun DateTextField(
-    formattedDate: String, showDatePicker: MutableState<Boolean>, onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit, onClearIconClick: () -> Unit
+    formattedDate: String,
+    showDatePicker: MutableState<Boolean>,
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit,
+    onClearIconClick: () -> Unit,
+    showErrors: Boolean
 ) {
 
     val interactionSource = remember {
@@ -172,8 +259,7 @@ fun DateTextField(
 
     OutlinedTextField(
         modifier = Modifier
-            .fillMaxWidth()
-            /*.clickable { showDatePicker.value = true }*/,
+            .fillMaxWidth(),
         interactionSource = interactionSource,
         value = formattedDate,
         onValueChange = {},
@@ -193,7 +279,8 @@ fun DateTextField(
                 )
             }
         },
-        shape = RoundedCornerShape(7.dp)
+        shape = RoundedCornerShape(7.dp),
+        isError = (formattedDate.isBlank() || formattedDate.isEmpty()) && showErrors
     )
 
     when {
@@ -207,29 +294,79 @@ fun DateTextField(
 }
 
 @Composable
-fun ExpenseCategoryDropDown() {
+fun ExpenseCategoryDropDown(
+    categories: List<Category>,
+    onItemClick: (String) -> Unit,
+    selectedCategory: String
+) {
+
+//    val interactionSource = remember {
+//        MutableInteractionSource()
+//    }
+
+    val categoriesNames =
+    if(categories.isNotEmpty())
+        categories.map { it.name }
+    else
+        emptyList()
+
     Column(
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
         Text(
-            text = stringResource(R.string.adding_expense_screen_category_dropdown_label),
+            text = buildAnnotatedString {
+                    append(stringResource(R.string.adding_expense_screen_category_dropdown_label))
+
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append(" *")
+                    }
+            },
             style = MaterialTheme.typography.titleMedium
         )
         DropDownMenu(
-            listOf(
-                "Food",
-                "Family",
-                "Car",
-                "Sport"
-            ),
-            {},
-            ""
+            items = categoriesNames,
+            onItemClick = onItemClick,
+            selectedItem = selectedCategory
         )
+//        OutlinedTextField(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//            /*.clickable { showDatePicker.value = true }*/,
+//            interactionSource = interactionSource,
+//            value = formattedDate,
+//            onValueChange = {},
+//            label = {
+//                Text(
+//                    text = stringResource(R.string.adding_expense_screen_date_text_field_label)
+//                )
+//            },
+//            readOnly = true,
+//            trailingIcon = {
+//                if (formattedDate != "") {
+//                    Icon(
+//                        imageVector = Icons.Outlined.Close,
+//                        contentDescription = null,
+//                        modifier = Modifier
+//                            .clickable { onClearIconClick() }
+//                    )
+//                }
+//            },
+//            shape = RoundedCornerShape(7.dp)
+//        ) {
+//
+//        }
+//    }
+//
+//    if (interactionSource.collectIsPressedAsState().value)
+//        showDatePicker.value = true
     }
 }
 
 @Composable
-fun ExpenseCurrencyDropDown() {
+fun ExpenseCurrencyDropDown(
+    selectedCurrency: Currencies,
+    onItemClick: (String) -> Unit
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -237,15 +374,26 @@ fun ExpenseCurrencyDropDown() {
             text = stringResource(R.string.adding_expense_screen_currency_dropdown_label),
             style = MaterialTheme.typography.titleMedium
         )
-        DropDownMenu(Currencies.entries.map { it.name }, {}, "")
+        DropDownMenu(
+            items = Currencies.entries.map { it.name },
+            onItemClick = onItemClick,
+            selectedItem = selectedCurrency.toString()
+        )
     }
 }
 
 @Composable
-fun NoteTextField() {
+fun NoteTextField(
+    currentNote: String?,
+    onValueChanged: (String) -> Unit,
+    onClearIconClick: () -> Unit
+) {
 
-    var textFieldValue by remember {
-        mutableStateOf("")
+//    var textFieldValue by remember {
+//        mutableStateOf("")
+//    }
+    var textFieldValue by remember(currentNote) {
+        mutableStateOf(currentNote ?: "")
     }
 
     OutlinedTextField(
@@ -253,6 +401,7 @@ fun NoteTextField() {
         value = textFieldValue,
         onValueChange = { newValue ->
             textFieldValue = newValue
+            onValueChanged(newValue)
         },
         label = {
             Text(
@@ -274,7 +423,10 @@ fun NoteTextField() {
                     imageVector = Icons.Outlined.Close,
                     contentDescription = null,
                     modifier = Modifier
-                        .clickable { textFieldValue = "" }
+                        .clickable {
+                            textFieldValue = ""
+                            onClearIconClick()
+                        }
                 )
             }
         },
@@ -318,5 +470,5 @@ fun CancelSaveButtons(
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun AddingExpenseDialogContentPreview() {
-    AddingExpenseDialogContent(PaddingValues(30.dp), {}, {})
+//    AddingExpenseDialogContent(PaddingValues(30.dp), {}, {})
 }

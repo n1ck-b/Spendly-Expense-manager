@@ -6,14 +6,15 @@ data class ExchangeRates (
     @SerializedName("base_code")
     val baseCode: String,
     @SerializedName("conversion_rates")
-    val conversionRates: ConversionRate
+//    val conversionRates: ConversionRate
+    val conversionRates: Map<String, Double>
 )
 
 data class ConversionRate (
-    val USD: Float?,
-    val BYN: Float?,
-    val EUR: Float?,
-    val CNY: Float?,
-    val GBP: Float?,
-    val PLN: Float?
+    val USD: Float,
+    val BYN: Float,
+    val EUR: Float,
+    val CNY: Float,
+    val GBP: Float,
+    val PLN: Float
 )

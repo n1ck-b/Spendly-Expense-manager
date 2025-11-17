@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Spendly</string>
+    <string name="app_name" translatable="false">Spendly</string>
     <string name="BYN_description">Belarusian Ruble</string>
     <string name="USD_description">United States Dollar</string>
     <string name="EUR_description">Euro</string>
@@ -30,12 +30,20 @@
     <string name="adding_category_screen_select_icon">Select icon</string>
     <string name="adding_category_screen_select_icon_color">Select icon color</string>
     <string name="cancel_button">Cancel</string>
+    <string name="edit_button">Edit</string>
+    <string name="delete_button">Delete</string>
     <string name="save_button">Save</string>
     <string name="select_button">Select</string>
     <string name="expense_history_screen_name">Expenses</string>
     <string name="categories_screen_name">Categories</string>
     <string name="statistics_screen_name">Statistics</string>
     <string name="no_expenses_for_selected_period">No expenses found for the selected period. Change period or add new expense</string>
-    <string name="no_categories">The list of categories is empty. Create the first category to get started</string>
+    <string name="no_categories_screen_warning">The list of categories is empty. Create the first category to get started</string>
     <string name="no_data_for_statistics">No data to display for the selected period. Change period or add new expense</string>
+    <string name="no_categories_found">No categories</string>
+    <string name="fill_all_fields_warning">Fill in all required fields</string>
+    <string name="no_internet_connection">No Internet connection. Try again later or choose default currency</string>
+    <string name="error_getting_exchange_rates">Error getting exchange rates. Try again later or choose default currency</string>
+    <string name="category_already_exists_warning">Category with this name already exists. Choose different name</string>
+    <string name="choose_action_update_delete">Choose action</string>
 </resources>

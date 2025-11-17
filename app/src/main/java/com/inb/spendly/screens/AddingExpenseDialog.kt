@@ -1,23 +1,44 @@
 package com.inb.spendly.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.inb.spendly.R
+import com.inb.spendly.util.hasInternetConnection
+import com.inb.spendly.viewmodels.ExpenseViewModel
+import com.inb.spendly.viewmodels.UiEvent
+import kotlin.math.exp
 
 @Composable
-fun AddingExpenseDialog(showDialog: MutableState<Boolean>) {
-    if(showDialog.value) {
+fun AddingExpenseDialog(
+    showDialog: Boolean,
+    expenseViewModel: ExpenseViewModel,
+    onDismissRequest: () -> Unit
+) {
+    if(showDialog) {
+
+        LaunchedEffect(Unit) {
+            expenseViewModel.events.collect { event ->
+                if (event == UiEvent.CloseDialog) onDismissRequest()
+            }
+        }
+        val context = LocalContext.current
+
         Dialog(
-            onDismissRequest = { showDialog.value = false }
+            onDismissRequest = {
+                onDismissRequest()
+                expenseViewModel.resetValues()
+            }
         ) {
             Card(
                 modifier = Modifier
@@ -30,9 +51,21 @@ fun AddingExpenseDialog(showDialog: MutableState<Boolean>) {
                 AddingExpenseDialogContent(
                     paddingValues = PaddingValues(30.dp),
                     onCancelButtonClicked = {
-                        showDialog.value = false
+                        onDismissRequest()
+                        expenseViewModel.resetValues()
                     },
-                    onSaveButtonClicked = {}
+                    onSaveButtonClicked = {
+                        if(hasInternetConnection(context)) {
+                            expenseViewModel.saveExpense()
+                        }
+                        else
+                            Toast.makeText(
+                                context,
+                                R.string.no_internet_connection,
+                                Toast.LENGTH_LONG
+                            ).show()
+                    },
+                    viewModel = expenseViewModel
                 )
             }
         }

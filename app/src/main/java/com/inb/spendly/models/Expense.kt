@@ -14,5 +14,5 @@ data class Expense(
     var amount: Float,
     var date: Date,
     var categoryId: Long,
-    var note: String,
+    var note: String?,
 )

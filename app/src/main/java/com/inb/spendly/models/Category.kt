@@ -8,6 +8,6 @@ data class Category(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     var name: String,
-    var color: Long,
+    var color: Int,
     var iconId: Int,
 )

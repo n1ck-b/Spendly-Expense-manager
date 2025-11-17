@@ -7,16 +7,33 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.inb.spendly.viewmodels.CategoryViewModel
+import com.inb.spendly.viewmodels.UiEvent
 
 @Composable
-fun AddingCategoryDialog(showDialog: MutableState<Boolean>) {
-    if(showDialog.value) {
+fun AddingCategoryDialog(
+    showDialog: Boolean,
+    categoryViewModel: CategoryViewModel,
+    onDismissRequest: () -> Unit
+) {
+    if(showDialog) {
+
+        LaunchedEffect(Unit) {
+            categoryViewModel.events.collect { event ->
+                if (event == UiEvent.CloseDialog) onDismissRequest()
+            }
+        }
+
         Dialog(
-            onDismissRequest = { showDialog.value = false }
+            onDismissRequest = {
+                onDismissRequest()
+                categoryViewModel.resetValues()
+            }
         ) {
             Card(
                 modifier = Modifier
@@ -29,9 +46,13 @@ fun AddingCategoryDialog(showDialog: MutableState<Boolean>) {
                 AddingCategoryDialogContent(
                     paddingValues = PaddingValues(30.dp),
                     onCancelButtonClicked = {
-                        showDialog.value = false
+                        onDismissRequest()
+                        categoryViewModel.resetValues()
                     },
-                    onSaveButtonClicked = {}
+                    onSaveButtonClicked = {
+                        categoryViewModel.saveCategory()
+                    },
+                    viewModel = categoryViewModel
                 )
             }
         }

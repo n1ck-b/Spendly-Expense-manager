@@ -1,5 +1,6 @@
 package com.inb.spendly.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +29,9 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -49,24 +53,47 @@ import com.inb.spendly.R
 import com.inb.spendly.ui.theme.CategoryColors
 import com.inb.spendly.ui.theme.CategoryIcons
 import com.inb.spendly.ui.theme.DefaultIconColor
+import com.inb.spendly.viewmodels.CategoryViewModel
+import com.inb.spendly.viewmodels.UiEvent
 
 @Composable
 fun AddingCategoryDialogContent(
     paddingValues: PaddingValues,
     onCancelButtonClicked: () -> Unit,
-    onSaveButtonClicked: () -> Unit
+    onSaveButtonClicked: () -> Unit,
+    viewModel: CategoryViewModel
 ) {
 
-    val selectedIcon = remember {
-        mutableIntStateOf(R.drawable.outline_image_24)
-    }
+    val showErrors = remember { mutableStateOf(false) }
 
-    val selectedColor = remember {
-        mutableStateOf(DefaultIconColor)
-    }
+    val categoryState by viewModel.state.collectAsState()
+
+//    val selectedIcon = remember {
+//        mutableIntStateOf(R.drawable.outline_image_24)
+//    }
+//
+//    val selectedColor = remember {
+//        mutableStateOf(DefaultIconColor)
+//    }
 
     val showIconDialog = remember { mutableStateOf(false) }
     val showColorDialog = remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
+    val categoryAlreadyExistsWarning = stringResource(R.string.category_already_exists_warning)
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            if (event == UiEvent.ShowToastNotAllFieldsFilled) {
+                Toast.makeText(context, fillAllFieldsWarning, Toast.LENGTH_LONG).show()
+                showErrors.value = true
+            }
+            else if(event == UiEvent.ShowToastCategoryAlreadyExists) {
+                Toast.makeText(context, categoryAlreadyExistsWarning, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -76,17 +103,33 @@ fun AddingCategoryDialogContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         AddingCategoryScreenHeader()
-        CategoryNameTextField()
-        ChoosingIconCard(selectedIcon,
-            selectedColor
-        ) { showIconDialog.value = true }
-        ChoosingIconColorCard(selectedColor) { showColorDialog.value = true }
+        CategoryNameTextField(
+            currentName = categoryState.name,
+            onValueChanged = {
+                viewModel.updateCategoryName(it)
+            },
+            onClearIconClick = {
+                viewModel.updateCategoryName("")
+            },
+            showErrors = showErrors.value
+        )
+        ChoosingIconCard(
+            selectedIcon = categoryState.iconId,
+            selectedColor = categoryState.color
+        ) {
+            showIconDialog.value = true
+        }
+        ChoosingIconColorCard(categoryState.color) {
+            showColorDialog.value = true
+        }
         IconsListDialog(
-            onDismissRequest = { showIconDialog.value = false },
+            onDismissRequest = {
+                showIconDialog.value = false
+            },
             categoryIcons = CategoryIcons.icons,
             showIconDialog = showIconDialog,
             onItemClicked = {
-                selectedIcon.intValue = it
+                viewModel.updateCategoryIconId(it)
                 showIconDialog.value = false
             }
         )
@@ -95,7 +138,7 @@ fun AddingCategoryDialogContent(
             colors = CategoryColors.colors,
             showColorDialog = showColorDialog,
             onItemClicked = {
-                selectedColor.value = it
+                viewModel.updateCategoryColor(it)
                 showColorDialog.value = false
             }
         )
@@ -117,10 +160,16 @@ fun AddingCategoryScreenHeader() {
 }
 
 @Composable
-fun CategoryNameTextField() {
+fun CategoryNameTextField(
+    currentName: String,
+    onValueChanged: (String) -> Unit,
+    onClearIconClick: () -> Unit,
+    showErrors: Boolean
+) {
 
     var textFieldValue by remember {
-        mutableStateOf("")
+        mutableStateOf(if(currentName.isNotBlank() && currentName.isNotEmpty()) currentName
+        else "")
     }
 
     OutlinedTextField(
@@ -129,6 +178,7 @@ fun CategoryNameTextField() {
         value = textFieldValue,
         onValueChange = { newValue ->
             textFieldValue = newValue
+            onValueChanged(newValue)
         },
         label = {
             Text(
@@ -151,16 +201,24 @@ fun CategoryNameTextField() {
                     imageVector = Icons.Outlined.Close,
                     contentDescription = null,
                     modifier = Modifier
-                        .clickable { textFieldValue = "" }
+                        .clickable {
+                            textFieldValue = ""
+                            onClearIconClick()
+                        }
                 )
             }
         },
-        shape = RoundedCornerShape(7.dp)
+        shape = RoundedCornerShape(7.dp),
+        isError = (textFieldValue.isBlank() || textFieldValue.isEmpty()) && showErrors
     )
 }
 
 @Composable
-fun ChoosingIconCard(selectedIcon: MutableState<Int>, selectedColor: MutableState<Color>, onClick: () -> Unit) {
+fun ChoosingIconCard(
+    selectedIcon: Int,
+    selectedColor: Color,
+    onClick: () -> Unit
+) {
 
     OutlinedCard(
         modifier = Modifier
@@ -183,18 +241,21 @@ fun ChoosingIconCard(selectedIcon: MutableState<Int>, selectedColor: MutableStat
                 style = MaterialTheme.typography.bodyLarge,
             )
             Icon(
-                painter = painterResource(selectedIcon.value),
+                painter = painterResource(selectedIcon),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp),
-                tint = selectedColor.value
+                tint = selectedColor
             )
         }
     }
 }
 
 @Composable
-fun ChoosingIconColorCard(selectedColor: MutableState<Color>, onClick: () -> Unit) {
+fun ChoosingIconColorCard(
+    selectedColor: Color,
+    onClick: () -> Unit
+) {
 
     OutlinedCard(
         modifier = Modifier
@@ -225,24 +286,19 @@ fun ChoosingIconColorCard(selectedColor: MutableState<Color>, onClick: () -> Uni
                 modifier = Modifier
                     .size(35.dp)
                     .clip(RoundedCornerShape(7.dp))
-                    .background(selectedColor.value)
+                    .background(selectedColor)
             )
-//            Canvas(
-//                modifier = Modifier
-//                    .size(40.dp)
-//            ) {
-//                drawRect(
-//                    size = size,
-//                    color = Color.Black
-//                )
-//            }
         }
     }
 }
 
 @Composable
-fun IconsListDialog(onDismissRequest: () -> Unit, categoryIcons: List<Int>,
-                    showIconDialog: MutableState<Boolean>, onItemClicked: (Int) -> Unit) {
+fun IconsListDialog(
+    onDismissRequest: () -> Unit,
+    categoryIcons: List<Int>,
+    showIconDialog: MutableState<Boolean>,
+    onItemClicked: (Int) -> Unit
+) {
     if(showIconDialog.value) {
         Dialog(
             onDismissRequest = onDismissRequest
@@ -299,8 +355,12 @@ fun IconsListDialog(onDismissRequest: () -> Unit, categoryIcons: List<Int>,
 }
 
 @Composable
-fun ColorsListDialog(onDismissRequest: () -> Unit, colors: List<Color>,
-                    showColorDialog: MutableState<Boolean>, onItemClicked: (Color) -> Unit) {
+fun ColorsListDialog(
+    onDismissRequest: () -> Unit,
+    colors: List<Color>,
+    showColorDialog: MutableState<Boolean>,
+    onItemClicked: (Color) -> Unit
+) {
     if(showColorDialog.value) {
         Dialog(
             onDismissRequest = onDismissRequest
@@ -342,5 +402,5 @@ fun ColorsListDialog(onDismissRequest: () -> Unit, colors: List<Color>,
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun AddingCategoryDialogContentPreview() {
-    AddingCategoryDialogContent(PaddingValues(30.dp), {}, {})
+//    AddingCategoryDialogContent(PaddingValues(30.dp), {}, {})
 }

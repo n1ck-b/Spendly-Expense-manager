@@ -1,5 +1,8 @@
 package com.inb.spendly.viewmodels
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inb.spendly.util.FilterType
@@ -30,6 +33,12 @@ class SharedViewModel: ViewModel() {
     private val _selectedDateRange = MutableStateFlow("Today")
     val selectedDateRange = _selectedDateRange.asStateFlow()
 
+    var showExpenseDialog = mutableStateOf(false)
+        private set
+
+    var showCategoryDialog = mutableStateOf(false)
+        private set
+
     val selectedFilterType: StateFlow<FilterType> =
         selectedDateRange
             .map { range ->
@@ -49,6 +58,14 @@ class SharedViewModel: ViewModel() {
 
     fun updateDateRange(newRange: String) {
         _selectedDateRange.value = newRange
+    }
+
+    fun updateShowExpenseDialog(newValue: Boolean) {
+        showExpenseDialog.value = newValue
+    }
+
+    fun updateShowCategoryDialog(newValue: Boolean) {
+        showCategoryDialog.value = newValue
     }
 
 }

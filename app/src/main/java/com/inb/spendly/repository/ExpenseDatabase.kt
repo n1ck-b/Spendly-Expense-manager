@@ -12,7 +12,7 @@ import com.inb.spendly.models.Expense
         Expense::class,
         Category::class
     ],
-    version = 5,
+    version = 7,
     exportSchema = false,
 )
 abstract class ExpenseDatabase() : RoomDatabase() {

@@ -1,6 +1,7 @@
 package com.inb.spendly.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,22 +16,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.inb.spendly.R
 import com.inb.spendly.models.relations.ExpenseWithCategory
 import com.inb.spendly.ui.components.DropDownMenu
@@ -50,7 +57,11 @@ fun ExpenseHistoryScreen(
 
     val selectedDateRange = sharedViewModel.selectedDateRange
 
+    val selectedExpenseId by viewModel.selectedFromListExpenseId
+
     val expensesWithCategories by viewModel.expensesList.collectAsState()
+
+    val showActionDialog = remember { mutableStateOf(false) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -68,7 +79,28 @@ fun ExpenseHistoryScreen(
         ExpenseHistoryScreenHeader()
         DateDropDown(sharedViewModel, selectedDateRange.collectAsState().value)
         ExpenseAmountTile(expensesWithCategories.sumOf { it.expense.amount.toDouble() }.toFloat())
-        ExpenseList(expensesWithCategories)
+        ExpenseList(
+            expensesWithCategories,
+            onLongItemClick = {
+                showActionDialog.value = true
+                viewModel.updateSelectedExpenseId(it)
+            }
+        )
+        ActionDialog(
+            showDialog = showActionDialog.value,
+            onDismissRequest = {
+                showActionDialog.value = false
+            },
+            onEditButtonClicked = {
+                sharedViewModel.updateShowExpenseDialog(true)
+                viewModel.updateState()
+                showActionDialog.value = false
+            },
+            onDeleteButtonClicked = {
+                viewModel.deleteExpense()
+                showActionDialog.value = false
+            }
+        )
     }
 }
 
@@ -142,7 +174,10 @@ fun ExpenseAmountTile(sumForSelectedPeriod: Float) {
 }
 
 @Composable
-fun ExpenseList(expensesWithCategory: List<ExpenseWithCategory>) {
+fun ExpenseList(
+    expensesWithCategory: List<ExpenseWithCategory>,
+    onLongItemClick: (Long) -> Unit
+) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp),
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp)
@@ -153,7 +188,7 @@ fun ExpenseList(expensesWithCategory: List<ExpenseWithCategory>) {
             }
         }
         items(expensesWithCategory) { expenseWithCategory ->
-            ExpenseListItem(expenseWithCategory)
+            ExpenseListItem(expenseWithCategory, onLongItemClick)
         }
     }
 }
@@ -182,13 +217,22 @@ fun NoExpensesFound() {
 }
 
 @Composable
-fun ExpenseListItem(item: ExpenseWithCategory) {
+fun ExpenseListItem(
+    item: ExpenseWithCategory,
+    onLongItemClick: (Long) -> Unit
+) {
 
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
     OutlinedCard(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = {},
+                onLongClick = {
+                    onLongItemClick(item.expense.id)
+                }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -211,7 +255,8 @@ fun ExpenseListItem(item: ExpenseWithCategory) {
                         Icon(
                             painter = painterResource(item.category.iconId),
                             contentDescription = null,
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(30.dp),
+                            tint = Color(item.category.color)
                         )
                         Spacer(modifier = Modifier.size(10.dp))
                         Column {
@@ -227,9 +272,11 @@ fun ExpenseListItem(item: ExpenseWithCategory) {
                     Spacer(modifier = Modifier.size(7.dp))
                     Row {
                         Spacer(modifier = Modifier.width(40.dp))
-                        Text(
-                            text = item.expense.note
-                        )
+                        if(item.expense.note != null && item.expense.note != "") {
+                            Text(
+                                text = item.expense.note!!
+                            )
+                        }
                     }
                 }
             }
@@ -242,7 +289,100 @@ fun ExpenseListItem(item: ExpenseWithCategory) {
 }
 
 @Composable
+fun ActionDialog(
+    showDialog: Boolean,
+    onDismissRequest: () -> Unit,
+    onDeleteButtonClicked: () -> Unit,
+    onEditButtonClicked: () -> Unit
+) {
+    if(showDialog) {
+        Dialog(
+            onDismissRequest = {
+                onDismissRequest()
+            }
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(7.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(30.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(bottom = 10.dp),
+                        text = stringResource(R.string.choose_action_update_delete),
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                    TextButton(
+                        onClick = onEditButtonClicked
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(35.dp),
+                                painter = painterResource(R.drawable.outline_edit_square_24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = stringResource(R.string.edit_button),
+                                color = MaterialTheme.colorScheme.onBackground,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                    TextButton(
+                        onClick = onDeleteButtonClicked
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(35.dp),
+                                painter = painterResource(R.drawable.outline_delete_24),
+                                contentDescription = null,
+                                tint = Color(0xFFC02929)
+                            )
+                            Text(
+                                text = stringResource(R.string.delete_button),
+                                color = Color(0xFFC02929),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun ExpenseHistoryScreenPreview() {
 //    ExpenseHistoryScreen(PaddingValues(30.dp))
+}
+
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
+fun ActionDialogPreview() {
+//    ActionDialog(true, {}, {}, {})
 }
