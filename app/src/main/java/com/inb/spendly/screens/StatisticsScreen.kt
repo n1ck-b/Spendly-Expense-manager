@@ -14,21 +14,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.yml.charts.common.model.PlotType
@@ -36,15 +35,9 @@ import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
-import com.inb.spendly.ui.components.DropDownMenu
-import com.inb.spendly.viewmodels.SharedViewModel
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import co.yml.charts.ui.piechart.charts.PieChart
 import com.inb.spendly.models.relations.CategoryWithFilteredExpenses
 import com.inb.spendly.viewmodels.CategoryViewModel
+import com.inb.spendly.viewmodels.SharedViewModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -230,10 +223,4 @@ fun StatisticsByCategoriesListItem(item: CategoryWithFilteredExpenses, sumOfAllE
             )
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun StatisticsScreenPreview() {
-//    StatisticsScreen(PaddingValues(30.dp))
 }

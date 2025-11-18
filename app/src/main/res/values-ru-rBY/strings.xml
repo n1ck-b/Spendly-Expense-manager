@@ -47,4 +47,5 @@
     <string name="error_getting_exchange_rates">Возникла ошибка при получении курсов валют. Попробуйте позже или выберите валюту по умолчанию</string>
     <string name="category_already_exists_warning">Категория с таким названием уже существует. Выберите другое название</string>
     <string name="choose_action_update_delete">Выберите действие</string>
+    <string name="without_category">Без категории</string>
 </resources>

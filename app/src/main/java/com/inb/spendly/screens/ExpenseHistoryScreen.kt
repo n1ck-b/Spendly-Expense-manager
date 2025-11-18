@@ -35,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.inb.spendly.R
@@ -56,8 +55,6 @@ fun ExpenseHistoryScreen(
 ) {
 
     val selectedDateRange = sharedViewModel.selectedDateRange
-
-    val selectedExpenseId by viewModel.selectedFromListExpenseId
 
     val expensesWithCategories by viewModel.expensesList.collectAsState()
 
@@ -373,16 +370,4 @@ fun ActionDialog(
             }
         }
     }
-}
-
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun ExpenseHistoryScreenPreview() {
-//    ExpenseHistoryScreen(PaddingValues(30.dp))
-}
-
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun ActionDialogPreview() {
-//    ActionDialog(true, {}, {}, {})
 }

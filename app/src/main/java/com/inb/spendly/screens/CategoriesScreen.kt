@@ -9,16 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,17 +27,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.inb.spendly.R
 import com.inb.spendly.models.relations.CategoryWithFilteredExpenses
-import com.inb.spendly.ui.components.DropDownMenu
 import com.inb.spendly.viewmodels.CategoryViewModel
 import com.inb.spendly.viewmodels.SharedViewModel
 import java.math.BigDecimal
@@ -59,6 +52,8 @@ fun CategoriesScreen(
     val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
 
     val showActionDialog = remember { mutableStateOf(false) }
+
+    val withoutCategoryString = stringResource(R.string.without_category)
 
     Column(
         modifier = Modifier
@@ -96,7 +91,7 @@ fun CategoriesScreen(
                 showActionDialog.value = false
             },
             onDeleteButtonClicked = {
-                categoryViewModel.deleteCategory()
+                categoryViewModel.deleteCategory(withoutCategoryString)
                 showActionDialog.value = false
             }
         )
@@ -203,10 +198,4 @@ fun CategoriesGridItem(
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun CategoriesScreenPreview() {
-//    CategoriesScreen(PaddingValues(20.dp))
 }

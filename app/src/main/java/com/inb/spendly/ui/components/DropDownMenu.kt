@@ -1,7 +1,6 @@
 package com.inb.spendly.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
@@ -18,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -29,10 +27,6 @@ fun DropDownMenu(items: List<String>, onItemClick: (String) -> Unit, selectedIte
     var expanded by remember  {
         mutableStateOf(false)
     }
-
-//    var selectedItem by remember {
-//        mutableStateOf(items[0])
-//    }
 
     ExposedDropdownMenuBox(
         expanded = expanded,

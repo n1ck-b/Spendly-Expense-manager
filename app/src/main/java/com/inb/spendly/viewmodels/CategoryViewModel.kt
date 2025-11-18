@@ -3,11 +3,13 @@ package com.inb.spendly.viewmodels
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.toColorLong
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.inb.spendly.R
 import com.inb.spendly.models.Category
 import com.inb.spendly.repository.CategoryDao
+import com.inb.spendly.repository.ExpenseDao
+import com.inb.spendly.ui.theme.DefaultIconColor
 import com.inb.spendly.util.FilterType
 import com.inb.spendly.util.getTimestampForEndOfThisMonth
 import com.inb.spendly.util.getTimestampForEndOfThisWeek
@@ -18,7 +20,6 @@ import com.inb.spendly.util.getTimestampForStartOfThisWeek
 import com.inb.spendly.util.getTimestampForStartOfThisYear
 import com.inb.spendly.util.getTimestampForStartOfToday
 import com.inb.spendly.viewmodels.state.CategoryState
-import com.inb.spendly.viewmodels.state.ExpenseState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 class CategoryViewModel(
     private val categoryDao: CategoryDao,
+    private val expenseDao: ExpenseDao,
     private val sharedViewModel: SharedViewModel
 ): ViewModel() {
 
@@ -71,8 +74,7 @@ class CategoryViewModel(
     private val _state = MutableStateFlow(CategoryState())
     val state = _state.asStateFlow()
 
-    var selectedFromListCategoryId = mutableLongStateOf(0)
-        private set
+    private var selectedFromListCategoryId = mutableLongStateOf(0)
 
     fun updateCategoryName(newName: String) {
         _state.update { it.copy(
@@ -133,8 +135,27 @@ class CategoryViewModel(
         }
     }
 
-    fun deleteCategory() {
+    fun deleteCategory(withoutCategoryName: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            val expensesForCategory = categoryDao
+                .getAllExpensesForCategory(selectedFromListCategoryId.longValue)
+            if(expensesForCategory.isNotEmpty()) {
+                if(categoryDao.getCategoryByName(withoutCategoryName) == null) {
+                    val withoutCategory = Category(
+                        name = withoutCategoryName,
+                        color = DefaultIconColor.toArgb(),
+                        iconId = R.drawable.outline_image_24
+                    )
+                    categoryDao.upsertCategory(withoutCategory)
+                }
+                val withoutCategory = categoryDao.getCategoryByName(withoutCategoryName)
+                expensesForCategory.forEach { expense ->
+                    expense.categoryId = withoutCategory!!.id
+                }
+                expensesForCategory.forEach {
+                    expenseDao.upsertExpense(it)
+                }
+            }
             categoryDao.deleteCategoryById(selectedFromListCategoryId.longValue)
         }
     }

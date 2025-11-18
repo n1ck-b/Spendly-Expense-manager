@@ -47,4 +47,5 @@
     <string name="error_getting_exchange_rates">Error getting exchange rates. Try again later or choose default currency</string>
     <string name="category_already_exists_warning">Category with this name already exists. Choose different name</string>
     <string name="choose_action_update_delete">Choose action</string>
+    <string name="without_category">Without category</string>
 </resources>

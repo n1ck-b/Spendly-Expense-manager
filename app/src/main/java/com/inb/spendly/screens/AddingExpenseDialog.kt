@@ -17,7 +17,6 @@ import com.inb.spendly.R
 import com.inb.spendly.util.hasInternetConnection
 import com.inb.spendly.viewmodels.ExpenseViewModel
 import com.inb.spendly.viewmodels.UiEvent
-import kotlin.math.exp
 
 @Composable
 fun AddingExpenseDialog(

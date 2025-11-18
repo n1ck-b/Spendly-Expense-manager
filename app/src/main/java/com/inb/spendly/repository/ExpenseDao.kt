@@ -1,7 +1,6 @@
 package com.inb.spendly.repository
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
 import com.inb.spendly.models.Expense

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.inb.spendly.models.Category
+import com.inb.spendly.models.Expense
 import com.inb.spendly.models.relations.CategoryWithFilteredExpenses
 import kotlinx.coroutines.flow.Flow
 
@@ -38,4 +39,7 @@ interface CategoryDao {
 
     @Query("DELETE FROM categories WHERE id = :categoryId")
     suspend fun deleteCategoryById(categoryId: Long)
+
+    @Query("SELECT * FROM expenses WHERE categoryId = :categoryId")
+    suspend fun getAllExpensesForCategory(categoryId: Long): List<Expense>
 }

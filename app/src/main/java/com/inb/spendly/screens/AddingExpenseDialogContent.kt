@@ -49,11 +49,9 @@ import com.inb.spendly.ui.components.DatePickerModal
 import com.inb.spendly.ui.components.DropDownMenu
 import com.inb.spendly.viewmodels.ExpenseViewModel
 import com.inb.spendly.viewmodels.UiEvent
-import com.inb.spendly.viewmodels.state.ExpenseState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.exp
 
 @Composable
 fun AddingExpenseDialogContent(
@@ -73,15 +71,6 @@ fun AddingExpenseDialogContent(
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
-//            when (event) {
-//                is UiEvent.ShowToastNotAllFieldsFilled -> {
-//                    Toast.makeText(context, fillAllFieldsWarning, Toast.LENGTH_LONG).show()
-//                    showErrors.value = true
-//                }
-//                is UiEvent.ShowToastErrorGettingExchangeRates -> {
-//                    Toast.makeText(context, errorGettingExchangeRatesWarning, Toast.LENGTH_LONG).show()
-//                }
-//            }
             if (event == UiEvent.ShowToastNotAllFieldsFilled) {
                 Toast.makeText(context, fillAllFieldsWarning, Toast.LENGTH_LONG).show()
                 showErrors.value = true
@@ -100,7 +89,6 @@ fun AddingExpenseDialogContent(
 
     val showDatePicker = remember { mutableStateOf(false) }
 
-    //    var selectedDate by remember { mutableStateOf<Long?>(null) }
     val formattedDate =
     if(expenseState.date != null)
         SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(expenseState.date ?: Date())
@@ -196,12 +184,6 @@ fun AmountTextField(
             currentAmount.toString()
         )
     }
-
-//    textFieldValue = if (currentAmount == 0f) ""
-//    else if (currentAmount % 1 == 0f)
-//        currentAmount.toInt().toString()
-//    else
-//        currentAmount.toString()
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -300,10 +282,6 @@ fun ExpenseCategoryDropDown(
     selectedCategory: String
 ) {
 
-//    val interactionSource = remember {
-//        MutableInteractionSource()
-//    }
-
     val categoriesNames =
     if(categories.isNotEmpty())
         categories.map { it.name }
@@ -328,37 +306,6 @@ fun ExpenseCategoryDropDown(
             onItemClick = onItemClick,
             selectedItem = selectedCategory
         )
-//        OutlinedTextField(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//            /*.clickable { showDatePicker.value = true }*/,
-//            interactionSource = interactionSource,
-//            value = formattedDate,
-//            onValueChange = {},
-//            label = {
-//                Text(
-//                    text = stringResource(R.string.adding_expense_screen_date_text_field_label)
-//                )
-//            },
-//            readOnly = true,
-//            trailingIcon = {
-//                if (formattedDate != "") {
-//                    Icon(
-//                        imageVector = Icons.Outlined.Close,
-//                        contentDescription = null,
-//                        modifier = Modifier
-//                            .clickable { onClearIconClick() }
-//                    )
-//                }
-//            },
-//            shape = RoundedCornerShape(7.dp)
-//        ) {
-//
-//        }
-//    }
-//
-//    if (interactionSource.collectIsPressedAsState().value)
-//        showDatePicker.value = true
     }
 }
 
@@ -389,9 +336,6 @@ fun NoteTextField(
     onClearIconClick: () -> Unit
 ) {
 
-//    var textFieldValue by remember {
-//        mutableStateOf("")
-//    }
     var textFieldValue by remember(currentNote) {
         mutableStateOf(currentNote ?: "")
     }
@@ -466,10 +410,4 @@ fun CancelSaveButtons(
             }
         }
     }
-}
-
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun AddingExpenseDialogContentPreview() {
-//    AddingExpenseDialogContent(PaddingValues(30.dp), {}, {})
 }

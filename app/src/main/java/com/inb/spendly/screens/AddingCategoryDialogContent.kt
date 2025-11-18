@@ -33,7 +33,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,7 +51,6 @@ import androidx.compose.ui.window.Dialog
 import com.inb.spendly.R
 import com.inb.spendly.ui.theme.CategoryColors
 import com.inb.spendly.ui.theme.CategoryIcons
-import com.inb.spendly.ui.theme.DefaultIconColor
 import com.inb.spendly.viewmodels.CategoryViewModel
 import com.inb.spendly.viewmodels.UiEvent
 
@@ -67,14 +65,6 @@ fun AddingCategoryDialogContent(
     val showErrors = remember { mutableStateOf(false) }
 
     val categoryState by viewModel.state.collectAsState()
-
-//    val selectedIcon = remember {
-//        mutableIntStateOf(R.drawable.outline_image_24)
-//    }
-//
-//    val selectedColor = remember {
-//        mutableStateOf(DefaultIconColor)
-//    }
 
     val showIconDialog = remember { mutableStateOf(false) }
     val showColorDialog = remember { mutableStateOf(false) }
@@ -397,10 +387,4 @@ fun ColorsListDialog(
             }
         }
     }
-}
-
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun AddingCategoryDialogContentPreview() {
-//    AddingCategoryDialogContent(PaddingValues(30.dp), {}, {})
 }

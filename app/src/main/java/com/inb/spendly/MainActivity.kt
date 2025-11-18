@@ -1,18 +1,15 @@
 package com.inb.spendly
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.inb.spendly.api.RetrofitInstance
 import com.inb.spendly.navigation.CategoriesScreenRoute
 import com.inb.spendly.navigation.ExpenseHistoryScreenRoute
 import com.inb.spendly.navigation.NavGraph
@@ -24,28 +21,16 @@ import com.inb.spendly.ui.components.BottomNavBarItem
 import com.inb.spendly.ui.components.BottomNavigationBar
 import com.inb.spendly.ui.components.FloatingActionButtonAdd
 import com.inb.spendly.ui.theme.SpendlyTheme
-import com.inb.spendly.util.FilterType
 import com.inb.spendly.viewmodels.CategoryViewModel
 import com.inb.spendly.viewmodels.CategoryViewModelFactory
 import com.inb.spendly.viewmodels.ExpenseViewModel
 import com.inb.spendly.viewmodels.ExpenseViewModelFactory
 import com.inb.spendly.viewmodels.SharedViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.collectAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//
-//        try {
-//            GlobalScope.launch {
-//                val response = RetrofitInstance.api.getExchangeRate("BYN")
-//                Log.d("ExchangeRates", "Response: ${response.body()?.conversionRates}")
-//            }
-//        } catch (e: Exception) {
-//            Log.e("API", "Error", e)
-//        }
+
         val expenseDatabase = ExpenseDatabase.getInstance(this)
 
         enableEdgeToEdge()
@@ -66,6 +51,7 @@ class MainActivity : ComponentActivity() {
                 val categoryViewModel = viewModel<CategoryViewModel>(
                     factory = CategoryViewModelFactory(
                         expenseDatabase.categoryDao,
+                        expenseDatabase.expenseDao,
                         sharedViewModel
                     )
                 )
@@ -99,11 +85,9 @@ class MainActivity : ComponentActivity() {
                     floatingActionButton = {
                         when(currentDestination?.route?.let { Class.forName(it) }) {
                             ExpenseHistoryScreenRoute::class.java -> FloatingActionButtonAdd {
-//                                showAddingExpenseDialog.value = true
                                 sharedViewModel.updateShowExpenseDialog(true)
                             }
                             CategoriesScreenRoute::class.java -> FloatingActionButtonAdd {
-//                                showAddingCategoryDialog.value = true
                                 sharedViewModel.updateShowCategoryDialog(true)
                             }
                             StatisticsScreenRoute::class.java -> {}

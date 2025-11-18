@@ -1,16 +1,11 @@
 package com.inb.spendly.viewmodels
 
-import android.util.Log
-import androidx.collection.mutableLongListOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.inb.spendly.api.RetrofitInstance
 import com.inb.spendly.models.Category
-import com.inb.spendly.models.ConversionRate
 import com.inb.spendly.models.Currencies
 import com.inb.spendly.models.ExchangeRates
 import com.inb.spendly.models.Expense
@@ -25,9 +20,7 @@ import com.inb.spendly.util.getTimestampForStartOfThisMonth
 import com.inb.spendly.util.getTimestampForStartOfThisWeek
 import com.inb.spendly.util.getTimestampForStartOfThisYear
 import com.inb.spendly.util.getTimestampForStartOfToday
-import com.inb.spendly.util.hasInternetConnection
 import com.inb.spendly.viewmodels.state.ExpenseState
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -86,8 +79,7 @@ class ExpenseViewModel(
     var selectedCurrency = mutableStateOf(Currencies.BYN)
         private set
 
-    var selectedFromListExpenseId = mutableLongStateOf(0)
-        private set
+    private var selectedFromListExpenseId = mutableLongStateOf(0)
 
     val categoriesList = categoryDao.getAllCategories()
 
@@ -132,11 +124,7 @@ class ExpenseViewModel(
             return
         }
 
-//        val coroutineExceptionHandler = CoroutineExceptionHandler{_, throwable ->
-//            throwable.printStackTrace()
-//        }
-
-        viewModelScope.launch(Dispatchers.IO /*+ coroutineExceptionHandler*/) {
+        viewModelScope.launch(Dispatchers.IO) {
             val response: Response<ExchangeRates>
             var exchangeRate: Map<String, Double>? = null
 
