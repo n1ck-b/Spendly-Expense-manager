@@ -44,8 +44,12 @@ class SharedViewModel: ViewModel() {
             .map { range ->
                 when (range) {
                     FilterType.TODAY.string -> FilterType.TODAY
+                    FilterType.TODAY.stringRu -> FilterType.TODAY
+                    FilterType.THIS_WEEK.stringRu -> FilterType.THIS_WEEK
                     FilterType.THIS_WEEK.string -> FilterType.THIS_WEEK
+                    FilterType.THIS_MONTH.stringRu -> FilterType.THIS_MONTH
                     FilterType.THIS_MONTH.string -> FilterType.THIS_MONTH
+                    FilterType.THIS_YEAR.stringRu -> FilterType.THIS_YEAR
                     FilterType.THIS_YEAR.string -> FilterType.THIS_YEAR
                     else -> FilterType.TODAY
                 }

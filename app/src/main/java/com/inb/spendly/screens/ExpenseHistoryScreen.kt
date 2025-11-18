@@ -124,7 +124,7 @@ fun DateDropDown(sharedViewModel: SharedViewModel, selectedDateRange: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Select a period",
+            text = stringResource(R.string.drop_down_select_period),
             style = MaterialTheme.typography.titleMedium
         )
         DropDownMenu(

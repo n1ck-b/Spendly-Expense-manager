@@ -49,7 +49,7 @@ fun DropDownMenu(items: List<String>, onItemClick: (String) -> Unit, selectedIte
                     type = MenuAnchorType.PrimaryNotEditable,
                     enabled = true
                 )
-                .width(170.dp),
+                .width(210.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedContainerColor = MaterialTheme.colorScheme.background,

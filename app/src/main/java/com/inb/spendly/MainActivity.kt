@@ -7,6 +7,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -52,6 +53,8 @@ class MainActivity : ComponentActivity() {
 
                 val sharedViewModel = viewModel<SharedViewModel>(
                     viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+
+                sharedViewModel.updateDateRange(stringArrayResource(R.array.time_periods)[0])
 
                 val expenseViewModel = viewModel<ExpenseViewModel>(
                     factory = ExpenseViewModelFactory(

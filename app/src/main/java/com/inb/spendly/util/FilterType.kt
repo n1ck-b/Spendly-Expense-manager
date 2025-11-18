@@ -1,8 +1,8 @@
 package com.inb.spendly.util
 
-enum class FilterType(val string: String) {
-    TODAY("Today"),
-    THIS_WEEK("This week"),
-    THIS_MONTH("This month"),
-    THIS_YEAR("This year")
+enum class FilterType(val string: String, val stringRu: String) {
+    TODAY("Today", "Сегодня"),
+    THIS_WEEK("This week", "Текущая неделя"),
+    THIS_MONTH("This month", "Текущий месяц"),
+    THIS_YEAR("This year", "Текущий год")
 }

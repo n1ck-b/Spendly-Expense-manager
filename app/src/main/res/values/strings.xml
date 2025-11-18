@@ -6,6 +6,7 @@
     <string name="CNY_description">Chinese Yuan</string>
     <string name="GBP_description">Pound Sterling</string>
     <string name="PLN_description">Polish Zloty</string>
+    <string name="drop_down_select_period">Select a period</string>
     <string-array name="time_periods">
         <item>Today</item>
         <item>This week</item>
