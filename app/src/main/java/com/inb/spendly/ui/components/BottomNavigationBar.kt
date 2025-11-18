@@ -26,7 +26,7 @@ fun BottomNavigationBar(
 
     NavigationBar(
         contentColor = MaterialTheme.colorScheme.onBackground,
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 5.dp
     ) {
         items.forEach { item ->
@@ -66,8 +66,9 @@ fun RowScope.BottomNavBarItem(
         colors = NavigationBarItemDefaults.colors(
             selectedIconColor = MaterialTheme.colorScheme.onBackground,
             selectedTextColor = MaterialTheme.colorScheme.onBackground,
-            unselectedIconColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
-            unselectedTextColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+            unselectedIconColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            unselectedTextColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
         )
     )
 }

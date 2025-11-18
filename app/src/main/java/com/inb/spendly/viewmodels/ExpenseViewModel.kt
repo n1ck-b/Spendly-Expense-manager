@@ -1,5 +1,6 @@
 package com.inb.spendly.viewmodels
 
+import android.util.Log
 import androidx.collection.mutableLongListOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -145,6 +146,7 @@ class ExpenseViewModel(
                         .api.getExchangeRate(selectedCurrency.value.name)
                     if (!response.isSuccessful) {
                         _events.emit(UiEvent.ShowToastErrorGettingExchangeRates)
+                        return@launch
                     }
                     exchangeRate = response.body()?.conversionRates
                 } catch (e: Exception) {

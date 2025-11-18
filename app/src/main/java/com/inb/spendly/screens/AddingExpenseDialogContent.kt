@@ -453,7 +453,8 @@ fun CancelSaveButtons(
                 onClick = onCancelButtonClicked
             ) {
                 Text(
-                    text = stringResource(R.string.cancel_button)
+                    text = stringResource(R.string.cancel_button),
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
             Button(

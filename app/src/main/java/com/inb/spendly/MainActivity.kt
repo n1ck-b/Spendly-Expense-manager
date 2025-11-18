@@ -24,6 +24,7 @@ import com.inb.spendly.ui.components.BottomNavBarItem
 import com.inb.spendly.ui.components.BottomNavigationBar
 import com.inb.spendly.ui.components.FloatingActionButtonAdd
 import com.inb.spendly.ui.theme.SpendlyTheme
+import com.inb.spendly.util.FilterType
 import com.inb.spendly.viewmodels.CategoryViewModel
 import com.inb.spendly.viewmodels.CategoryViewModelFactory
 import com.inb.spendly.viewmodels.ExpenseViewModel
@@ -31,6 +32,7 @@ import com.inb.spendly.viewmodels.ExpenseViewModelFactory
 import com.inb.spendly.viewmodels.SharedViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +46,6 @@ class MainActivity : ComponentActivity() {
 //        } catch (e: Exception) {
 //            Log.e("API", "Error", e)
 //        }
-
         val expenseDatabase = ExpenseDatabase.getInstance(this)
 
         enableEdgeToEdge()
@@ -53,8 +54,6 @@ class MainActivity : ComponentActivity() {
 
                 val sharedViewModel = viewModel<SharedViewModel>(
                     viewModelStoreOwner = LocalActivity.current as ComponentActivity)
-
-                sharedViewModel.updateDateRange(stringArrayResource(R.array.time_periods)[0])
 
                 val expenseViewModel = viewModel<ExpenseViewModel>(
                     factory = ExpenseViewModelFactory(
