@@ -5,7 +5,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.domain.Utils.getTimestampForEndOfThisMonth
 import com.inb.spendly.domain.Utils.getTimestampForEndOfThisWeek
 import com.inb.spendly.domain.Utils.getTimestampForEndOfThisYear
@@ -14,6 +13,7 @@ import com.inb.spendly.domain.Utils.getTimestampForStartOfThisMonth
 import com.inb.spendly.domain.Utils.getTimestampForStartOfThisWeek
 import com.inb.spendly.domain.Utils.getTimestampForStartOfThisYear
 import com.inb.spendly.domain.Utils.getTimestampForStartOfToday
+import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.domain.useCases.categories.AddCategoryUseCase
 import com.inb.spendly.domain.useCases.categories.DeleteCategoryUseCase
 import com.inb.spendly.domain.useCases.categories.ExistsCategoryByNameUseCase
@@ -22,6 +22,7 @@ import com.inb.spendly.domain.useCases.categories.GetExpensesByCategoriesUseCase
 import com.inb.spendly.presentation.FilterType
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.screens.UiEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,15 +34,17 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CategoryViewModel(
+@HiltViewModel
+class CategoryViewModel @Inject constructor(
     private val addCategoryUseCase: AddCategoryUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     private val getExpensesByCategoriesUseCase: GetExpensesByCategoriesUseCase,
     private val existsCategoryByNameUseCase: ExistsCategoryByNameUseCase,
     private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
-    private val sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel
 ) : ViewModel() {
 
     private val selectedDateFilter = sharedViewModel.selectedFilterType

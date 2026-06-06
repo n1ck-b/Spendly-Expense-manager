@@ -8,8 +8,9 @@ import com.inb.spendly.domain.ExpenseRepository
 import com.inb.spendly.domain.entities.Expense
 import retrofit2.Response
 import java.util.Date
+import javax.inject.Inject
 
-class DeleteExpenseUseCase(
+class DeleteExpenseUseCase @Inject constructor(
     private val expenseRepository: ExpenseRepository,
 ) {
 

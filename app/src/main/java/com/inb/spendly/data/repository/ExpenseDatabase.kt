@@ -15,7 +15,7 @@ import com.inb.spendly.data.models.ExpenseDbModel
     version = 8,
     exportSchema = false,
 )
-abstract class ExpenseDatabase() : RoomDatabase() {
+abstract class ExpenseDatabase : RoomDatabase() {
 
     abstract val expenseDao: ExpenseDao
     abstract val categoryDao: CategoryDao
@@ -23,16 +23,21 @@ abstract class ExpenseDatabase() : RoomDatabase() {
     companion object {
 
         @Volatile
-        private var INSTANCE: ExpenseDatabase? = null
+        private var instance: ExpenseDatabase? = null
 
         fun getInstance(context: Context): ExpenseDatabase {
+
+            instance?.let { return it }
+
             synchronized(this) {
-                return INSTANCE ?: Room.databaseBuilder(
+                instance?.let { return it }
+
+                return Room.databaseBuilder(
                     context.applicationContext,
                     ExpenseDatabase::class.java,
                     "expense_db"
                 ).build().also {
-                    INSTANCE = it
+                    instance = it
                 }
             }
         }

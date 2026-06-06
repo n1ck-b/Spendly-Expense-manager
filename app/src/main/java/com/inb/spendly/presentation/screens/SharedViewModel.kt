@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SharedViewModel: ViewModel() {
+@Singleton
+class SharedViewModel @Inject constructor(): ViewModel() {
 
     private val _selectedDateRange = MutableStateFlow("Today")
     val selectedDateRange = _selectedDateRange.asStateFlow()

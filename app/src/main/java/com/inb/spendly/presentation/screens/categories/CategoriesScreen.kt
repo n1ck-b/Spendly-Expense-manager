@@ -34,20 +34,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.inb.spendly.R
-import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
-import com.inb.spendly.presentation.screens.expenses.ActionDialog
-import com.inb.spendly.presentation.screens.expenses.DateDropDown
+import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
+import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.screens.SharedViewModel
+import com.inb.spendly.presentation.screens.expenses.DateDropDown
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 @Composable
 fun CategoriesScreen(
     paddingValues: PaddingValues,
-    categoryViewModel: CategoryViewModel,
+    categoryViewModel: CategoryViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel
 ) {
 
@@ -56,6 +56,8 @@ fun CategoriesScreen(
     val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
 
     val showActionDialog = remember { mutableStateOf(false) }
+
+    val showAddingCategoryDialog = sharedViewModel.showCategoryDialog
 
     Column(
         modifier = Modifier
@@ -95,6 +97,12 @@ fun CategoriesScreen(
             onDeleteButtonClicked = {
                 categoryViewModel.deleteCategory()
                 showActionDialog.value = false
+            }
+        )
+        AddingCategoryDialog(
+            showDialog = showAddingCategoryDialog.value,
+            onDismissRequest = {
+                sharedViewModel.updateShowCategoryDialog(false)
             }
         )
     }

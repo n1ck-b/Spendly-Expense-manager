@@ -21,6 +21,7 @@ import com.inb.spendly.domain.useCases.expenses.GetExpensesWithCategoriesUseCase
 import com.inb.spendly.presentation.FilterType
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.screens.UiEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,9 +34,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ExpenseViewModel(
+@HiltViewModel
+class ExpenseViewModel @Inject constructor(
     private val getExpensesWithCategoriesUseCase: GetExpensesWithCategoriesUseCase,
     private val addExpenseUseCase: AddExpenseUseCase,
     private val getExpenseWithCategoryUseCase: GetExpenseWithCategoryUseCase,

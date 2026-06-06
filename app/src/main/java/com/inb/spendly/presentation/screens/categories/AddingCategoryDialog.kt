@@ -1,4 +1,4 @@
-package com.inb.spendly.presentation.components
+package com.inb.spendly.presentation.screens.categories
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,13 +11,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.inb.spendly.presentation.screens.categories.CategoryViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.inb.spendly.presentation.screens.UiEvent
 
 @Composable
 fun AddingCategoryDialog(
     showDialog: Boolean,
-    categoryViewModel: CategoryViewModel,
+    categoryViewModel: CategoryViewModel = hiltViewModel(),
     onDismissRequest: () -> Unit
 ) {
     if(showDialog) {

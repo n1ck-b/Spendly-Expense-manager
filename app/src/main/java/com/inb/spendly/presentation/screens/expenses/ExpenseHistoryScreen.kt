@@ -16,13 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,25 +29,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.inb.spendly.R
+import com.inb.spendly.domain.entities.ExpenseWithCategory
+import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.components.DropDownMenu
 import com.inb.spendly.presentation.screens.SharedViewModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
-import androidx.compose.ui.platform.LocalLocale
-import com.inb.spendly.R
-import com.inb.spendly.domain.entities.ExpenseWithCategory
 
 @Composable
 fun ExpenseHistoryScreen(
     paddingValues: PaddingValues,
-    viewModel: ExpenseViewModel,
+    viewModel: ExpenseViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel
 ) {
 
@@ -58,6 +57,9 @@ fun ExpenseHistoryScreen(
     val expensesWithCategories by viewModel.expensesList.collectAsState()
 
     val showActionDialog = remember { mutableStateOf(false) }
+
+
+    val showAddingExpenseDialog = sharedViewModel.showExpenseDialog
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -96,6 +98,12 @@ fun ExpenseHistoryScreen(
             onDeleteButtonClicked = {
                 viewModel.deleteExpense()
                 showActionDialog.value = false
+            }
+        )
+        AddingExpenseDialog(
+            showAddingExpenseDialog.value,
+            onDismissRequest = {
+                sharedViewModel.updateShowExpenseDialog(false)
             }
         )
     }
@@ -285,93 +293,6 @@ fun ExpenseListItem(
                         .setScale(2, RoundingMode.HALF_UP)
                 } Br"
             )
-        }
-    }
-}
-
-@Composable
-fun ActionDialog(
-    showDialog: Boolean,
-    onDismissRequest: () -> Unit,
-    onDeleteButtonClicked: () -> Unit,
-    onEditButtonClicked: () -> Unit
-) {
-    if (showDialog) {
-        Dialog(
-            onDismissRequest = {
-                onDismissRequest()
-            }
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(7.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(30.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(bottom = 10.dp),
-                        text = stringResource(R.string.choose_action_update_delete),
-                        style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center
-                    )
-                    TextButton(
-                        onClick = onEditButtonClicked
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(35.dp),
-                                painter = painterResource(R.drawable.outline_edit_square_24),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                            Text(
-                                text = stringResource(R.string.edit_button),
-                                color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                    TextButton(
-                        onClick = onDeleteButtonClicked
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(35.dp),
-                                painter = painterResource(R.drawable.outline_delete_24),
-                                contentDescription = null,
-                                tint = Color(0xFFC02929)
-                            )
-                            Text(
-                                text = stringResource(R.string.delete_button),
-                                color = Color(0xFFC02929),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }

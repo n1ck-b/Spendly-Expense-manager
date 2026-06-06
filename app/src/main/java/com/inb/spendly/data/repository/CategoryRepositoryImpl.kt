@@ -13,8 +13,9 @@ import com.inb.spendly.domain.ExpenseRepository
 import com.inb.spendly.presentation.ui.theme.DefaultIconColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class CategoryRepositoryImpl(
+class CategoryRepositoryImpl @Inject constructor(
     private val categoryDao: CategoryDao,
     private val expenseRepository: ExpenseRepository
 ): CategoryRepository {

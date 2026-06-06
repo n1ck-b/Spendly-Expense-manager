@@ -3,8 +3,9 @@ package com.inb.spendly.domain.useCases.categories
 import com.inb.spendly.domain.CategoryRepository
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetExpensesByCategoriesUseCase(
+class GetExpensesByCategoriesUseCase @Inject constructor (
     val repository: CategoryRepository
 ) {
 

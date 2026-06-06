@@ -1,4 +1,4 @@
-package com.inb.spendly.presentation.components
+package com.inb.spendly.presentation.screens.expenses
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,15 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.inb.spendly.R
 import com.inb.spendly.domain.Utils.hasInternetConnection
-import com.inb.spendly.presentation.screens.expenses.ExpenseViewModel
 import com.inb.spendly.presentation.screens.UiEvent
 
 @Composable
 fun AddingExpenseDialog(
     showDialog: Boolean,
-    expenseViewModel: ExpenseViewModel,
+    expenseViewModel: ExpenseViewModel = hiltViewModel(),
     onDismissRequest: () -> Unit
 ) {
     if(showDialog) {

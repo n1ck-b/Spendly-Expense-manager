@@ -1,4 +1,4 @@
-package com.inb.spendly.presentation.components
+package com.inb.spendly.presentation.screens.categories
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -48,9 +48,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.inb.spendly.R
+import com.inb.spendly.presentation.screens.expenses.CancelSaveButtons
 import com.inb.spendly.presentation.ui.theme.CategoryColors
 import com.inb.spendly.presentation.ui.theme.CategoryIcons
-import com.inb.spendly.presentation.screens.categories.CategoryViewModel
 import com.inb.spendly.presentation.screens.UiEvent
 
 @Composable

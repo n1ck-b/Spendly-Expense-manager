@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
@@ -44,7 +45,7 @@ import java.math.RoundingMode
 @Composable
 fun StatisticsScreen(
     paddingValues: PaddingValues,
-    categoryViewModel: CategoryViewModel,
+    categoryViewModel: CategoryViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel
 ) {
 
