@@ -3,9 +3,8 @@ package com.inb.spendly.data.repository
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.inb.spendly.data.models.Category
-import com.inb.spendly.data.models.Expense
-import com.inb.spendly.data.models.CategoryWithFilteredExpenses
+import com.inb.spendly.data.models.CategoryDbModel
+import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,20 +26,17 @@ interface CategoryDao {
             Flow<List<CategoryWithFilteredExpenses>>
 
     @Query("SELECT * FROM categories")
-    fun getAllCategories(): Flow<List<Category>>
+    fun getAllCategories(): Flow<List<CategoryDbModel>>
 
     @Query("SELECT * FROM categories WHERE name = :name")
-    suspend fun getCategoryByName(name: String): Category?
+    suspend fun getCategoryByName(name: String): CategoryDbModel?
 
     @Upsert
-    suspend fun upsertCategory(category: Category)
+    suspend fun upsertCategory(category: CategoryDbModel)
 
     @Query("SELECT * FROM categories WHERE id = :categoryId")
-    suspend fun getCategoryById(categoryId: Long): Category
+    suspend fun getCategoryById(categoryId: Long): CategoryDbModel
 
     @Query("DELETE FROM categories WHERE id = :categoryId")
     suspend fun deleteCategoryById(categoryId: Long)
-
-    @Query("SELECT * FROM expenses WHERE categoryId = :categoryId")
-    suspend fun getAllExpensesForCategory(categoryId: Long): List<Expense>
 }

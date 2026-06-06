@@ -8,11 +8,11 @@ import java.util.Date
 
 @Entity(tableName = "expenses")
 @TypeConverters(ExpenseConverter::class)
-data class Expense(
+data class ExpenseDbModel(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     var amount: Float,
-    var date: Date,
+    var date: Long,
     var categoryId: Long,
     var note: String?,
 )

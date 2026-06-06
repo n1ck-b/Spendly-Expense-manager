@@ -37,15 +37,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.inb.spendly.R
-import com.inb.spendly.data.models.relations.ExpenseWithCategory
 import com.inb.spendly.presentation.components.DropDownMenu
 import com.inb.spendly.presentation.screens.SharedViewModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
-import java.util.Locale
 import androidx.compose.ui.platform.LocalLocale
+import com.inb.spendly.R
+import com.inb.spendly.domain.entities.ExpenseWithCategory
 
 @Composable
 fun ExpenseHistoryScreen(
@@ -75,7 +74,8 @@ fun ExpenseHistoryScreen(
     ) {
         ExpenseHistoryScreenHeader()
         DateDropDown(sharedViewModel, selectedDateRange.collectAsState().value)
-        ExpenseAmountTile(expensesWithCategories.sumOf { it.expense.amount.toDouble() }.toFloat())
+        ExpenseAmountTile(expensesWithCategories
+            .sumOf { it.expense.amount.toDouble() }.toFloat())
         ExpenseList(
             expensesWithCategories,
             onLongItemClick = {
@@ -161,8 +161,10 @@ fun ExpenseAmountTile(sumForSelectedPeriod: Float) {
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "${BigDecimal(sumForSelectedPeriod.toDouble())
-                        .setScale(2, RoundingMode.HALF_UP)} Br",
+                    text = "${
+                        BigDecimal(sumForSelectedPeriod.toDouble())
+                            .setScale(2, RoundingMode.HALF_UP)
+                    } Br",
                     style = MaterialTheme.typography.titleLarge
                 )
             }
@@ -179,7 +181,7 @@ fun ExpenseList(
         verticalArrangement = Arrangement.spacedBy(15.dp),
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp)
     ) {
-        if(expensesWithCategory.isEmpty()) {
+        if (expensesWithCategory.isEmpty()) {
             item {
                 NoExpensesFound()
             }
@@ -246,7 +248,7 @@ fun ExpenseListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
@@ -269,7 +271,7 @@ fun ExpenseListItem(
                     Spacer(modifier = Modifier.size(7.dp))
                     Row {
                         Spacer(modifier = Modifier.width(40.dp))
-                        if(item.expense.note != null && item.expense.note != "") {
+                        if (item.expense.note != null && item.expense.note != "") {
                             Text(
                                 text = item.expense.note!!
                             )
@@ -278,8 +280,10 @@ fun ExpenseListItem(
                 }
             }
             Text(
-                text = "-${BigDecimal(item.expense.amount.toDouble())
-                    .setScale(2, RoundingMode.HALF_UP)} Br"
+                text = "-${
+                    BigDecimal(item.expense.amount.toDouble())
+                        .setScale(2, RoundingMode.HALF_UP)
+                } Br"
             )
         }
     }
@@ -292,7 +296,7 @@ fun ActionDialog(
     onDeleteButtonClicked: () -> Unit,
     onEditButtonClicked: () -> Unit
 ) {
-    if(showDialog) {
+    if (showDialog) {
         Dialog(
             onDismissRequest = {
                 onDismissRequest()

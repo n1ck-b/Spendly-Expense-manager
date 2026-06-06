@@ -17,7 +17,6 @@ import com.inb.spendly.presentation.screens.SharedViewModel
 fun NavGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
-    expenseDatabase: ExpenseDatabase,
     sharedViewModel: SharedViewModel,
     expenseViewModel: ExpenseViewModel,
     categoryViewModel: CategoryViewModel

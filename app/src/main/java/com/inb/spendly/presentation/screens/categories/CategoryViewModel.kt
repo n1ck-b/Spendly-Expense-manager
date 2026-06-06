@@ -5,10 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inb.spendly.R
-import com.inb.spendly.data.models.Category
-import com.inb.spendly.data.repository.CategoryDao
-import com.inb.spendly.data.repository.ExpenseDao
+import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.domain.Utils.getTimestampForEndOfThisMonth
 import com.inb.spendly.domain.Utils.getTimestampForEndOfThisWeek
 import com.inb.spendly.domain.Utils.getTimestampForEndOfThisYear
@@ -17,8 +14,12 @@ import com.inb.spendly.domain.Utils.getTimestampForStartOfThisMonth
 import com.inb.spendly.domain.Utils.getTimestampForStartOfThisWeek
 import com.inb.spendly.domain.Utils.getTimestampForStartOfThisYear
 import com.inb.spendly.domain.Utils.getTimestampForStartOfToday
+import com.inb.spendly.domain.useCases.categories.AddCategoryUseCase
+import com.inb.spendly.domain.useCases.categories.DeleteCategoryUseCase
+import com.inb.spendly.domain.useCases.categories.ExistsCategoryByNameUseCase
+import com.inb.spendly.domain.useCases.categories.GetCategoryByIdUseCase
+import com.inb.spendly.domain.useCases.categories.GetExpensesByCategoriesUseCase
 import com.inb.spendly.presentation.FilterType
-import com.inb.spendly.presentation.ui.theme.DefaultIconColor
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.screens.UiEvent
 import kotlinx.coroutines.Dispatchers
@@ -35,35 +36,41 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CategoryViewModel(
-    private val categoryDao: CategoryDao,
-    private val expenseDao: ExpenseDao,
+    private val addCategoryUseCase: AddCategoryUseCase,
+    private val deleteCategoryUseCase: DeleteCategoryUseCase,
+    private val getExpensesByCategoriesUseCase: GetExpensesByCategoriesUseCase,
+    private val existsCategoryByNameUseCase: ExistsCategoryByNameUseCase,
+    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
     private val sharedViewModel: SharedViewModel
-): ViewModel() {
+) : ViewModel() {
 
     private val selectedDateFilter = sharedViewModel.selectedFilterType
 
     val categoriesList = selectedDateFilter
         .flatMapLatest { filterType ->
-            when(filterType) {
+            when (filterType) {
                 FilterType.TODAY -> {
                     val startDate = getTimestampForStartOfToday()
                     val endDate = getTimestampForEndOfToday()
-                    categoryDao.getAllCategoriesWithExpensesForSelectedRange(startDate, endDate)
+                    getExpensesByCategoriesUseCase(startDate, endDate)
                 }
+
                 FilterType.THIS_WEEK -> {
                     val startDate = getTimestampForStartOfThisWeek()
                     val endDate = getTimestampForEndOfThisWeek()
-                    categoryDao.getAllCategoriesWithExpensesForSelectedRange(startDate, endDate)
+                    getExpensesByCategoriesUseCase(startDate, endDate)
                 }
+
                 FilterType.THIS_MONTH -> {
                     val startDate = getTimestampForStartOfThisMonth()
                     val endDate = getTimestampForEndOfThisMonth()
-                    categoryDao.getAllCategoriesWithExpensesForSelectedRange(startDate, endDate)
+                    getExpensesByCategoriesUseCase(startDate, endDate)
                 }
+
                 FilterType.THIS_YEAR -> {
                     val startDate = getTimestampForStartOfThisYear()
                     val endDate = getTimestampForEndOfThisYear()
-                    categoryDao.getAllCategoriesWithExpensesForSelectedRange(startDate, endDate)
+                    getExpensesByCategoriesUseCase(startDate, endDate)
                 }
             }
         }.stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(), emptyList())
@@ -77,25 +84,31 @@ class CategoryViewModel(
     private var selectedFromListCategoryId = mutableLongStateOf(0)
 
     fun updateCategoryName(newName: String) {
-        _state.update { it.copy(
-            name = newName
-        ) }
+        _state.update {
+            it.copy(
+                name = newName
+            )
+        }
     }
 
     fun updateCategoryColor(newColor: Color) {
-        _state.update { it.copy(
-            color = newColor
-        ) }
+        _state.update {
+            it.copy(
+                color = newColor
+            )
+        }
     }
 
     fun updateCategoryIconId(newIconId: Int) {
-        _state.update { it.copy(
-            iconId = newIconId
-        ) }
+        _state.update {
+            it.copy(
+                iconId = newIconId
+            )
+        }
     }
 
     fun saveCategory() {
-        if(_state.value.name.isEmpty() || _state.value.name.isBlank()) {
+        if (_state.value.name.isBlank()) {
             viewModelScope.launch {
                 _events.emit(UiEvent.ShowToastNotAllFieldsFilled)
             }
@@ -104,19 +117,18 @@ class CategoryViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            val existingCategory = categoryDao.getCategoryByName(_state.value.name)
+            val categoryExists = existsCategoryByNameUseCase(_state.value.name)
 
-            if(existingCategory != null && _state.value.id == 0L) {
+            if (categoryExists && _state.value.id == 0L) {
                 _events.emit(UiEvent.ShowToastCategoryAlreadyExists)
-            }
-            else {
+            } else {
                 val newCategory = Category(
                     id = _state.value.id,
                     name = _state.value.name,
                     color = _state.value.color.toArgb(),
                     iconId = _state.value.iconId
                 )
-                categoryDao.upsertCategory(newCategory)
+                addCategoryUseCase(newCategory)
                 resetValues()
                 _events.emit(UiEvent.CloseDialog)
             }
@@ -125,7 +137,8 @@ class CategoryViewModel(
 
     fun updateState() {
         viewModelScope.launch(Dispatchers.IO) {
-            val category = categoryDao.getCategoryById(selectedFromListCategoryId.longValue)
+            val category = getCategoryByIdUseCase(
+                selectedFromListCategoryId.longValue)
             _state.value = CategoryState(
                 id = category.id,
                 name = category.name,
@@ -135,28 +148,9 @@ class CategoryViewModel(
         }
     }
 
-    fun deleteCategory(withoutCategoryName: String) {
+    fun deleteCategory() {
         viewModelScope.launch(Dispatchers.IO) {
-            val expensesForCategory = categoryDao
-                .getAllExpensesForCategory(selectedFromListCategoryId.longValue)
-            if(expensesForCategory.isNotEmpty()) {
-                if(categoryDao.getCategoryByName(withoutCategoryName) == null) {
-                    val withoutCategory = Category(
-                        name = withoutCategoryName,
-                        color = DefaultIconColor.toArgb(),
-                        iconId = R.drawable.outline_image_24
-                    )
-                    categoryDao.upsertCategory(withoutCategory)
-                }
-                val withoutCategory = categoryDao.getCategoryByName(withoutCategoryName)
-                expensesForCategory.forEach { expense ->
-                    expense.categoryId = withoutCategory!!.id
-                }
-                expensesForCategory.forEach {
-                    expenseDao.upsertExpense(it)
-                }
-            }
-            categoryDao.deleteCategoryById(selectedFromListCategoryId.longValue)
+            deleteCategoryUseCase(selectedFromListCategoryId.longValue)
         }
     }
 

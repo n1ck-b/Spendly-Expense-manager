@@ -6,6 +6,8 @@ class Constants {
 
     companion object {
         const val BASE_URL = "https://v6.exchangerate-api.com/v6/${BuildConfig.API_KEY}/"
+
+        const val NO_CATEGORY = "No category"
     }
 
 }

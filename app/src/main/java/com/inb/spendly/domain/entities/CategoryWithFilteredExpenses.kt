@@ -1,4 +1,4 @@
-package com.inb.spendly.data.models
+package com.inb.spendly.domain.entities
 
 data class CategoryWithFilteredExpenses(
     val categoryId: Long,

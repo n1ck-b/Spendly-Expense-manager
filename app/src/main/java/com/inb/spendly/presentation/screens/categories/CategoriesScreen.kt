@@ -34,8 +34,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.inb.spendly.R
-import com.inb.spendly.data.models.CategoryWithFilteredExpenses
+import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
+import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.presentation.screens.expenses.ActionDialog
 import com.inb.spendly.presentation.screens.expenses.DateDropDown
 import com.inb.spendly.presentation.screens.SharedViewModel
@@ -54,8 +56,6 @@ fun CategoriesScreen(
     val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
 
     val showActionDialog = remember { mutableStateOf(false) }
-
-    val withoutCategoryString = stringResource(R.string.without_category)
 
     Column(
         modifier = Modifier
@@ -93,7 +93,7 @@ fun CategoriesScreen(
                 showActionDialog.value = false
             },
             onDeleteButtonClicked = {
-                categoryViewModel.deleteCategory(withoutCategoryString)
+                categoryViewModel.deleteCategory()
                 showActionDialog.value = false
             }
         )
@@ -161,6 +161,7 @@ fun CategoriesGridItem(
     item: CategoryWithFilteredExpenses,
     onLongItemClick: (Long) -> Unit
 ) {
+    val withoutCategory = stringResource(R.string.without_category)
 
     OutlinedCard(
         modifier = Modifier
@@ -190,7 +191,8 @@ fun CategoriesGridItem(
             Spacer(modifier = Modifier.size(10.dp))
             Column {
                 Text(
-                    text = item.categoryName,
+                    text = if (item.categoryName == NO_CATEGORY) withoutCategory
+                        else item.categoryName,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

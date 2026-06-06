@@ -5,12 +5,11 @@ import androidx.room.Relation
 import com.inb.spendly.data.models.CategoryDbModel
 import com.inb.spendly.data.models.ExpenseDbModel
 
-data class CategoryWithExpenses(
-    @Embedded
-    val category: CategoryDbModel,
+data class ExpenseWithCategoryDbModel(
+    @Embedded val expenseDbModel: ExpenseDbModel,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "categoryId"
+        parentColumn = "categoryId",
+        entityColumn = "id"
     )
-    val expenses: List<ExpenseDbModel>
+    val categoryDbModel: CategoryDbModel
 )

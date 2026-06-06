@@ -4,15 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.inb.spendly.data.models.Category
-import com.inb.spendly.data.models.Expense
+import com.inb.spendly.data.models.CategoryDbModel
+import com.inb.spendly.data.models.ExpenseDbModel
 
 @Database(
     entities = [
-        Expense::class,
-        Category::class
+        ExpenseDbModel::class,
+        CategoryDbModel::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false,
 )
 abstract class ExpenseDatabase() : RoomDatabase() {

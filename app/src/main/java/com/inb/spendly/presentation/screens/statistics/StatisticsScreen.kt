@@ -34,7 +34,7 @@ import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
-import com.inb.spendly.data.models.CategoryWithFilteredExpenses
+import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.screens.categories.CategoryViewModel
 import com.inb.spendly.presentation.screens.expenses.DateDropDown
 import com.inb.spendly.presentation.screens.SharedViewModel

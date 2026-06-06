@@ -3,14 +3,14 @@ package com.inb.spendly.data.repository
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.inb.spendly.data.models.Expense
-import com.inb.spendly.data.models.relations.ExpenseWithCategory
+import com.inb.spendly.data.models.ExpenseDbModel
+import com.inb.spendly.data.models.relations.ExpenseWithCategoryDbModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExpenseDao {
     @Upsert
-    suspend fun upsertExpense(expense: Expense)
+    suspend fun upsertExpense(expenseDbModel: ExpenseDbModel)
 
     @Query(
         "SELECT *" +
@@ -19,7 +19,7 @@ interface ExpenseDao {
         "ORDER BY expenses.date DESC"
     )
     fun getAllExpensesWithCategoriesForSelectedRange(startDate: Long, endDate: Long):
-            Flow<List<ExpenseWithCategory>>
+            Flow<List<ExpenseWithCategoryDbModel>>
 
     @Query(
         "SELECT *" +
@@ -27,8 +27,11 @@ interface ExpenseDao {
         "WHERE expenses.id = :expenseId " +
         "ORDER BY expenses.date DESC"
     )
-    fun getExpenseWithCategoryById(expenseId: Long): Flow<ExpenseWithCategory>
+    fun getExpenseWithCategoryById(expenseId: Long): Flow<ExpenseWithCategoryDbModel>
 
     @Query("DELETE FROM expenses WHERE id = :expenseId")
     suspend fun deleteExpense(expenseId: Long)
+
+    @Query("SELECT * FROM expenses WHERE categoryId = :categoryId")
+    suspend fun getExpensesForCategory(categoryId: Long): List<ExpenseDbModel>
 }

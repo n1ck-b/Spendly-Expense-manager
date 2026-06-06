@@ -8,12 +8,3 @@ data class ExchangeRates (
     @SerializedName("conversion_rates")
     val conversionRates: Map<String, Double>
 )
-
-data class ConversionRate (
-    val USD: Float,
-    val BYN: Float,
-    val EUR: Float,
-    val CNY: Float,
-    val GBP: Float,
-    val PLN: Float
-)

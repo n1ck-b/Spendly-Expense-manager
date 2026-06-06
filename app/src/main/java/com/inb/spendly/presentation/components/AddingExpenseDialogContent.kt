@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -42,13 +43,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.inb.spendly.R
-import com.inb.spendly.data.models.Category
 import com.inb.spendly.data.models.Currencies
-import com.inb.spendly.presentation.screens.expenses.ExpenseViewModel
+import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.presentation.screens.UiEvent
+import com.inb.spendly.presentation.screens.expenses.ExpenseViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun AddingExpenseDialogContent(
@@ -88,7 +88,8 @@ fun AddingExpenseDialogContent(
 
     val formattedDate =
     if(expenseState.date != null)
-        SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(expenseState.date ?: Date())
+        SimpleDateFormat("dd.MM.yyyy", LocalLocale.current.platformLocale)
+            .format(expenseState.date ?: Date())
     else ""
 
     Column(
