@@ -9,5 +9,5 @@ data class CategoryDbModel(
     var id: Long = 0,
     var name: String,
     var color: Int,
-    var iconId: Int,
+    var iconId: String,
 )

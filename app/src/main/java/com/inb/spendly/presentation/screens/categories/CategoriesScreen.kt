@@ -41,6 +41,7 @@ import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.screens.expenses.DateDropDown
+import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -84,21 +85,22 @@ fun CategoriesScreen(
                 categoryViewModel.updateSelectedCategoryId(it)
             }
         )
-        ActionDialog(
-            showDialog = showActionDialog.value,
-            onDismissRequest = {
-                showActionDialog.value = false
-            },
-            onEditButtonClicked = {
-                sharedViewModel.updateShowCategoryDialog(true)
-                categoryViewModel.updateState()
-                showActionDialog.value = false
-            },
-            onDeleteButtonClicked = {
-                categoryViewModel.deleteCategory()
-                showActionDialog.value = false
-            }
-        )
+        if (showActionDialog.value) {
+            ActionDialog(
+                onDismissRequest = {
+                    showActionDialog.value = false
+                },
+                onEditButtonClicked = {
+                    sharedViewModel.updateShowCategoryDialog(true)
+                    categoryViewModel.updateState()
+                    showActionDialog.value = false
+                },
+                onDeleteButtonClicked = {
+                    categoryViewModel.deleteCategory()
+                    showActionDialog.value = false
+                }
+            )
+        }
         AddingCategoryDialog(
             showDialog = showAddingCategoryDialog.value,
             onDismissRequest = {
@@ -191,7 +193,7 @@ fun CategoriesGridItem(
             horizontalArrangement = Arrangement.Start
         ) {
             Icon(
-                painter = painterResource(item.categoryIconId),
+                imageVector = getIconByKey(item.categoryIconId),
                 contentDescription = null,
                 modifier = Modifier.size(30.dp),
                 tint = Color(item.categoryColor)

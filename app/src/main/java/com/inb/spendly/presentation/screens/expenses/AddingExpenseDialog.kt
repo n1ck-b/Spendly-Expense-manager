@@ -20,53 +20,41 @@ import com.inb.spendly.presentation.screens.UiEvent
 
 @Composable
 fun AddingExpenseDialog(
-    showDialog: Boolean,
     expenseViewModel: ExpenseViewModel = hiltViewModel(),
     onDismissRequest: () -> Unit
 ) {
-    if(showDialog) {
 
-        LaunchedEffect(Unit) {
-            expenseViewModel.events.collect { event ->
-                if (event == UiEvent.CloseDialog) onDismissRequest()
-            }
-        }
-        val context = LocalContext.current
+    val context = LocalContext.current.applicationContext
 
-        Dialog(
-            onDismissRequest = {
-                onDismissRequest()
-                expenseViewModel.resetValues()
-            }
+    Dialog(
+        onDismissRequest = onDismissRequest
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(7.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.background
+            )
         ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(7.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
-            ) {
-                AddingExpenseDialogContent(
-                    paddingValues = PaddingValues(30.dp),
-                    onCancelButtonClicked = {
-                        onDismissRequest()
-                        expenseViewModel.resetValues()
-                    },
-                    onSaveButtonClicked = {
-                        if(hasInternetConnection(context)) {
-                            expenseViewModel.saveExpense()
-                        }
-                        else
-                            Toast.makeText(
-                                context,
-                                R.string.no_internet_connection,
-                                Toast.LENGTH_LONG
-                            ).show()
-                    },
-                    viewModel = expenseViewModel
-                )
-            }
+            AddingExpenseDialogContent(
+                paddingValues = PaddingValues(30.dp),
+                onCancelButtonClicked = {
+                    onDismissRequest()
+                },
+                onSaveButtonClicked = {
+                    if (hasInternetConnection(context)) {
+                        expenseViewModel.processCommand(ExpenseCommand.SaveExpense)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            R.string.no_internet_connection,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                },
+                viewModel = expenseViewModel
+            )
         }
     }
 }

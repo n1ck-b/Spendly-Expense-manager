@@ -26,84 +26,81 @@ import com.inb.spendly.R
 
 @Composable
 fun ActionDialog(
-    showDialog: Boolean,
     onDismissRequest: () -> Unit,
     onDeleteButtonClicked: () -> Unit,
     onEditButtonClicked: () -> Unit
 ) {
-    if (showDialog) {
-        Dialog(
-            onDismissRequest = {
-                onDismissRequest()
-            }
+    Dialog(
+        onDismissRequest = {
+            onDismissRequest()
+        }
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(7.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.background
+            )
         ) {
-            Card(
+            Column(
                 modifier = Modifier
+                    .padding(30.dp)
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(7.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                Column(
+                Text(
                     modifier = Modifier
-                        .padding(30.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                        .padding(bottom = 10.dp),
+                    text = stringResource(R.string.choose_action_update_delete),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center
+                )
+                TextButton(
+                    onClick = onEditButtonClicked
                 ) {
-                    Text(
+                    Row(
                         modifier = Modifier
-                            .padding(bottom = 10.dp),
-                        text = stringResource(R.string.choose_action_update_delete),
-                        style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center
-                    )
-                    TextButton(
-                        onClick = onEditButtonClicked
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
+                        Icon(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(35.dp),
-                                painter = painterResource(R.drawable.outline_edit_square_24),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                            Text(
-                                text = stringResource(R.string.edit_button),
-                                color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
+                                .size(35.dp),
+                            painter = painterResource(R.drawable.outline_edit_square_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = stringResource(R.string.edit_button),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
-                    TextButton(
-                        onClick = onDeleteButtonClicked
+                }
+                TextButton(
+                    onClick = onDeleteButtonClicked
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
+                        Icon(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(35.dp),
-                                painter = painterResource(R.drawable.outline_delete_24),
-                                contentDescription = null,
-                                tint = Color(0xFFC02929)
-                            )
-                            Text(
-                                text = stringResource(R.string.delete_button),
-                                color = Color(0xFFC02929),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
+                                .size(35.dp),
+                            painter = painterResource(R.drawable.outline_delete_24),
+                            contentDescription = null,
+                            tint = Color(0xFFC02929)
+                        )
+                        Text(
+                            text = stringResource(R.string.delete_button),
+                            color = Color(0xFFC02929),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
                 }
             }

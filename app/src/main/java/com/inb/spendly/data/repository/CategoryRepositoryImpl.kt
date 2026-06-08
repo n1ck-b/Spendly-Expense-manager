@@ -10,6 +10,7 @@ import com.inb.spendly.domain.CategoryRepository
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.ExpenseRepository
+import com.inb.spendly.presentation.ui.theme.CategoryIcons
 import com.inb.spendly.presentation.ui.theme.DefaultIconColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,7 +35,7 @@ class CategoryRepositoryImpl @Inject constructor(
                 withoutCategory = Category(
                     name = NO_CATEGORY,
                     color = DefaultIconColor.toArgb(),
-                    iconId = R.drawable.outline_image_24
+                    iconId = CategoryIcons.DEFAULT_ICON_KEY
                 )
                 addCategory(withoutCategory)
             }

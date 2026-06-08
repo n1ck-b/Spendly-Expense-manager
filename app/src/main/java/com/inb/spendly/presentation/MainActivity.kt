@@ -59,10 +59,6 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     floatingActionButton = {
                         when (currentDestination?.route?.let { Class.forName(it) }) {
-                            ExpenseHistoryScreenRoute::class.java -> FloatingActionButtonAdd {
-                                sharedViewModel.updateShowExpenseDialog(true)
-                            }
-
                             CategoriesScreenRoute::class.java -> FloatingActionButtonAdd {
                                 sharedViewModel.updateShowCategoryDialog(true)
                             }
@@ -77,7 +73,8 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         paddingValues = padding,
-                        sharedViewModel = sharedViewModel
+                        sharedViewModel = sharedViewModel,
+                        bottomNavBarItems = bottomNavBarItems
                     )
                 }
             }

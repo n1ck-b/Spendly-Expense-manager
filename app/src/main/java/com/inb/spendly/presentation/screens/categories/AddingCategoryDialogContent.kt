@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -204,7 +206,7 @@ fun CategoryNameTextField(
 
 @Composable
 fun ChoosingIconCard(
-    selectedIcon: Int,
+    selectedIcon: String,
     selectedColor: Color,
     onClick: () -> Unit
 ) {
@@ -230,7 +232,7 @@ fun ChoosingIconCard(
                 style = MaterialTheme.typography.bodyLarge,
             )
             Icon(
-                painter = painterResource(selectedIcon),
+                imageVector = CategoryIcons.getIconByKey(selectedIcon),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp),
@@ -284,9 +286,9 @@ fun ChoosingIconColorCard(
 @Composable
 fun IconsListDialog(
     onDismissRequest: () -> Unit,
-    categoryIcons: List<Int>,
+    categoryIcons: List<CategoryIcons.CategoryIconItem>,
     showIconDialog: MutableState<Boolean>,
-    onItemClicked: (Int) -> Unit
+    onItemClicked: (String) -> Unit
 ) {
     if(showIconDialog.value) {
         Dialog(
@@ -311,12 +313,12 @@ fun IconsListDialog(
                     horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
                     verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
-                    items(categoryIcons) { icon ->
+                    items(categoryIcons) { currentIcon ->
                         OutlinedCard (
                             modifier = Modifier
                                 .fillMaxWidth(),
                             shape = RoundedCornerShape(7.dp),
-                            onClick = { onItemClicked(icon) },
+                            onClick = { onItemClicked(currentIcon.key) },
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surface
                             ),
@@ -329,7 +331,7 @@ fun IconsListDialog(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    painter = painterResource(icon),
+                                    imageVector = currentIcon.icon,
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(40.dp),
@@ -376,7 +378,7 @@ fun ColorsListDialog(
                     items(colors) { color ->
                         Box(
                             modifier = Modifier
-                                .size(40.dp)
+                                .aspectRatio(1f)
                                 .clip(RoundedCornerShape(7.dp))
                                 .background(color)
                                 .clickable { onItemClicked(color) }

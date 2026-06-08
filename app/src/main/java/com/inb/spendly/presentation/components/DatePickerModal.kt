@@ -15,7 +15,10 @@ import com.inb.spendly.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerModal(onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit) {
+fun DatePickerModal(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
 
     val datePickerState = rememberDatePickerState()
 

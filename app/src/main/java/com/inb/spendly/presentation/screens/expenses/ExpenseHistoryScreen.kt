@@ -20,12 +20,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,76 +34,114 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.ExpenseWithCategory
 import com.inb.spendly.presentation.components.ActionDialog
+import com.inb.spendly.presentation.components.BottomNavBarItem
+import com.inb.spendly.presentation.components.BottomNavigationBar
 import com.inb.spendly.presentation.components.DropDownMenu
+import com.inb.spendly.presentation.components.FloatingActionButtonAdd
 import com.inb.spendly.presentation.screens.SharedViewModel
+import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
 
 @Composable
 fun ExpenseHistoryScreen(
-    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
     viewModel: ExpenseViewModel = hiltViewModel(),
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    navController: NavHostController,
+    bottomNavBarItems: List<BottomNavBarItem>
 ) {
+
+    val state = viewModel.state.collectAsState()
 
     val selectedDateRange = sharedViewModel.selectedDateRange
 
-    val expensesWithCategories by viewModel.expensesList.collectAsState()
-
-    val showActionDialog = remember { mutableStateOf(false) }
-
-
-    val showAddingExpenseDialog = sharedViewModel.showExpenseDialog
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(
-                top = paddingValues.calculateTopPadding() + 20.dp,
-                bottom = paddingValues.calculateBottomPadding(),
-                start = 40.dp,
-                end = 40.dp
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButtonAdd(
+                onClick = {
+                    viewModel.processCommand(ExpenseCommand.AddExpense)
+                }
             )
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        ExpenseHistoryScreenHeader()
-        DateDropDown(sharedViewModel, selectedDateRange.collectAsState().value)
-        ExpenseAmountTile(expensesWithCategories
-            .sumOf { it.expense.amount.toDouble() }.toFloat())
-        ExpenseList(
-            expensesWithCategories,
-            onLongItemClick = {
-                showActionDialog.value = true
-                viewModel.updateSelectedExpenseId(it)
+        },
+        bottomBar = {
+            BottomNavigationBar(navController, bottomNavBarItems)
+        }
+    ) { paddingValues ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .padding(
+                    top = paddingValues.calculateTopPadding() + 20.dp,
+                    bottom = paddingValues.calculateBottomPadding(),
+                    start = 40.dp,
+                    end = 40.dp
+                )
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            ExpenseHistoryScreenHeader()
+            DateDropDown(sharedViewModel, selectedDateRange.collectAsState().value)
+
+            when (val currentState = state.value) {
+                is ExpenseState.Loaded -> {
+
+                    ExpenseAmountTile(
+                        currentState.expenses
+                            .sumOf { it.expense.amount.toDouble() }.toFloat()
+                    )
+                    ExpenseList(
+                        currentState.expenses,
+                        onLongItemClick = {
+                            viewModel.processCommand(ExpenseCommand.SelectAction(it))
+                        }
+                    )
+
+                    when (currentState.dialogState) {
+
+                        is ExpenseDialogState.AddingExpense -> {
+                            AddingExpenseDialog(
+                                onDismissRequest = {
+                                    viewModel.processCommand(ExpenseCommand.ReturnToList)
+                                }
+                            )
+                        }
+
+                        ExpenseDialogState.Closed -> {}
+
+                        is ExpenseDialogState.SelectingAction -> {
+                            ActionDialog(
+                                onDismissRequest = {
+                                    viewModel.processCommand(ExpenseCommand.ReturnToList)
+                                },
+                                onEditButtonClicked = {
+                                    viewModel.processCommand(ExpenseCommand.EditExpense)
+                                },
+                                onDeleteButtonClicked = {
+                                    viewModel.processCommand(
+                                        ExpenseCommand.DeleteExpense(
+                                            currentState.dialogState.expenseId
+                                        )
+                                    )
+                                    viewModel.processCommand(ExpenseCommand.ReturnToList)
+                                }
+                            )
+                        }
+
+                    }
+                }
+
+                ExpenseState.Loading -> {
+                    // TODO
+                }
             }
-        )
-        ActionDialog(
-            showDialog = showActionDialog.value,
-            onDismissRequest = {
-                showActionDialog.value = false
-            },
-            onEditButtonClicked = {
-                sharedViewModel.updateShowExpenseDialog(true)
-                viewModel.updateState()
-                showActionDialog.value = false
-            },
-            onDeleteButtonClicked = {
-                viewModel.deleteExpense()
-                showActionDialog.value = false
-            }
-        )
-        AddingExpenseDialog(
-            showAddingExpenseDialog.value,
-            onDismissRequest = {
-                sharedViewModel.updateShowExpenseDialog(false)
-            }
-        )
+        }
     }
 }
 
@@ -260,7 +296,7 @@ fun ExpenseListItem(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(item.category.iconId),
+                            imageVector = getIconByKey(item.category.iconId),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color(item.category.color)

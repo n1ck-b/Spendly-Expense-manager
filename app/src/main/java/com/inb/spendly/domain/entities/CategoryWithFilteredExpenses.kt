@@ -4,6 +4,6 @@ data class CategoryWithFilteredExpenses(
     val categoryId: Long,
     val categoryName: String,
     val categoryColor: Int,
-    val categoryIconId: Int,
+    val categoryIconId: String,
     val expenseAmount: Float?
 )

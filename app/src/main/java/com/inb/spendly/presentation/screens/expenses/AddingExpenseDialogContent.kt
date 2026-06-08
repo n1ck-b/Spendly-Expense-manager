@@ -58,98 +58,123 @@ fun AddingExpenseDialogContent(
     onSaveButtonClicked: () -> Unit,
     viewModel: ExpenseViewModel
 ) {
+    val state = viewModel.state.collectAsState()
+    val currentState = state.value
 
-    val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
-
-    val errorGettingExchangeRatesWarning = stringResource(R.string.error_getting_exchange_rates)
-
-    val context = LocalContext.current
-
-    val showErrors = remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            if (event == UiEvent.ShowToastNotAllFieldsFilled) {
-                Toast.makeText(context, fillAllFieldsWarning, Toast.LENGTH_LONG).show()
-                showErrors.value = true
-            }
-            else if(event == UiEvent.ShowToastErrorGettingExchangeRates) {
-                Toast.makeText(context, errorGettingExchangeRatesWarning, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    val expenseState by viewModel.state.collectAsState()
-
-    val categories by viewModel.categoriesList.collectAsState(emptyList())
-
-    val selectedCurrency by viewModel.selectedCurrency
-
-    val showDatePicker = remember { mutableStateOf(false) }
-
-    val formattedDate =
-    if(expenseState.date != null)
-        SimpleDateFormat("dd.MM.yyyy", LocalLocale.current.platformLocale)
-            .format(expenseState.date ?: Date())
-    else ""
-
-    Column(
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+    if (currentState is ExpenseState.Loaded
+        && currentState.dialogState is ExpenseDialogState.AddingExpense
     ) {
-        AddingExpenseScreenHeader()
-        ExpenseCurrencyDropDown(
-            selectedCurrency = selectedCurrency,
-            onItemClick = {
-                viewModel.updateSelectedCurrency(it)
-            }
-        )
-        AmountTextField (
-            currentAmount = expenseState.amount,
-            onValueChanged = {
-                viewModel.updateExpenseAmount(it.toFloatOrNull() ?: 0f)
-            },
-            onClearIconClick = {
-                viewModel.updateExpenseAmount(0f)
-            },
-            showErrors = showErrors.value
-        )
-        DateTextField(
-            formattedDate,
-            showDatePicker,
-            onDateSelected = {
-                 viewModel.updateExpenseDate(it)
-                showDatePicker.value = false
-            },
-            onDismiss = {
-                showDatePicker.value = false
-            },
-            onClearIconClick = {
-                viewModel.updateExpenseDate(null)
-            },
-            showErrors = showErrors.value
-        )
-        NoteTextField(
-            currentNote = expenseState.note,
-            onValueChanged = {
-                viewModel.updateExpenseNote(it)
-            },
-            onClearIconClick = {
-                viewModel.updateExpenseNote(null)
-            }
-        )
-        ExpenseCategoryDropDown(
-            categories = categories,
-            onItemClick = {
-                viewModel.updateExpenseCategoryName(it)
-            },
-            selectedCategory = expenseState.categoryName ?: ""
-        )
-        CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
 
+        val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
+
+        val errorGettingExchangeRatesWarning = stringResource(R.string.error_getting_exchange_rates)
+
+        val context = LocalContext.current.applicationContext
+
+        val showErrors = remember { mutableStateOf(false) }
+
+        LaunchedEffect(Unit) {
+
+            viewModel.events.collect { event ->
+                if (event == UiEvent.ShowToastNotAllFieldsFilled) {
+                    Toast.makeText(
+                        context,
+                        fillAllFieldsWarning,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    showErrors.value = true
+                } else if (event == UiEvent.ShowToastErrorGettingExchangeRates) {
+                    Toast.makeText(
+                        context,
+                        errorGettingExchangeRatesWarning,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+        }
+
+        val showDatePicker = remember { mutableStateOf(false) }
+
+        val formattedDate =
+            if (currentState.dialogState.date != null)
+                SimpleDateFormat("dd.MM.yyyy", LocalLocale.current.platformLocale)
+                    .format(currentState.dialogState.date)
+            else ""
+
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            AddingExpenseScreenHeader()
+
+            ExpenseCurrencyDropDown(
+                selectedCurrency = currentState.dialogState.selectedCurrency,
+                onItemClick = {
+                    viewModel.processCommand(ExpenseCommand.InputSelectedCurrency(it))
+                }
+            )
+
+            AmountTextField(
+                currentAmount = currentState.dialogState.amount,
+                onValueChanged = {
+                    viewModel.processCommand(ExpenseCommand.InputAmount(it.toFloatOrNull() ?: 0f))
+                },
+                onClearIconClick = {
+                    viewModel.processCommand(ExpenseCommand.InputAmount(0f))
+                },
+                showErrors = showErrors.value
+            )
+
+            DateTextField(
+                formattedDate = formattedDate,
+                showDatePicker = showDatePicker,
+                onDateSelected = {
+                    viewModel.processCommand(ExpenseCommand.InputDate(it))
+                    showDatePicker.value = false
+                },
+                onDismiss = {
+                    showDatePicker.value = false
+                },
+                onClearIconClick = {
+                    viewModel.processCommand(
+                        ExpenseCommand.InputDate(System.currentTimeMillis())
+                    )
+                },
+                showErrors = showErrors.value
+            )
+
+            NoteTextField(
+                currentNote = currentState.dialogState.note,
+                onValueChanged = {
+                    viewModel.processCommand(
+                        ExpenseCommand.InputNote(it)
+                    )
+                },
+                onClearIconClick = {
+                    viewModel.processCommand(
+                        ExpenseCommand.InputNote(null)
+                    )
+                }
+            )
+
+            ExpenseCategoryDropDown(
+                categories = currentState.dialogState.categories
+                    .collectAsState(emptyList()).value,
+                onItemClick = {
+                    viewModel.processCommand(
+                        ExpenseCommand.InputCategoryName(it)
+                    )
+                },
+                selectedCategory = currentState.dialogState.categoryName ?: ""
+            )
+
+            CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
+
+        }
     }
 }
 
@@ -177,10 +202,10 @@ fun AmountTextField(
     var textFieldValue by remember(currentAmount) {
         mutableStateOf(
             if (currentAmount == 0f) ""
-        else if (currentAmount % 1 == 0f)
-            currentAmount.toInt().toString()
-        else
-            currentAmount.toString()
+            else if (currentAmount % 1 == 0f)
+                currentAmount.toInt().toString()
+            else
+                currentAmount.toString()
         )
     }
 
@@ -282,21 +307,21 @@ fun ExpenseCategoryDropDown(
 ) {
 
     val categoriesNames =
-    if(categories.isNotEmpty())
-        categories.map { it.name }
-    else
-        emptyList()
+        if (categories.isNotEmpty())
+            categories.map { it.name }
+        else
+            emptyList()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
         Text(
             text = buildAnnotatedString {
-                    append(stringResource(R.string.adding_expense_screen_category_dropdown_label))
+                append(stringResource(R.string.adding_expense_screen_category_dropdown_label))
 
-                    withStyle(style = SpanStyle(color = Color.Red)) {
-                        append(" *")
-                    }
+                withStyle(style = SpanStyle(color = Color.Red)) {
+                    append(" *")
+                }
             },
             style = MaterialTheme.typography.titleMedium
         )

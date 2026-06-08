@@ -102,7 +102,7 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryIconId(newIconId: Int) {
+    fun updateCategoryIconId(newIconId: String) {
         _state.update {
             it.copy(
                 iconId = newIconId

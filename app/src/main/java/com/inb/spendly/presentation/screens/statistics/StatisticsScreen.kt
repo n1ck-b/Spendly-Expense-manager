@@ -39,6 +39,7 @@ import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.screens.categories.CategoryViewModel
 import com.inb.spendly.presentation.screens.expenses.DateDropDown
 import com.inb.spendly.presentation.screens.SharedViewModel
+import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -198,7 +199,7 @@ fun StatisticsByCategoriesListItem(item: CategoryWithFilteredExpenses, sumOfAllE
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(item.categoryIconId),
+                    imageVector = getIconByKey(item.categoryIconId),
                     contentDescription = null,
                     tint = Color(item.categoryColor),
                     modifier = Modifier
