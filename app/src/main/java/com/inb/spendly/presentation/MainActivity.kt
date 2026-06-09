@@ -11,7 +11,6 @@ import androidx.navigation.compose.rememberNavController
 import com.inb.spendly.R
 import com.inb.spendly.presentation.components.BottomNavBarItem
 import com.inb.spendly.presentation.components.BottomNavigationBar
-import com.inb.spendly.presentation.components.FloatingActionButtonAdd
 import com.inb.spendly.presentation.navigation.CategoriesScreenRoute
 import com.inb.spendly.presentation.navigation.ExpenseHistoryScreenRoute
 import com.inb.spendly.presentation.navigation.NavGraph

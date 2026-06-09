@@ -46,14 +46,12 @@ import java.math.RoundingMode
 @Composable
 fun StatisticsScreen(
     paddingValues: PaddingValues,
-    categoryViewModel: CategoryViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel
 ) {
 
     val selectedDateRange = sharedViewModel.selectedDateRange
 
-//    val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
-    val categoriesWithExpenses = emptyList<CategoryWithFilteredExpenses>()
+    val categoriesWithExpenses by sharedViewModel.categoriesWithExpenses.collectAsState(emptyList())
 
     Column(
         modifier = Modifier
