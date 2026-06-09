@@ -6,12 +6,10 @@
     <string name="CNY_description">Китайский юань</string>
     <string name="GBP_description">Британский фунт</string>
     <string name="PLN_description">Польский злотый</string>
-    <string-array name="time_periods">
-        <item>Сегодня</item>
-        <item>Текущая неделя</item>
-        <item>Текущий месяц</item>
-        <item>Текущий год</item>
-    </string-array>
+    <string name="today">Сегодня</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
     <string name="expense_amount_header">Ваши расходы за выбранный период</string>
     <string name="expense_history_screen_header">История расходов</string>
     <string name="category_screen_header">Категории расходов</string>

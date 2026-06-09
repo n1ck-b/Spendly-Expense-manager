@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="today">Сегодня</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
     <string name="BYN_description">Белорусский рубль</string>
     <string name="USD_description">Доллар США</string>
     <string name="EUR_description">Евро</string>

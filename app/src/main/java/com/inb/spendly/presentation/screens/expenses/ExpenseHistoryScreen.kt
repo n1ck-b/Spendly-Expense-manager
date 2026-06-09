@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,12 +36,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.ExpenseWithCategory
-import com.inb.spendly.presentation.SharedCommand
 import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.components.BottomNavBarItem
 import com.inb.spendly.presentation.components.BottomNavigationBar
-import com.inb.spendly.presentation.components.DateDropDown
-import com.inb.spendly.presentation.components.DropDownMenu
+import com.inb.spendly.presentation.components.DateChips
 import com.inb.spendly.presentation.components.FloatingActionButtonAdd
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
@@ -60,8 +57,6 @@ fun ExpenseHistoryScreen(
 ) {
 
     val state = viewModel.state.collectAsState()
-
-    val selectedDateRange = sharedViewModel.selectedDateRange
 
     Scaffold(
         floatingActionButton = {
@@ -89,9 +84,8 @@ fun ExpenseHistoryScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             ExpenseHistoryScreenHeader()
-            DateDropDown(
-                sharedViewModel = sharedViewModel,
-                selectedDateRange = selectedDateRange.collectAsState().value
+            DateChips(
+                sharedViewModel = sharedViewModel
             )
 
             when (val currentState = state.value) {

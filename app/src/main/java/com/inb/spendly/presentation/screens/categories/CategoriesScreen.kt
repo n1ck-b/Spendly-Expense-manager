@@ -40,7 +40,7 @@ import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.components.BottomNavBarItem
 import com.inb.spendly.presentation.components.BottomNavigationBar
-import com.inb.spendly.presentation.components.DateDropDown
+import com.inb.spendly.presentation.components.DateChips
 import com.inb.spendly.presentation.components.FloatingActionButtonAdd
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
@@ -58,8 +58,6 @@ fun CategoriesScreen(
 
     val state = categoryViewModel.state.collectAsState()
     val currentState = state.value
-
-    val selectedDateRange = sharedViewModel.selectedDateRange
 
     Scaffold(
         floatingActionButton = {
@@ -89,8 +87,7 @@ fun CategoriesScreen(
         ) {
             CategoriesScreenHeader()
 
-            DateDropDown(
-                selectedDateRange = selectedDateRange.collectAsState().value,
+            DateChips(
                 sharedViewModel = sharedViewModel
             )
 

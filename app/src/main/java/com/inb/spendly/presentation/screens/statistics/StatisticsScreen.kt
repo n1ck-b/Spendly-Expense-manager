@@ -35,7 +35,7 @@ import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
-import com.inb.spendly.presentation.components.DateDropDown
+import com.inb.spendly.presentation.components.DateChips
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
@@ -47,8 +47,6 @@ fun StatisticsScreen(
     sharedViewModel: SharedViewModel,
     statisticsViewModel: StatisticsViewModel = hiltViewModel()
 ) {
-
-    val selectedDateRange = sharedViewModel.selectedDateRange
 
     val state = statisticsViewModel.state.collectAsState()
     val currentState = state.value
@@ -67,9 +65,8 @@ fun StatisticsScreen(
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         StatisticsScreenHeader()
-        DateDropDown(
-            sharedViewModel = sharedViewModel,
-            selectedDateRange = selectedDateRange.collectAsState().value
+        DateChips(
+            sharedViewModel = sharedViewModel
         )
 
         when(currentState) {

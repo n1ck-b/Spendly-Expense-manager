@@ -23,12 +23,10 @@
     <string name="GBP_description">Pound Sterling</string>
     <string name="PLN_description">Polish Zloty</string>
     <string name="drop_down_select_period">Select a period</string>
-    <string-array name="time_periods">
-        <item>Today</item>
-        <item>This week</item>
-        <item>This month</item>
-        <item>This year</item>
-    </string-array>
+    <string name="today">Today</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
     <string name="expense_amount_header">Your expenses for selected period</string>
     <string name="expense_history_screen_header">Expense history</string>
     <string name="category_screen_header">Categories of expenses</string>
