@@ -21,7 +21,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,8 +35,7 @@ import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
-import com.inb.spendly.presentation.screens.categories.CategoryViewModel
-import com.inb.spendly.presentation.screens.expenses.DateDropDown
+import com.inb.spendly.presentation.components.DateDropDown
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
@@ -46,12 +44,14 @@ import java.math.RoundingMode
 @Composable
 fun StatisticsScreen(
     paddingValues: PaddingValues,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    statisticsViewModel: StatisticsViewModel = hiltViewModel()
 ) {
 
     val selectedDateRange = sharedViewModel.selectedDateRange
 
-    val categoriesWithExpenses by sharedViewModel.categoriesWithExpenses.collectAsState(emptyList())
+    val state = statisticsViewModel.state.collectAsState()
+    val currentState = state.value
 
     Column(
         modifier = Modifier
@@ -71,7 +71,15 @@ fun StatisticsScreen(
             sharedViewModel = sharedViewModel,
             selectedDateRange = selectedDateRange.collectAsState().value
         )
-        StatisticsByCategoriesList(categoriesWithExpenses)
+
+        when(currentState) {
+            is StatisticsState.Loaded -> {
+                StatisticsByCategoriesList(currentState.categoriesWithExpenses)
+            }
+            StatisticsState.Loading -> {
+                // TODO
+            }
+        }
     }
 }
 

@@ -37,9 +37,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.ExpenseWithCategory
+import com.inb.spendly.presentation.SharedCommand
 import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.components.BottomNavBarItem
 import com.inb.spendly.presentation.components.BottomNavigationBar
+import com.inb.spendly.presentation.components.DateDropDown
 import com.inb.spendly.presentation.components.DropDownMenu
 import com.inb.spendly.presentation.components.FloatingActionButtonAdd
 import com.inb.spendly.presentation.screens.SharedViewModel
@@ -87,7 +89,10 @@ fun ExpenseHistoryScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             ExpenseHistoryScreenHeader()
-            DateDropDown(sharedViewModel, selectedDateRange.collectAsState().value)
+            DateDropDown(
+                sharedViewModel = sharedViewModel,
+                selectedDateRange = selectedDateRange.collectAsState().value
+            )
 
             when (val currentState = state.value) {
                 is ExpenseState.Loaded -> {
@@ -152,29 +157,6 @@ fun ExpenseHistoryScreenHeader() {
         modifier = Modifier
             .padding(top = 20.dp, bottom = 15.dp)
     )
-}
-
-@Composable
-fun DateDropDown(sharedViewModel: SharedViewModel, selectedDateRange: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.drop_down_select_period),
-            style = MaterialTheme.typography.titleMedium
-        )
-        DropDownMenu(
-            items = stringArrayResource(R.array.time_periods).toList(),
-            onItemClick = {
-                sharedViewModel.updateDateRange(it)
-            },
-            selectedItem = selectedDateRange
-        )
-    }
 }
 
 @Composable

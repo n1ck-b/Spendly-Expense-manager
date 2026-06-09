@@ -13,6 +13,7 @@ import com.inb.spendly.domain.Utils.getTimestampForStartOfToday
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.domain.useCases.categories.GetExpensesByCategoriesUseCase
 import com.inb.spendly.presentation.FilterType
+import com.inb.spendly.presentation.SharedCommand
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,14 +26,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SharedViewModel @Inject constructor(
-    private val getExpensesByCategoriesUseCase: GetExpensesByCategoriesUseCase
-): ViewModel() {
+class SharedViewModel @Inject constructor(): ViewModel() {
 
     private val _selectedDateRange = MutableStateFlow("Today")
     val selectedDateRange = _selectedDateRange.asStateFlow()
-
-    var categoriesWithExpenses = emptyFlow<List<CategoryWithFilteredExpenses>>()
 
     val selectedFilterType: StateFlow<FilterType> =
         selectedDateRange
@@ -48,42 +45,18 @@ class SharedViewModel @Inject constructor(
                     FilterType.THIS_YEAR.string -> FilterType.THIS_YEAR
                     else -> FilterType.TODAY
                 }
-            }.onEach {range ->
-                when(range) {
-                    FilterType.TODAY -> {
-                        val startDate = getTimestampForStartOfToday()
-                        val endDate = getTimestampForEndOfToday()
-                        categoriesWithExpenses = getExpensesByCategoriesUseCase(startDate, endDate)
-                    }
-
-                    FilterType.THIS_WEEK -> {
-                        val startDate = getTimestampForStartOfThisWeek()
-                        val endDate = getTimestampForEndOfThisWeek()
-                        categoriesWithExpenses = getExpensesByCategoriesUseCase(startDate, endDate)
-                    }
-
-                    FilterType.THIS_MONTH -> {
-                        val startDate = getTimestampForStartOfThisMonth()
-                        val endDate = getTimestampForEndOfThisMonth()
-                        categoriesWithExpenses = getExpensesByCategoriesUseCase(startDate, endDate)
-                    }
-
-                    FilterType.THIS_YEAR -> {
-                        val startDate = getTimestampForStartOfThisYear()
-                        val endDate = getTimestampForEndOfThisYear()
-                        categoriesWithExpenses = getExpensesByCategoriesUseCase(startDate, endDate)
-                    }
-                }
-
-            }
-            .stateIn(
+            }.stateIn(
                 viewModelScope,
                 SharingStarted.Eagerly,
                 FilterType.TODAY
             )
 
-    fun updateDateRange(newRange: String) {
-        _selectedDateRange.value = newRange
+    fun processCommand(command: SharedCommand) {
+        when(command) {
+            is SharedCommand.UpdateDateRange -> {
+                _selectedDateRange.value = command.range
+            }
+        }
     }
 
 }
