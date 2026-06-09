@@ -59,10 +59,6 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     floatingActionButton = {
                         when (currentDestination?.route?.let { Class.forName(it) }) {
-                            CategoriesScreenRoute::class.java -> FloatingActionButtonAdd {
-                                sharedViewModel.updateShowCategoryDialog(true)
-                            }
-
                             StatisticsScreenRoute::class.java -> {}
                         }
                     },

@@ -52,7 +52,8 @@ fun StatisticsScreen(
 
     val selectedDateRange = sharedViewModel.selectedDateRange
 
-    val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
+//    val categoriesWithExpenses by categoryViewModel.categoriesList.collectAsState()
+    val categoriesWithExpenses = emptyList<CategoryWithFilteredExpenses>()
 
     Column(
         modifier = Modifier

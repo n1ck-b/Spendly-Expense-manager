@@ -31,8 +31,9 @@ fun NavGraph(
         }
         composable<CategoriesScreenRoute> {
             CategoriesScreen(
-                paddingValues = paddingValues,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                navController = navController,
+                bottomNavBarItems = bottomNavBarItems
             )
         }
         composable<StatisticsScreenRoute> {

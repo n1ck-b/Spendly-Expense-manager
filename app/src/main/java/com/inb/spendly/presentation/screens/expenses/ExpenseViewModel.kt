@@ -11,7 +11,6 @@ import com.inb.spendly.domain.Utils.getTimestampForStartOfThisMonth
 import com.inb.spendly.domain.Utils.getTimestampForStartOfThisWeek
 import com.inb.spendly.domain.Utils.getTimestampForStartOfThisYear
 import com.inb.spendly.domain.Utils.getTimestampForStartOfToday
-import com.inb.spendly.domain.entities.ExpenseWithCategory
 import com.inb.spendly.domain.useCases.categories.GetAllCategoriesUseCase
 import com.inb.spendly.domain.useCases.expenses.AddExpenseUseCase
 import com.inb.spendly.domain.useCases.expenses.DeleteExpenseUseCase
@@ -20,7 +19,9 @@ import com.inb.spendly.domain.useCases.expenses.GetExpensesWithCategoriesUseCase
 import com.inb.spendly.presentation.FilterType
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.screens.UiEvent
-import com.inb.spendly.presentation.screens.expenses.ExpenseDialogState.*
+import com.inb.spendly.presentation.screens.expenses.ExpenseDialogState.AddingExpense
+import com.inb.spendly.presentation.screens.expenses.ExpenseDialogState.Closed
+import com.inb.spendly.presentation.screens.expenses.ExpenseDialogState.SelectingAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +29,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -91,7 +91,7 @@ class ExpenseViewModel @Inject constructor(
                     if (prevState is ExpenseState.Loaded) {
                         prevState.copy(expenses = newList)
                     } else {
-                        ExpenseState.Loaded(newList, ExpenseDialogState.Closed)
+                        ExpenseState.Loaded(newList, Closed)
                     }
 
                 }
@@ -106,7 +106,7 @@ class ExpenseViewModel @Inject constructor(
         val currentState = _state.value
 
         if (currentState is ExpenseState.Loaded
-            && currentState.dialogState is ExpenseDialogState.AddingExpense
+            && currentState.dialogState is AddingExpense
         ) {
             if (currentState.dialogState.categoryName == null || currentState.dialogState.date == null) {
                 viewModelScope.launch {
@@ -148,7 +148,7 @@ class ExpenseViewModel @Inject constructor(
     private fun returnToList() {
         _state.update { prevState ->
             if (prevState is ExpenseState.Loaded) {
-                prevState.copy(dialogState = ExpenseDialogState.Closed)
+                prevState.copy(dialogState = Closed)
             } else {
                 prevState
             }
@@ -190,7 +190,7 @@ class ExpenseViewModel @Inject constructor(
             is ExpenseCommand.InputAmount -> {
                 _state.update { prevState ->
                     if (prevState is ExpenseState.Loaded
-                        && prevState.dialogState is ExpenseDialogState.AddingExpense
+                        && prevState.dialogState is AddingExpense
                     ) {
                         val newDialogState =
                             prevState.dialogState.copy(amount = command.amount)
@@ -204,7 +204,7 @@ class ExpenseViewModel @Inject constructor(
             is ExpenseCommand.InputCategoryName -> {
                 _state.update { prevState ->
                     if (prevState is ExpenseState.Loaded
-                        && prevState.dialogState is ExpenseDialogState.AddingExpense
+                        && prevState.dialogState is AddingExpense
                     ) {
                         val newDialogState =
                             prevState.dialogState.copy(categoryName = command.categoryName)
@@ -223,7 +223,7 @@ class ExpenseViewModel @Inject constructor(
 
                 _state.update { prevState ->
                     if (prevState is ExpenseState.Loaded
-                        && prevState.dialogState is ExpenseDialogState.AddingExpense
+                        && prevState.dialogState is AddingExpense
                     ) {
                         val newDialogState =
                             prevState.dialogState.copy(date = newDate)
@@ -237,7 +237,7 @@ class ExpenseViewModel @Inject constructor(
             is ExpenseCommand.InputNote -> {
                 _state.update { prevState ->
                     if (prevState is ExpenseState.Loaded
-                        && prevState.dialogState is ExpenseDialogState.AddingExpense
+                        && prevState.dialogState is AddingExpense
                     ) {
                         val newDialogState =
                             prevState.dialogState.copy(note = command.note)
@@ -251,7 +251,7 @@ class ExpenseViewModel @Inject constructor(
             is ExpenseCommand.InputSelectedCurrency -> {
                 _state.update { prevState ->
                     if (prevState is ExpenseState.Loaded
-                        && prevState.dialogState is ExpenseDialogState.AddingExpense
+                        && prevState.dialogState is AddingExpense
                     ) {
                         val newDialogState = prevState.dialogState.copy(
                             selectedCurrency = Currencies.valueOf(command.selectedCurrency)
@@ -269,6 +269,7 @@ class ExpenseViewModel @Inject constructor(
 
             ExpenseCommand.SaveEditedExpense -> {
                 saveExpense()
+                returnToList()
             }
 
             ExpenseCommand.EditExpense -> {

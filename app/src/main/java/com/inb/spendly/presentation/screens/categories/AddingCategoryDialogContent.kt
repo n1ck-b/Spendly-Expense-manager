@@ -41,9 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -62,79 +60,104 @@ fun AddingCategoryDialogContent(
     onSaveButtonClicked: () -> Unit,
     viewModel: CategoryViewModel
 ) {
+    val state = viewModel.state.collectAsState()
 
-    val showErrors = remember { mutableStateOf(false) }
+    val currentState = state.value
 
-    val categoryState by viewModel.state.collectAsState()
-
-    val showIconDialog = remember { mutableStateOf(false) }
-    val showColorDialog = remember { mutableStateOf(false) }
-
-    val context = LocalContext.current
-    val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
-    val categoryAlreadyExistsWarning = stringResource(R.string.category_already_exists_warning)
-
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            if (event == UiEvent.ShowToastNotAllFieldsFilled) {
-                Toast.makeText(context, fillAllFieldsWarning, Toast.LENGTH_LONG).show()
-                showErrors.value = true
-            }
-            else if(event == UiEvent.ShowToastCategoryAlreadyExists) {
-                Toast.makeText(context, categoryAlreadyExistsWarning, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+    if (currentState is CategoryState.Loaded
+        && currentState.dialogState is CategoryDialogState.AddingCategory
     ) {
-        AddingCategoryScreenHeader()
-        CategoryNameTextField(
-            currentName = categoryState.name,
-            onValueChanged = {
-                viewModel.updateCategoryName(it)
-            },
-            onClearIconClick = {
-                viewModel.updateCategoryName("")
-            },
-            showErrors = showErrors.value
-        )
-        ChoosingIconCard(
-            selectedIcon = categoryState.iconId,
-            selectedColor = categoryState.color
+        val showErrors = remember { mutableStateOf(false) }
+
+        val showIconDialog = remember { mutableStateOf(false) }
+        val showColorDialog = remember { mutableStateOf(false) }
+
+        val context = LocalContext.current
+        val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
+        val categoryAlreadyExistsWarning = stringResource(R.string.category_already_exists_warning)
+
+        LaunchedEffect(Unit) {
+            viewModel.events.collect { event ->
+                if (event == UiEvent.ShowToastNotAllFieldsFilled) {
+                    Toast.makeText(
+                        context,
+                        fillAllFieldsWarning,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    showErrors.value = true
+                } else if (event == UiEvent.ShowToastCategoryAlreadyExists) {
+                    Toast.makeText(
+                        context,
+                        categoryAlreadyExistsWarning,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            showIconDialog.value = true
+            AddingCategoryScreenHeader()
+
+            CategoryNameTextField(
+                currentName = currentState.dialogState.name,
+                onValueChanged = {
+                    viewModel.processCommand(CategoryCommand.InputName(it))
+                },
+                onClearIconClick = {
+                    viewModel.processCommand(CategoryCommand.InputName(""))
+                },
+                showErrors = showErrors.value
+            )
+
+            ChoosingIconCard(
+                selectedIcon = currentState.dialogState.iconId,
+                selectedColor = currentState.dialogState.color,
+                onClick = {
+                    showIconDialog.value = true
+                }
+            )
+            ChoosingIconColorCard(
+                selectedColor = currentState.dialogState.color,
+                onClick = {
+                    showColorDialog.value = true
+                }
+            )
+
+            IconsListDialog(
+                onDismissRequest = {
+                    showIconDialog.value = false
+                },
+                categoryIcons = CategoryIcons.icons,
+                showIconDialog = showIconDialog,
+                onItemClicked = {
+                    viewModel.processCommand(CategoryCommand.InputIconId(it))
+                    showIconDialog.value = false
+                }
+            )
+
+            ColorsListDialog(
+                onDismissRequest = {
+                    showColorDialog.value = false
+                },
+                colors = CategoryColors.colors,
+                showColorDialog = showColorDialog,
+                onItemClicked = {
+                    viewModel.processCommand(CategoryCommand.InputColor(it))
+                    showColorDialog.value = false
+                }
+            )
+
+            CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
         }
-        ChoosingIconColorCard(categoryState.color) {
-            showColorDialog.value = true
-        }
-        IconsListDialog(
-            onDismissRequest = {
-                showIconDialog.value = false
-            },
-            categoryIcons = CategoryIcons.icons,
-            showIconDialog = showIconDialog,
-            onItemClicked = {
-                viewModel.updateCategoryIconId(it)
-                showIconDialog.value = false
-            }
-        )
-        ColorsListDialog(
-            onDismissRequest = { showColorDialog.value = false },
-            colors = CategoryColors.colors,
-            showColorDialog = showColorDialog,
-            onItemClicked = {
-                viewModel.updateCategoryColor(it)
-                showColorDialog.value = false
-            }
-        )
-        CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
     }
+
+
 }
 
 @Composable
@@ -159,8 +182,10 @@ fun CategoryNameTextField(
 ) {
 
     var textFieldValue by remember {
-        mutableStateOf(if(currentName.isNotBlank() && currentName.isNotEmpty()) currentName
-        else "")
+        mutableStateOf(
+            if (currentName.isNotBlank() && currentName.isNotEmpty()) currentName
+            else ""
+        )
     }
 
     OutlinedTextField(
@@ -290,7 +315,7 @@ fun IconsListDialog(
     showIconDialog: MutableState<Boolean>,
     onItemClicked: (String) -> Unit
 ) {
-    if(showIconDialog.value) {
+    if (showIconDialog.value) {
         Dialog(
             onDismissRequest = onDismissRequest
         ) {
@@ -310,11 +335,14 @@ fun IconsListDialog(
                         start = 20.dp,
                         end = 20.dp
                     ),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        15.dp,
+                        Alignment.CenterHorizontally
+                    ),
                     verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     items(categoryIcons) { currentIcon ->
-                        OutlinedCard (
+                        OutlinedCard(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             shape = RoundedCornerShape(7.dp),
@@ -352,7 +380,7 @@ fun ColorsListDialog(
     showColorDialog: MutableState<Boolean>,
     onItemClicked: (Color) -> Unit
 ) {
-    if(showColorDialog.value) {
+    if (showColorDialog.value) {
         Dialog(
             onDismissRequest = onDismissRequest
         ) {
@@ -372,7 +400,10 @@ fun ColorsListDialog(
                         start = 20.dp,
                         end = 20.dp
                     ),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        15.dp,
+                        Alignment.CenterHorizontally
+                    ),
                     verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     items(colors) { color ->

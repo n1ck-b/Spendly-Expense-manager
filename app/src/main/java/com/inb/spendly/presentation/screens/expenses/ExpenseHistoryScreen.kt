@@ -129,7 +129,6 @@ fun ExpenseHistoryScreen(
                                             currentState.dialogState.expenseId
                                         )
                                     )
-                                    viewModel.processCommand(ExpenseCommand.ReturnToList)
                                 }
                             )
                         }

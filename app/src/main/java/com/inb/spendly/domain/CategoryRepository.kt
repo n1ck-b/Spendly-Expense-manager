@@ -20,6 +20,11 @@ interface CategoryRepository {
 
     suspend fun existsCategoryByName(categoryName: String): Boolean
 
+    suspend fun existsCategoryByNameAndId(
+        categoryName: String,
+        categoryId: Long
+    ): Boolean
+
     suspend fun updateCategory(category: Category)
 
     fun getAllCategories(): Flow<List<Category>>

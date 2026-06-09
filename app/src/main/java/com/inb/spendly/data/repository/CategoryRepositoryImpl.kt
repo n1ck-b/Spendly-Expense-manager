@@ -75,4 +75,14 @@ class CategoryRepositoryImpl @Inject constructor(
     override fun getAllCategories(): Flow<List<Category>> {
         return categoryDao.getAllCategories().map { it.toCategoryEntities() }
     }
+
+    override suspend fun existsCategoryByNameAndId(
+        categoryName: String,
+        categoryId: Long
+    ): Boolean {
+        return categoryDao.getCategoryByNameAndId(
+            categoryName,
+            categoryId
+        ) != null
+    }
 }

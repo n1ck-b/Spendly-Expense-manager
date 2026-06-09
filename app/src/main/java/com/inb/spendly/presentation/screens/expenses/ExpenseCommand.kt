@@ -4,9 +4,7 @@ import com.inb.spendly.data.models.Currencies
 
 sealed interface ExpenseCommand {
 
-    data class DeleteExpense(
-        val expenseId: Long
-    ): ExpenseCommand
+    data class DeleteExpense(val expenseId: Long): ExpenseCommand
 
     data object ReturnToList: ExpenseCommand
 

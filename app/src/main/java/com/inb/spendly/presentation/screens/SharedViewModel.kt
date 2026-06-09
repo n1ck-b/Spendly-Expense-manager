@@ -1,6 +1,5 @@
 package com.inb.spendly.presentation.screens
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inb.spendly.presentation.FilterType
@@ -19,12 +18,6 @@ class SharedViewModel @Inject constructor(): ViewModel() {
     private val _selectedDateRange = MutableStateFlow("Today")
     val selectedDateRange = _selectedDateRange.asStateFlow()
 
-    var showExpenseDialog = mutableStateOf(false)
-        private set
-
-    var showCategoryDialog = mutableStateOf(false)
-        private set
-
     val selectedFilterType: StateFlow<FilterType> =
         selectedDateRange
             .map { range ->
@@ -42,20 +35,12 @@ class SharedViewModel @Inject constructor(): ViewModel() {
             }
             .stateIn(
                 viewModelScope,
-                SharingStarted.Companion.Eagerly,
+                SharingStarted.Eagerly,
                 FilterType.TODAY
             )
 
     fun updateDateRange(newRange: String) {
         _selectedDateRange.value = newRange
-    }
-
-    fun updateShowExpenseDialog(newValue: Boolean) {
-        showExpenseDialog.value = newValue
-    }
-
-    fun updateShowCategoryDialog(newValue: Boolean) {
-        showCategoryDialog.value = newValue
     }
 
 }
