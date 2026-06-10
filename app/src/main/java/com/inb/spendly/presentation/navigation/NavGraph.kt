@@ -1,6 +1,5 @@
 package com.inb.spendly.presentation.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,7 +13,6 @@ import com.inb.spendly.presentation.screens.statistics.StatisticsScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    paddingValues: PaddingValues,
     sharedViewModel: SharedViewModel,
     bottomNavBarItems: List<BottomNavBarItem>
 ){

@@ -8,7 +8,6 @@ val SurfaceElevatedDark = Color(0xFF2D2C45)
 val PrimaryDark = Color(0xFF7F77DD)
 val TextPrimaryDark = Color(0xD9FFFFFF)
 val TextSecondaryDark = Color(0x66FFFFFF)
-
 val TextSurfaceDark = Color(0xFFAFA9EC)
 
 val BackgroundLight = Color(0xFFFFFFFF)
