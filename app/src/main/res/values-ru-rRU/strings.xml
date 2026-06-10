@@ -10,7 +10,8 @@
     <string name="CNY_description">Китайский юань</string>
     <string name="GBP_description">Британский фунт</string>
     <string name="PLN_description">Польский злотый</string>
-    <string name="expense_amount_header">Ваши расходы за выбранный период</string>
+    <string name="expense_amount_header">Всего</string>
+    <string name="expense_records_amount_header">Записей</string>
     <string name="expense_history_screen_header">История расходов</string>
     <string name="category_screen_header">Категории расходов</string>
     <string name="statistics_screen_header">Статистика расходов</string>

@@ -1,9 +1,9 @@
 package com.inb.spendly.data.repository
 
 import com.inb.spendly.data.toDbModel
-import com.inb.spendly.data.toExpenseWithCategoryEntities
-import com.inb.spendly.data.toExpenseEntities
 import com.inb.spendly.data.toEntity
+import com.inb.spendly.data.toExpenseEntities
+import com.inb.spendly.data.toExpenseWithCategoryEntities
 import com.inb.spendly.domain.ExpenseRepository
 import com.inb.spendly.domain.entities.Expense
 import com.inb.spendly.domain.entities.ExpenseWithCategory
@@ -34,8 +34,8 @@ class ExpenseRepositoryImpl @Inject constructor(
         expenseDao.upsertExpense(expense.toDbModel())
     }
 
-    override suspend fun getExpenseWithCategory(expenseId: Long): Flow<ExpenseWithCategory> {
-        return expenseDao.getExpenseWithCategoryById(expenseId).map { it.toEntity() }
+    override suspend fun getExpenseWithCategory(expenseId: Long): ExpenseWithCategory {
+        return expenseDao.getExpenseWithCategoryById(expenseId).toEntity()
     }
 
     override suspend fun deleteExpense(expenseId: Long) {

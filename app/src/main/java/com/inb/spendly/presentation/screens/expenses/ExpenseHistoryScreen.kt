@@ -3,19 +3,25 @@ package com.inb.spendly.presentation.screens.expenses
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
@@ -45,6 +52,7 @@ import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Composable
@@ -74,16 +82,15 @@ fun ExpenseHistoryScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .padding(
-                    top = paddingValues.calculateTopPadding() + 20.dp,
-                    bottom = paddingValues.calculateBottomPadding(),
-                    start = 40.dp,
-                    end = 40.dp
+                    top = paddingValues.calculateTopPadding() + 8.dp,
+                    bottom = paddingValues.calculateBottomPadding()
                 )
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             ExpenseHistoryScreenHeader()
+            Spacer(Modifier.size(8.dp))
             DateChips(
                 sharedViewModel = sharedViewModel
             )
@@ -91,9 +98,10 @@ fun ExpenseHistoryScreen(
             when (val currentState = state.value) {
                 is ExpenseState.Loaded -> {
 
-                    ExpenseAmountTile(
-                        currentState.expenses
-                            .sumOf { it.expense.amount.toDouble() }.toFloat()
+                    ExpensesStatisticsTile(
+                        sumForSelectedPeriod = currentState.expenses
+                            .sumOf { it.expense.amount.toDouble() }.toFloat(),
+                        amountOfRecords = currentState.expenses.size
                     )
                     ExpenseList(
                         currentState.expenses,
@@ -149,42 +157,80 @@ fun ExpenseHistoryScreenHeader() {
         text = stringResource(R.string.expense_history_screen_header),
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier
-            .padding(top = 20.dp, bottom = 15.dp)
+            .padding(start = 24.dp, end = 24.dp)
     )
 }
 
 @Composable
-fun ExpenseAmountTile(sumForSelectedPeriod: Float) {
-    OutlinedCard(
+fun ExpensesStatisticsTile(
+    sumForSelectedPeriod: Float,
+    amountOfRecords: Int
+) {
+    Row(
         modifier = Modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        shape = RoundedCornerShape(15.dp),
+            .padding(horizontal = 24.dp)
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+        Card(
+            modifier = Modifier.weight(1f),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            shape = RoundedCornerShape(10.dp)
         ) {
+
             Column(
-                modifier = Modifier.padding(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = stringResource(R.string.expense_amount_header),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "${
                         BigDecimal(sumForSelectedPeriod.toDouble())
                             .setScale(2, RoundingMode.HALF_UP)
                     } Br",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+
+                Text(
+                    text = stringResource(R.string.expense_amount_header),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+        }
+
+        Card(
+            modifier = Modifier,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            shape = RoundedCornerShape(10.dp)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "$amountOfRecords",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+
+                Text(
+                    text = stringResource(R.string.expense_records_amount_header),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleSmall
                 )
             }
         }
@@ -198,7 +244,12 @@ fun ExpenseList(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp),
-        contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp)
+        contentPadding = PaddingValues(
+            top = 20.dp,
+            bottom = 20.dp,
+            start = 24.dp,
+            end = 24.dp
+        )
     ) {
         if (expensesWithCategory.isEmpty()) {
             item {
@@ -240,11 +291,12 @@ fun ExpenseListItem(
     onLongItemClick: (Long) -> Unit
 ) {
 
-    val formatter = SimpleDateFormat("dd.MM.yyyy", LocalLocale.current.platformLocale)
+    val formatter = SimpleDateFormat.getDateInstance(DateFormat.SHORT)
 
-    OutlinedCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
             .combinedClickable(
                 onClick = {},
                 onLongClick = {
@@ -254,55 +306,74 @@ fun ExpenseListItem(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        shape = RoundedCornerShape(15.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 15.dp),
+                .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
+                modifier = Modifier.weight(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = getIconByKey(item.category.iconId),
-                            contentDescription = null,
-                            modifier = Modifier.size(30.dp),
-                            tint = Color(item.category.color)
-                        )
-                        Spacer(modifier = Modifier.size(10.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(
+                                    Color(item.category.color).copy(alpha = 0.15f)
+                                )
+                                .padding(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = getIconByKey(item.category.iconId),
+                                contentDescription = "Expense category icon",
+                                modifier = Modifier.size(32.dp),
+                                tint = Color(item.category.color)
+                            )
+                        }
+                        Spacer(modifier = Modifier.size(12.dp))
                         Column {
                             Text(
                                 text = item.category.name,
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
+                            Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = formatter.format(item.expense.date)
+                                text = formatter.format(item.expense.date),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.size(7.dp))
+                    Spacer(modifier = Modifier.size(8.dp))
                     Row {
-                        Spacer(modifier = Modifier.width(40.dp))
+                        Spacer(modifier = Modifier.width(62.dp))
                         if (item.expense.note != null && item.expense.note != "") {
                             Text(
-                                text = item.expense.note!!
+                                text = item.expense.note!!,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
                 }
             }
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "-${
                     BigDecimal(item.expense.amount.toDouble())
                         .setScale(2, RoundingMode.HALF_UP)
-                } Br"
+                } Br",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.End
             )
         }
     }

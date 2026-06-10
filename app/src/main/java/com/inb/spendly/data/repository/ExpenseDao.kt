@@ -27,7 +27,7 @@ interface ExpenseDao {
         "WHERE expenses.id = :expenseId " +
         "ORDER BY expenses.date DESC"
     )
-    fun getExpenseWithCategoryById(expenseId: Long): Flow<ExpenseWithCategoryDbModel>
+    fun getExpenseWithCategoryById(expenseId: Long): ExpenseWithCategoryDbModel
 
     @Query("DELETE FROM expenses WHERE id = :expenseId")
     suspend fun deleteExpense(expenseId: Long)

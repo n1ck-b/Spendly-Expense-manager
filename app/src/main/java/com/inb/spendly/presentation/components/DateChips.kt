@@ -1,20 +1,23 @@
 package com.inb.spendly.presentation.components
 
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.inb.spendly.presentation.FilterType
@@ -26,24 +29,24 @@ fun DateChips(
     sharedViewModel: SharedViewModel
 ) {
 
-    val scrollState = rememberScrollState()
-
     val selectedFilterType = sharedViewModel.selectedFilterType.collectAsState()
 
-    Row(
+    LazyRow (
         modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(scrollState),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp)
     ) {
         FilterType.entries.forEach { filter ->
-            DateFilterChip(
-                dateRange = filter,
-                onClick = {
-                    sharedViewModel.processCommand(SharedCommand.UpdateDateRange(filter))
-                },
-                selected = selectedFilterType.value == filter
-            )
+            item {
+                DateFilterChip(
+                    dateRange = filter,
+                    onClick = {
+                        sharedViewModel.processCommand(SharedCommand.UpdateDateRange(filter))
+                    },
+                    selected = selectedFilterType.value == filter
+                )
+            }
         }
     }
 }
@@ -59,7 +62,8 @@ private fun DateFilterChip(
         onClick = onClick,
         label = {
             Text(
-                text = stringResource(dateRange.titleResourceId)
+                text = stringResource(dateRange.titleResourceId),
+                style = MaterialTheme.typography.titleSmall
             )
         },
         leadingIcon = {
@@ -70,6 +74,14 @@ private fun DateFilterChip(
                     contentDescription = "Done icon"
                 )
             }
-        }
+        },
+        shape = CircleShape,
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            selectedContainerColor = MaterialTheme.colorScheme.primary,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            labelColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        border = BorderStroke(width = 0.dp, color = Color.Transparent)
     )
 }

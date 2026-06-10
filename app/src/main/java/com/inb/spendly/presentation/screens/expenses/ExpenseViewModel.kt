@@ -1,5 +1,6 @@
 package com.inb.spendly.presentation.screens.expenses
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inb.spendly.data.models.Currencies
@@ -282,7 +283,7 @@ class ExpenseViewModel @Inject constructor(
                     ) {
                         val expenseWithCategory = getExpenseWithCategoryUseCase(
                             currentState.dialogState.expenseId
-                        ).stateIn(viewModelScope)
+                        )
 
                         val categories = getAllCategoriesUseCase()
 
@@ -290,11 +291,11 @@ class ExpenseViewModel @Inject constructor(
                             if (prevState is ExpenseState.Loaded) {
                                 prevState.copy(
                                     dialogState = AddingExpense(
-                                        id = expenseWithCategory.value.expense.id,
-                                        amount = expenseWithCategory.value.expense.amount,
-                                        date = expenseWithCategory.value.expense.date,
-                                        note = expenseWithCategory.value.expense.note,
-                                        categoryName = expenseWithCategory.value.category.name,
+                                        id = expenseWithCategory.expense.id,
+                                        amount = expenseWithCategory.expense.amount,
+                                        date = expenseWithCategory.expense.date,
+                                        note = expenseWithCategory.expense.note,
+                                        categoryName = expenseWithCategory.category.name,
                                         categories = categories
                                     )
                                 )

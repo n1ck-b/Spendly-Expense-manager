@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,52 +30,65 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
+import com.inb.spendly.presentation.components.BottomNavBarItem
+import com.inb.spendly.presentation.components.BottomNavigationBar
 import com.inb.spendly.presentation.components.DateChips
+import com.inb.spendly.presentation.components.FloatingActionButtonAdd
 import com.inb.spendly.presentation.screens.SharedViewModel
+import com.inb.spendly.presentation.screens.expenses.ExpenseCommand
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 @Composable
 fun StatisticsScreen(
-    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel,
-    statisticsViewModel: StatisticsViewModel = hiltViewModel()
+    statisticsViewModel: StatisticsViewModel = hiltViewModel(),
+    navController: NavHostController,
+    bottomNavBarItems: List<BottomNavBarItem>
 ) {
 
     val state = statisticsViewModel.state.collectAsState()
     val currentState = state.value
 
-    Column(
-        modifier = Modifier
-            .padding(
-                top = paddingValues.calculateTopPadding() + 20.dp,
-                bottom = paddingValues.calculateBottomPadding(),
-                start = 30.dp,
-                end = 30.dp
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(navController, bottomNavBarItems)
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = modifier
+                .padding(
+                    top = paddingValues.calculateTopPadding() + 20.dp,
+                    bottom = paddingValues.calculateBottomPadding(),
+                    start = 30.dp,
+                    end = 30.dp
+                )
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(25.dp)
+        ) {
+            StatisticsScreenHeader()
+            DateChips(
+                sharedViewModel = sharedViewModel
             )
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(25.dp)
-    ) {
-        StatisticsScreenHeader()
-        DateChips(
-            sharedViewModel = sharedViewModel
-        )
 
-        when(currentState) {
-            is StatisticsState.Loaded -> {
-                StatisticsByCategoriesList(currentState.categoriesWithExpenses)
-            }
-            StatisticsState.Loading -> {
-                // TODO
+            when(currentState) {
+                is StatisticsState.Loaded -> {
+                    StatisticsByCategoriesList(currentState.categoriesWithExpenses)
+                }
+                StatisticsState.Loading -> {
+                    // TODO
+                }
             }
         }
     }

@@ -38,8 +38,9 @@ fun NavGraph(
         }
         composable<StatisticsScreenRoute> {
             StatisticsScreen(
-                paddingValues = paddingValues,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                navController = navController,
+                bottomNavBarItems = bottomNavBarItems
             )
         }
     }

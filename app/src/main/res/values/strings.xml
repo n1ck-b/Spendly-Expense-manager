@@ -27,7 +27,8 @@
     <string name="week">Week</string>
     <string name="month">Month</string>
     <string name="year">Year</string>
-    <string name="expense_amount_header">Your expenses for selected period</string>
+    <string name="expense_amount_header">In total</string>
+    <string name="expense_records_amount_header">Records</string>
     <string name="expense_history_screen_header">Expense history</string>
     <string name="category_screen_header">Categories of expenses</string>
     <string name="statistics_screen_header">Statistics of expenses</string>
