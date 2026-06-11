@@ -59,7 +59,7 @@
     <string name="no_categories_found">No categories</string>
     <string name="fill_all_fields_warning">Fill in all required fields</string>
     <string name="no_internet_connection">No Internet connection. Try again later or choose default currency</string>
-    <string name="error_getting_exchange_rates">Error getting exchange rates. Try again later or choose default currency</string>
+    <string name="error_getting_exchange_rates">Error getting exchange rates. Try again later</string>
     <string name="category_already_exists_warning">Category with this name already exists. Choose different name</string>
     <string name="choose_action_update_delete">Choose action</string>
     <string name="without_category">Without category</string>

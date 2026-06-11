@@ -22,10 +22,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -48,6 +50,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.inb.spendly.R
+import com.inb.spendly.data.models.Currencies
 import com.inb.spendly.presentation.screens.expenses.CancelSaveButtons
 import com.inb.spendly.presentation.ui.theme.CategoryColors
 import com.inb.spendly.presentation.ui.theme.CategoryIcons
@@ -416,6 +419,40 @@ fun ColorsListDialog(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CancelSaveButtons(
+    onCancelButtonClicked: () -> Unit,
+    onSaveButtonClicked: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 20.dp),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            OutlinedButton(
+                onClick = onCancelButtonClicked
+            ) {
+                Text(
+                    text = stringResource(R.string.cancel_button),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Button(
+                onClick = onSaveButtonClicked
+            ) {
+                Text(
+                    text = stringResource(R.string.save_button)
+                )
             }
         }
     }

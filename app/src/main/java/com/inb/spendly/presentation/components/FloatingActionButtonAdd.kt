@@ -19,7 +19,7 @@ fun FloatingActionButtonAdd(onClick: () -> Unit) {
     FloatingActionButton(
         modifier = Modifier.clip(
             RoundedCornerShape(16.dp)
-        ).padding(end = 6.dp),
+        ).padding(end = 6.dp, bottom = 74.dp),
         onClick = onClick,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onPrimary,

@@ -72,8 +72,8 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryDao.upsertCategory(category.toDbModel())
     }
 
-    override fun getAllCategories(): Flow<List<Category>> {
-        return categoryDao.getAllCategories().map { it.toCategoryEntities() }
+    override suspend fun getAllCategories(): List<Category> {
+        return categoryDao.getAllCategories().toCategoryEntities()
     }
 
     override suspend fun existsCategoryByNameAndId(

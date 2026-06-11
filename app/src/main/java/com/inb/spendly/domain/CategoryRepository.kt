@@ -27,6 +27,6 @@ interface CategoryRepository {
 
     suspend fun updateCategory(category: Category)
 
-    fun getAllCategories(): Flow<List<Category>>
+    suspend fun getAllCategories(): List<Category>
 
 }

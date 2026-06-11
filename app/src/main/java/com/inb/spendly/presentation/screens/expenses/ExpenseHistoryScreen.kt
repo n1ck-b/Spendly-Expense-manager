@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +23,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +40,6 @@ import androidx.navigation.NavHostController
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.ExpenseWithCategory
 import com.inb.spendly.presentation.components.ActionDialog
-import com.inb.spendly.presentation.components.BottomNavBarItem
 import com.inb.spendly.presentation.components.BottomNavigationBar
 import com.inb.spendly.presentation.components.DateChips
 import com.inb.spendly.presentation.components.FloatingActionButtonAdd
@@ -60,94 +55,97 @@ fun ExpenseHistoryScreen(
     modifier: Modifier = Modifier,
     viewModel: ExpenseViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel,
-    navController: NavHostController,
-    bottomNavBarItems: List<BottomNavBarItem>
+    navController: NavHostController
 ) {
 
     val state = viewModel.state.collectAsState()
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButtonAdd(
-                onClick = {
-                    viewModel.processCommand(ExpenseCommand.AddExpense)
-                }
-            )
-        },
-        bottomBar = {
-            BottomNavigationBar(navController, bottomNavBarItems)
-        }
-    ) { paddingValues ->
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
-                .padding(
-                    top = paddingValues.calculateTopPadding() + 8.dp,
-                    bottom = paddingValues.calculateBottomPadding()
-                )
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ExpenseHistoryScreenHeader()
-            Spacer(Modifier.size(8.dp))
-            DateChips(
-                sharedViewModel = sharedViewModel
-            )
-
-            when (val currentState = state.value) {
-                is ExpenseState.Loaded -> {
-
-                    ExpensesStatisticsTile(
-                        sumForSelectedPeriod = currentState.expenses
-                            .sumOf { it.expense.amount.toDouble() }.toFloat(),
-                        amountOfRecords = currentState.expenses.size
-                    )
-                    ExpenseList(
-                        currentState.expenses,
-                        onLongItemClick = {
-                            viewModel.processCommand(ExpenseCommand.SelectAction(it))
-                        }
-                    )
-
-                    when (currentState.dialogState) {
-
-                        is ExpenseDialogState.AddingExpense -> {
-                            AddingExpenseDialog(
-                                onDismissRequest = {
-                                    viewModel.processCommand(ExpenseCommand.ReturnToList)
-                                }
-                            )
-                        }
-
-                        ExpenseDialogState.Closed -> {}
-
-                        is ExpenseDialogState.SelectingAction -> {
-                            ActionDialog(
-                                onDismissRequest = {
-                                    viewModel.processCommand(ExpenseCommand.ReturnToList)
-                                },
-                                onEditButtonClicked = {
-                                    viewModel.processCommand(ExpenseCommand.EditExpense)
-                                },
-                                onDeleteButtonClicked = {
-                                    viewModel.processCommand(
-                                        ExpenseCommand.DeleteExpense(
-                                            currentState.dialogState.expenseId
-                                        )
-                                    )
-                                }
-                            )
-                        }
-
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Scaffold(
+            floatingActionButton = {
+                FloatingActionButtonAdd(
+                    onClick = {
+                        viewModel.processCommand(ExpenseCommand.AddExpense)
                     }
-                }
+                )
+            },
+//            contentWindowInsets = WindowInsets(bottom = 88.dp)
+        ) { paddingValues ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(
+                        top = paddingValues.calculateTopPadding() + 8.dp,
+//                        bottom = paddingValues.calculateBottomPadding()
+                    )
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ExpenseHistoryScreenHeader()
+                Spacer(Modifier.size(4.dp))
+                DateChips(
+                    sharedViewModel = sharedViewModel
+                )
 
-                ExpenseState.Loading -> {
-                    // TODO
+                when (val currentState = state.value) {
+                    is ExpenseState.Loaded -> {
+
+                        ExpensesStatisticsTile(
+                            sumForSelectedPeriod = currentState.expenses
+                                .sumOf { it.expense.amount.toDouble() }.toFloat(),
+                            amountOfRecords = currentState.expenses.size
+                        )
+                        ExpenseList(
+                            currentState.expenses,
+                            onLongItemClick = {
+                                viewModel.processCommand(ExpenseCommand.SelectAction(it))
+                            }
+                        )
+
+                        when (currentState.dialogState) {
+
+                            is ExpenseDialogState.AddingExpense -> {
+                                AddingExpenseDialog(
+                                    onDismissRequest = {
+                                        viewModel.processCommand(ExpenseCommand.ReturnToList)
+                                    }
+                                )
+                            }
+
+                            ExpenseDialogState.Closed -> {}
+
+                            is ExpenseDialogState.SelectingAction -> {
+                                ActionDialog(
+                                    onDismissRequest = {
+                                        viewModel.processCommand(ExpenseCommand.ReturnToList)
+                                    },
+                                    onEditButtonClicked = {
+                                        viewModel.processCommand(ExpenseCommand.EditExpense)
+                                    },
+                                    onDeleteButtonClicked = {
+                                        viewModel.processCommand(
+                                            ExpenseCommand.DeleteExpense(
+                                                currentState.dialogState.expenseId
+                                            )
+                                        )
+                                    }
+                                )
+                            }
+
+                        }
+                    }
+
+                    ExpenseState.Loading -> {
+                        // TODO
+                    }
                 }
             }
         }
+        BottomNavigationBar(navController)
     }
 }
 
@@ -246,7 +244,7 @@ fun ExpenseList(
         verticalArrangement = Arrangement.spacedBy(15.dp),
         contentPadding = PaddingValues(
             top = 20.dp,
-            bottom = 20.dp,
+            bottom = 20.dp + 100.dp,
             start = 24.dp,
             end = 24.dp
         )

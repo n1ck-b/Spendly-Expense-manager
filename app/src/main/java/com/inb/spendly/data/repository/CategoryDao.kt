@@ -26,7 +26,7 @@ interface CategoryDao {
             Flow<List<CategoryWithFilteredExpenses>>
 
     @Query("SELECT * FROM categories")
-    fun getAllCategories(): Flow<List<CategoryDbModel>>
+    suspend fun getAllCategories(): List<CategoryDbModel>
 
     @Query("SELECT * FROM categories WHERE name = :name")
     suspend fun getCategoryByName(name: String): CategoryDbModel?

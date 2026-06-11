@@ -17,9 +17,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,10 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.inb.spendly.R
+import com.inb.spendly.data.models.Currencies
 import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.components.ActionDialog
-import com.inb.spendly.presentation.components.BottomNavBarItem
 import com.inb.spendly.presentation.components.BottomNavigationBar
 import com.inb.spendly.presentation.components.DateChips
 import com.inb.spendly.presentation.components.FloatingActionButtonAdd
@@ -52,8 +54,7 @@ fun CategoriesScreen(
     modifier: Modifier = Modifier,
     categoryViewModel: CategoryViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel,
-    navController: NavHostController,
-    bottomNavBarItems: List<BottomNavBarItem>
+    navController: NavHostController
 ) {
 
     val state = categoryViewModel.state.collectAsState()
@@ -68,7 +69,7 @@ fun CategoriesScreen(
             )
         },
         bottomBar = {
-            BottomNavigationBar(navController, bottomNavBarItems)
+            BottomNavigationBar(navController)
         }
     ) { paddingValues ->
 

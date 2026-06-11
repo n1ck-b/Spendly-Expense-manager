@@ -14,9 +14,9 @@ sealed interface ExpenseDialogState {
         val amount: Float = 0f,
         val date: Date? = Date(),
         val note: String? = null,
-        val categoryName: String? = null,
+        val category: Category,
         val selectedCurrency: Currencies = Currencies.BYN,
-        val categories: Flow<List<Category>>
+        val categories: List<Category>
     ): ExpenseDialogState
 
     data class SelectingAction(val expenseId: Long): ExpenseDialogState

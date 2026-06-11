@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -109,7 +110,7 @@ class ExpenseViewModel @Inject constructor(
         if (currentState is ExpenseState.Loaded
             && currentState.dialogState is AddingExpense
         ) {
-            if (currentState.dialogState.categoryName == null || currentState.dialogState.date == null) {
+            if (currentState.dialogState.date == null) {
                 viewModelScope.launch {
                     _events.emit(UiEvent.ShowToastNotAllFieldsFilled)
                 }
@@ -119,7 +120,7 @@ class ExpenseViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
 
                 val added = addExpenseUseCase(
-                    categoryName = currentState.dialogState.categoryName,
+                    categoryName = currentState.dialogState.category.name,
                     expenseId = currentState.dialogState.id,
                     expenseAmount = currentState.dialogState.amount,
                     expenseDate = currentState.dialogState.date,
@@ -162,22 +163,19 @@ class ExpenseViewModel @Inject constructor(
             ExpenseCommand.AddExpense -> {
 
                 viewModelScope.launch {
-                    val currentState = _state.value
 
-                    if (currentState is ExpenseState.Loaded) {
+                    val categories = getAllCategoriesUseCase()
 
-                        val categories = getAllCategoriesUseCase()
-
-                        _state.update { prevState ->
-                            if (prevState is ExpenseState.Loaded) {
-                                prevState.copy(
-                                    dialogState = AddingExpense(
-                                        categories = categories
-                                    )
+                    _state.update { prevState ->
+                        if (prevState is ExpenseState.Loaded) {
+                            prevState.copy(
+                                dialogState = AddingExpense(
+                                    categories = categories,
+                                    category = categories.first()
                                 )
-                            } else {
-                                prevState
-                            }
+                            )
+                        } else {
+                            prevState
                         }
                     }
                 }
@@ -202,13 +200,13 @@ class ExpenseViewModel @Inject constructor(
                 }
             }
 
-            is ExpenseCommand.InputCategoryName -> {
+            is ExpenseCommand.InputCategory -> {
                 _state.update { prevState ->
                     if (prevState is ExpenseState.Loaded
                         && prevState.dialogState is AddingExpense
                     ) {
                         val newDialogState =
-                            prevState.dialogState.copy(categoryName = command.categoryName)
+                            prevState.dialogState.copy(category = command.category)
                         prevState.copy(dialogState = newDialogState)
                     } else {
                         prevState
@@ -255,7 +253,7 @@ class ExpenseViewModel @Inject constructor(
                         && prevState.dialogState is AddingExpense
                     ) {
                         val newDialogState = prevState.dialogState.copy(
-                            selectedCurrency = Currencies.valueOf(command.selectedCurrency)
+                            selectedCurrency = command.selectedCurrency
                         )
                         prevState.copy(dialogState = newDialogState)
                     } else {
@@ -295,7 +293,7 @@ class ExpenseViewModel @Inject constructor(
                                         amount = expenseWithCategory.expense.amount,
                                         date = expenseWithCategory.expense.date,
                                         note = expenseWithCategory.expense.note,
-                                        categoryName = expenseWithCategory.category.name,
+                                        category = expenseWithCategory.category,
                                         categories = categories
                                     )
                                 )

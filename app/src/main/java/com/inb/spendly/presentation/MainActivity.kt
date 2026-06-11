@@ -36,28 +36,9 @@ class MainActivity : ComponentActivity() {
             SpendlyTheme {
                 val navController = rememberNavController()
 
-                val bottomNavBarItems = listOf(
-                    BottomNavBarItem(
-                        route = CategoriesScreenRoute,
-                        name = stringResource(R.string.categories_screen_name),
-                        icon = Icons.Outlined.Dashboard
-                    ),
-                    BottomNavBarItem(
-                        route = ExpenseHistoryScreenRoute,
-                        name = stringResource(R.string.expense_history_screen_name),
-                        icon = Icons.AutoMirrored.Outlined.FormatListBulleted
-                    ),
-                    BottomNavBarItem(
-                        route = StatisticsScreenRoute,
-                        name = stringResource(R.string.statistics_screen_name),
-                        icon = Icons.Outlined.BarChart
-                    )
-                )
-
                 NavGraph(
                     navController = navController,
-                    sharedViewModel = sharedViewModel,
-                    bottomNavBarItems = bottomNavBarItems
+                    sharedViewModel = sharedViewModel
                 )
             }
         }

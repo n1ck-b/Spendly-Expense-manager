@@ -13,8 +13,7 @@ import com.inb.spendly.presentation.screens.statistics.StatisticsScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    sharedViewModel: SharedViewModel,
-    bottomNavBarItems: List<BottomNavBarItem>
+    sharedViewModel: SharedViewModel
 ){
     NavHost(
         navController = navController,
@@ -23,22 +22,19 @@ fun NavGraph(
         composable<ExpenseHistoryScreenRoute> {
             ExpenseHistoryScreen(
                 sharedViewModel = sharedViewModel,
-                navController = navController,
-                bottomNavBarItems = bottomNavBarItems
+                navController = navController
             )
         }
         composable<CategoriesScreenRoute> {
             CategoriesScreen(
                 sharedViewModel = sharedViewModel,
-                navController = navController,
-                bottomNavBarItems = bottomNavBarItems
+                navController = navController
             )
         }
         composable<StatisticsScreenRoute> {
             StatisticsScreen(
                 sharedViewModel = sharedViewModel,
-                navController = navController,
-                bottomNavBarItems = bottomNavBarItems
+                navController = navController
             )
         }
     }

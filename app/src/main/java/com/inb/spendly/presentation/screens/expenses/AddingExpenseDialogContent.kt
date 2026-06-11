@@ -18,11 +18,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -34,28 +35,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.inb.spendly.R
 import com.inb.spendly.data.models.Currencies
-import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.presentation.components.DatePickerModal
-import com.inb.spendly.presentation.components.DropDownMenu
 import com.inb.spendly.presentation.screens.UiEvent
+import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Date
 
 @Composable
 fun AddingExpenseDialogContent(
     paddingValues: PaddingValues,
     onCancelButtonClicked: () -> Unit,
-    onSaveButtonClicked: () -> Unit,
+    onSaveButtonClicked: (Boolean) -> Unit,
     viewModel: ExpenseViewModel
 ) {
     val state = viewModel.state.collectAsState()
@@ -98,7 +93,7 @@ fun AddingExpenseDialogContent(
 
         val formattedDate =
             if (currentState.dialogState.date != null)
-                SimpleDateFormat("dd.MM.yyyy", LocalLocale.current.platformLocale)
+                SimpleDateFormat.getDateInstance(DateFormat.SHORT)
                     .format(currentState.dialogState.date)
             else ""
 
@@ -107,15 +102,15 @@ fun AddingExpenseDialogContent(
                 .padding(paddingValues)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             AddingExpenseScreenHeader()
 
-            ExpenseCurrencyDropDown(
-                selectedCurrency = currentState.dialogState.selectedCurrency,
+            CurrencyDropDownMenu(
                 onItemClick = {
                     viewModel.processCommand(ExpenseCommand.InputSelectedCurrency(it))
-                }
+                },
+                selectedItem = currentState.dialogState.selectedCurrency
             )
 
             AmountTextField(
@@ -141,7 +136,7 @@ fun AddingExpenseDialogContent(
                 },
                 onClearIconClick = {
                     viewModel.processCommand(
-                        ExpenseCommand.InputDate(System.currentTimeMillis())
+                        ExpenseCommand.InputDate(null)
                     )
                 },
                 showErrors = showErrors.value
@@ -161,19 +156,24 @@ fun AddingExpenseDialogContent(
                 }
             )
 
-            ExpenseCategoryDropDown(
-                categories = currentState.dialogState.categories
-                    .collectAsState(emptyList()).value,
+            CategoriesDropDownMenu(
+                modifier = Modifier.fillMaxWidth(),
                 onItemClick = {
                     viewModel.processCommand(
-                        ExpenseCommand.InputCategoryName(it)
+                        ExpenseCommand.InputCategory(it)
                     )
                 },
-                selectedCategory = currentState.dialogState.categoryName ?: ""
+                selectedItem = currentState.dialogState.category,
+                categories = currentState.dialogState.categories
             )
 
-            CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
-
+            CancelSaveButtons(
+                onCancelButtonClicked = onCancelButtonClicked,
+                onSaveButtonClicked = onSaveButtonClicked,
+                selectedCurrency = currentState.dialogState.selectedCurrency,
+                saveButtonEnabled = currentState.dialogState.date != null
+                        && currentState.dialogState.amount != 0f
+            )
         }
     }
 }
@@ -201,15 +201,14 @@ fun AmountTextField(
 
     var textFieldValue by remember(currentAmount) {
         mutableStateOf(
-            if (currentAmount == 0f) ""
-            else if (currentAmount % 1 == 0f)
+            if (currentAmount % 1 == 0f)
                 currentAmount.toInt().toString()
             else
                 currentAmount.toString()
         )
     }
 
-    OutlinedTextField(
+    TextField(
         modifier = Modifier.fillMaxWidth(),
         value = textFieldValue,
         onValueChange = {
@@ -218,12 +217,16 @@ fun AmountTextField(
         },
         label = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_amount_text_field_label)
+                text = stringResource(R.string.adding_expense_screen_amount_text_field_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         placeholder = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_amount_text_field_placeholder)
+                text = stringResource(R.string.adding_expense_screen_amount_text_field_placeholder),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         singleLine = true,
@@ -236,16 +239,26 @@ fun AmountTextField(
                 Icon(
                     imageVector = Icons.Outlined.Close,
                     contentDescription = null,
-                    modifier = Modifier
-                        .clickable {
-                            textFieldValue = ""
-                            onClearIconClick()
-                        }
+                    modifier = Modifier.clickable {
+                        textFieldValue = ""
+                        onClearIconClick()
+                    }
                 )
             }
         },
-        shape = RoundedCornerShape(7.dp),
-        isError = (textFieldValue.isBlank() || textFieldValue.isEmpty()) && showErrors
+        shape = RoundedCornerShape(10.dp),
+        isError = textFieldValue.isBlank() && showErrors,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            errorContainerColor = MaterialTheme.colorScheme.errorContainer
+        ),
+        textStyle = MaterialTheme.typography.bodyLarge
     )
 }
 
@@ -263,7 +276,7 @@ fun DateTextField(
         MutableInteractionSource()
     }
 
-    OutlinedTextField(
+    TextField(
         modifier = Modifier
             .fillMaxWidth(),
         interactionSource = interactionSource,
@@ -271,7 +284,9 @@ fun DateTextField(
         onValueChange = {},
         label = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_date_text_field_label)
+                text = stringResource(R.string.adding_expense_screen_date_text_field_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         readOnly = true,
@@ -285,8 +300,18 @@ fun DateTextField(
                 )
             }
         },
-        shape = RoundedCornerShape(7.dp),
-        isError = (formattedDate.isBlank() || formattedDate.isEmpty()) && showErrors
+        shape = RoundedCornerShape(10.dp),
+        isError = formattedDate.isBlank() && showErrors,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            errorContainerColor = MaterialTheme.colorScheme.errorContainer
+        )
     )
 
     when {
@@ -300,60 +325,6 @@ fun DateTextField(
 }
 
 @Composable
-fun ExpenseCategoryDropDown(
-    categories: List<Category>,
-    onItemClick: (String) -> Unit,
-    selectedCategory: String
-) {
-
-    val categoriesNames =
-        if (categories.isNotEmpty())
-            categories.map { it.name }
-        else
-            emptyList()
-
-    Column(
-        verticalArrangement = Arrangement.spacedBy(7.dp)
-    ) {
-        Text(
-            text = buildAnnotatedString {
-                append(stringResource(R.string.adding_expense_screen_category_dropdown_label))
-
-                withStyle(style = SpanStyle(color = Color.Red)) {
-                    append(" *")
-                }
-            },
-            style = MaterialTheme.typography.titleMedium
-        )
-        DropDownMenu(
-            items = categoriesNames,
-            onItemClick = onItemClick,
-            selectedItem = selectedCategory
-        )
-    }
-}
-
-@Composable
-fun ExpenseCurrencyDropDown(
-    selectedCurrency: Currencies,
-    onItemClick: (String) -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(7.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.adding_expense_screen_currency_dropdown_label),
-            style = MaterialTheme.typography.titleMedium
-        )
-        DropDownMenu(
-            items = Currencies.entries.map { it.name },
-            onItemClick = onItemClick,
-            selectedItem = selectedCurrency.toString()
-        )
-    }
-}
-
-@Composable
 fun NoteTextField(
     currentNote: String?,
     onValueChanged: (String) -> Unit,
@@ -364,7 +335,7 @@ fun NoteTextField(
         mutableStateOf(currentNote ?: "")
     }
 
-    OutlinedTextField(
+    TextField(
         modifier = Modifier.fillMaxWidth(),
         value = textFieldValue,
         onValueChange = { newValue ->
@@ -373,12 +344,16 @@ fun NoteTextField(
         },
         label = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_note_text_field_label)
+                text = stringResource(R.string.adding_expense_screen_note_text_field_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         placeholder = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_note_text_field_placeholder)
+                text = stringResource(R.string.adding_expense_screen_note_text_field_placeholder),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         maxLines = 2,
@@ -398,38 +373,66 @@ fun NoteTextField(
                 )
             }
         },
-        shape = RoundedCornerShape(7.dp)
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            errorContainerColor = MaterialTheme.colorScheme.errorContainer
+        )
     )
 }
 
 @Composable
 fun CancelSaveButtons(
     onCancelButtonClicked: () -> Unit,
-    onSaveButtonClicked: () -> Unit
+    onSaveButtonClicked: (Boolean) -> Unit,
+    selectedCurrency: Currencies,
+    saveButtonEnabled: Boolean
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 20.dp),
+            .padding(top = 16.dp),
         verticalArrangement = Arrangement.Bottom
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            OutlinedButton(
-                onClick = onCancelButtonClicked
+            Button(
+                onClick = onCancelButtonClicked,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
                     text = stringResource(R.string.cancel_button),
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
             Button(
-                onClick = onSaveButtonClicked
+                enabled = saveButtonEnabled,
+                onClick = {
+                    onSaveButtonClicked(selectedCurrency == Currencies.BYN)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.save_button)
+                    text = stringResource(R.string.save_button),
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }

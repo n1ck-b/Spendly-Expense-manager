@@ -3,7 +3,6 @@ package com.inb.spendly.presentation.screens.statistics
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,12 +36,9 @@ import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
-import com.inb.spendly.presentation.components.BottomNavBarItem
 import com.inb.spendly.presentation.components.BottomNavigationBar
 import com.inb.spendly.presentation.components.DateChips
-import com.inb.spendly.presentation.components.FloatingActionButtonAdd
 import com.inb.spendly.presentation.screens.SharedViewModel
-import com.inb.spendly.presentation.screens.expenses.ExpenseCommand
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -52,8 +48,7 @@ fun StatisticsScreen(
     modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel,
     statisticsViewModel: StatisticsViewModel = hiltViewModel(),
-    navController: NavHostController,
-    bottomNavBarItems: List<BottomNavBarItem>
+    navController: NavHostController
 ) {
 
     val state = statisticsViewModel.state.collectAsState()
@@ -61,7 +56,7 @@ fun StatisticsScreen(
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController, bottomNavBarItems)
+            BottomNavigationBar(navController)
         }
     ) { paddingValues ->
         Column(
@@ -82,10 +77,11 @@ fun StatisticsScreen(
                 sharedViewModel = sharedViewModel
             )
 
-            when(currentState) {
+            when (currentState) {
                 is StatisticsState.Loaded -> {
                     StatisticsByCategoriesList(currentState.categoriesWithExpenses)
                 }
+
                 StatisticsState.Loading -> {
                     // TODO
                 }
@@ -175,7 +171,7 @@ fun StatisticsByCategoriesList(categoriesWithExpenses: List<CategoryWithFiltered
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        if(categoriesWithExpenses.isNotEmpty()) {
+        if (categoriesWithExpenses.isNotEmpty()) {
             item {
                 DonutChart(categoriesWithExpenses)
             }
@@ -196,7 +192,8 @@ fun StatisticsByCategoriesList(categoriesWithExpenses: List<CategoryWithFiltered
 @Composable
 fun StatisticsByCategoriesListItem(item: CategoryWithFilteredExpenses, sumOfAllExpenses: Double) {
 
-    val percentage = ((item.expenseAmount ?: 0f) / (sumOfAllExpenses.takeIf { it != 0.0 } ?: 1.0)) * 100
+    val percentage =
+        ((item.expenseAmount ?: 0f) / (sumOfAllExpenses.takeIf { it != 0.0 } ?: 1.0)) * 100
 
     OutlinedCard(
         modifier = Modifier
@@ -232,8 +229,10 @@ fun StatisticsByCategoriesListItem(item: CategoryWithFilteredExpenses, sumOfAllE
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        "${BigDecimal(item.expenseAmount?.toDouble() ?: 0.0)
-                            .setScale(2, RoundingMode.HALF_UP)} Br"
+                        "${
+                            BigDecimal(item.expenseAmount?.toDouble() ?: 0.0)
+                                .setScale(2, RoundingMode.HALF_UP)
+                        } Br"
                     )
                 }
             }

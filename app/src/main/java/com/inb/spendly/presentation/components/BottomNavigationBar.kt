@@ -1,13 +1,15 @@
 package com.inb.spendly.presentation.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -15,22 +17,43 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.inb.spendly.R
+import com.inb.spendly.presentation.navigation.CategoriesScreenRoute
+import com.inb.spendly.presentation.navigation.ExpenseHistoryScreenRoute
+import com.inb.spendly.presentation.navigation.StatisticsScreenRoute
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavHostController,
-    items: List<BottomNavBarItem>
+    navController: NavHostController
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry.value?.destination
+
+    val bottomNavBarItems = listOf(
+        BottomNavBarItem(
+            route = CategoriesScreenRoute,
+            name = stringResource(R.string.categories_screen_name),
+            icon = Icons.Outlined.Dashboard
+        ),
+        BottomNavBarItem(
+            route = ExpenseHistoryScreenRoute,
+            name = stringResource(R.string.expense_history_screen_name),
+            icon = Icons.AutoMirrored.Outlined.FormatListBulleted
+        ),
+        BottomNavBarItem(
+            route = StatisticsScreenRoute,
+            name = stringResource(R.string.statistics_screen_name),
+            icon = Icons.Outlined.BarChart
+        )
+    )
 
 
     NavigationBar(
@@ -43,7 +66,7 @@ fun BottomNavigationBar(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         tonalElevation = 2.dp
     ) {
-        items.forEach { item ->
+        bottomNavBarItems.forEach { item ->
             BottomNavBarItem(navController, item, currentDestination)
         }
     }

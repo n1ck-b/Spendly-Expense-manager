@@ -1,6 +1,7 @@
 package com.inb.spendly.presentation.screens.expenses
 
 import com.inb.spendly.data.models.Currencies
+import com.inb.spendly.domain.entities.Category
 
 sealed interface ExpenseCommand {
 
@@ -18,10 +19,10 @@ sealed interface ExpenseCommand {
 
     data class InputNote(val note: String?): ExpenseCommand
 
-    data class InputCategoryName(val categoryName: String): ExpenseCommand
+    data class InputCategory(val category: Category): ExpenseCommand
 
     data class InputSelectedCurrency(
-        val selectedCurrency: String
+        val selectedCurrency: Currencies
     ): ExpenseCommand
 
     data class SelectAction(val expenseId: Long): ExpenseCommand
