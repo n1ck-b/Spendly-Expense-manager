@@ -36,7 +36,7 @@ fun AddingExpenseDialog(
                 .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
             AddingExpenseDialogContent(

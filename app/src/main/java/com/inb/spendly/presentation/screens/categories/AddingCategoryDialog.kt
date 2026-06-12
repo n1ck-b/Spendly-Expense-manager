@@ -25,13 +25,13 @@ fun AddingCategoryDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(7.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
             AddingCategoryDialogContent(
-                paddingValues = PaddingValues(30.dp),
+                paddingValues = PaddingValues(32.dp),
                 onCancelButtonClicked = onDismissRequest,
                 onSaveButtonClicked = onSaveButtonClicked,
                 viewModel = categoryViewModel

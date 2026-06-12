@@ -19,6 +19,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.MoneyOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -72,14 +75,12 @@ fun ExpenseHistoryScreen(
                     }
                 )
             },
-//            contentWindowInsets = WindowInsets(bottom = 88.dp)
         ) { paddingValues ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(
                         top = paddingValues.calculateTopPadding() + 8.dp,
-//                        bottom = paddingValues.calculateBottomPadding()
                     )
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
@@ -90,7 +91,6 @@ fun ExpenseHistoryScreen(
                 DateChips(
                     sharedViewModel = sharedViewModel
                 )
-
                 when (val currentState = state.value) {
                     is ExpenseState.Loaded -> {
 
@@ -241,10 +241,10 @@ fun ExpenseList(
     onLongItemClick: (Long) -> Unit
 ) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(15.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(
             top = 20.dp,
-            bottom = 20.dp + 100.dp,
+            bottom = 20.dp + 120.dp,
             start = 24.dp,
             end = 24.dp
         )
@@ -265,19 +265,36 @@ fun NoExpensesFound() {
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
+        Box(
             modifier = Modifier
-                .size(50.dp),
-            painter = painterResource(R.drawable.outline_folder_open_24),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground
+                .clip(RoundedCornerShape(10.dp))
+                .background(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                )
+                .padding(8.dp)
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(64.dp),
+                imageVector = Icons.Outlined.MoneyOff,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.no_expenses),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center
         )
         Text(
             text = stringResource(R.string.no_expenses_for_selected_period),
             style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
     }

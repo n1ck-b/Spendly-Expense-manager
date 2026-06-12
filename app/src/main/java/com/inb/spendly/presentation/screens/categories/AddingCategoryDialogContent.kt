@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -31,6 +32,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -103,7 +106,7 @@ fun AddingCategoryDialogContent(
                 .padding(paddingValues)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AddingCategoryScreenHeader()
 
@@ -156,7 +159,11 @@ fun AddingCategoryDialogContent(
                 }
             )
 
-            CancelSaveButtons(onCancelButtonClicked, onSaveButtonClicked)
+            CancelSaveButtons(
+                onCancelButtonClicked = onCancelButtonClicked,
+                onSaveButtonClicked = onSaveButtonClicked,
+                saveButtonEnabled = currentState.dialogState.name.isNotBlank()
+            )
         }
     }
 
@@ -171,7 +178,8 @@ fun AddingCategoryScreenHeader() {
     ) {
         Text(
             text = stringResource(R.string.adding_category_screen_header),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -191,7 +199,7 @@ fun CategoryNameTextField(
         )
     }
 
-    OutlinedTextField(
+    TextField(
         modifier = Modifier
             .fillMaxWidth(),
         value = textFieldValue,
@@ -201,12 +209,16 @@ fun CategoryNameTextField(
         },
         label = {
             Text(
-                text = stringResource(R.string.adding_category_screen_name_text_field_label)
+                text = stringResource(R.string.adding_category_screen_name_text_field_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         placeholder = {
             Text(
-                text = stringResource(R.string.adding_category_screen_name_text_field_placeholder)
+                text = stringResource(R.string.adding_category_screen_name_text_field_placeholder),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         singleLine = true,
@@ -227,8 +239,19 @@ fun CategoryNameTextField(
                 )
             }
         },
-        shape = RoundedCornerShape(7.dp),
-        isError = (textFieldValue.isBlank() || textFieldValue.isEmpty()) && showErrors
+        shape = RoundedCornerShape(10.dp),
+        isError = (textFieldValue.isBlank() || textFieldValue.isEmpty()) && showErrors,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            errorContainerColor = MaterialTheme.colorScheme.errorContainer
+        ),
+        textStyle = MaterialTheme.typography.bodyLarge
     )
 }
 
@@ -239,25 +262,26 @@ fun ChoosingIconCard(
     onClick: () -> Unit
 ) {
 
-    OutlinedCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(7.dp),
+        shape = RoundedCornerShape(10.dp),
         onClick = onClick
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(R.string.adding_category_screen_select_icon),
                 style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Icon(
                 imageVector = CategoryIcons.getIconByKey(selectedIcon),
@@ -280,19 +304,19 @@ fun ChoosingIconColorCard(
         modifier = Modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(7.dp),
+        shape = RoundedCornerShape(10.dp),
         onClick = onClick
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = 15.dp,
-                    bottom = 15.dp,
-                    start = 15.dp,
-                    end = 19.dp
+                    top = 16.dp,
+                    bottom = 16.dp,
+                    start = 16.dp,
+                    end = 20.dp
                 ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -300,11 +324,12 @@ fun ChoosingIconColorCard(
             Text(
                 text = stringResource(R.string.adding_category_screen_select_icon_color),
                 style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Box(
                 modifier = Modifier
                     .size(35.dp)
-                    .clip(RoundedCornerShape(7.dp))
+                    .clip(RoundedCornerShape(5.dp))
                     .background(selectedColor)
             )
         }
@@ -324,48 +349,47 @@ fun IconsListDialog(
         ) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(7.dp),
+                    .fillMaxWidth()
+                    .padding(vertical = 80.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     contentPadding = PaddingValues(
-                        top = 30.dp,
-                        bottom = 30.dp,
-                        start = 20.dp,
-                        end = 20.dp
+                        all = 24.dp
                     ),
                     horizontalArrangement = Arrangement.spacedBy(
-                        15.dp,
+                        16.dp,
                         Alignment.CenterHorizontally
                     ),
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(categoryIcons) { currentIcon ->
-                        OutlinedCard(
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(7.dp),
+                            shape = RoundedCornerShape(10.dp),
                             onClick = { onItemClicked(currentIcon.key) },
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surface
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer
                             ),
                         ) {
-                            Column(
+                            Box(
                                 modifier = Modifier
-                                    .padding(7.dp)
-                                    .fillMaxSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                                    .padding(8.dp)
+                                    .fillMaxSize()
+                                    .aspectRatio(1f),
+                                contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = currentIcon.icon,
                                     contentDescription = null,
                                     modifier = Modifier
-                                        .size(40.dp),
+                                        .size(32.dp),
+                                    tint = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
                         }
@@ -389,31 +413,29 @@ fun ColorsListDialog(
         ) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(7.dp),
+                    .fillMaxWidth()
+                    .padding(vertical = 80.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
+                    columns = GridCells.Fixed(5),
                     contentPadding = PaddingValues(
-                        top = 30.dp,
-                        bottom = 30.dp,
-                        start = 20.dp,
-                        end = 20.dp
+                        all = 24.dp
                     ),
                     horizontalArrangement = Arrangement.spacedBy(
-                        15.dp,
+                        16.dp,
                         Alignment.CenterHorizontally
                     ),
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(colors) { color ->
                         Box(
                             modifier = Modifier
                                 .aspectRatio(1f)
-                                .clip(RoundedCornerShape(7.dp))
+                                .clip(RoundedCornerShape(10.dp))
                                 .background(color)
                                 .clickable { onItemClicked(color) }
                         )
@@ -427,31 +449,46 @@ fun ColorsListDialog(
 @Composable
 fun CancelSaveButtons(
     onCancelButtonClicked: () -> Unit,
-    onSaveButtonClicked: () -> Unit
+    onSaveButtonClicked: () -> Unit,
+    saveButtonEnabled: Boolean
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 20.dp),
+            .padding(top = 16.dp),
         verticalArrangement = Arrangement.Bottom
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            OutlinedButton(
-                onClick = onCancelButtonClicked
+            Button(
+                onClick = onCancelButtonClicked,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
                     text = stringResource(R.string.cancel_button),
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
             Button(
-                onClick = onSaveButtonClicked
+                enabled = saveButtonEnabled,
+                onClick = onSaveButtonClicked,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.save_button)
+                    text = stringResource(R.string.save_button),
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }

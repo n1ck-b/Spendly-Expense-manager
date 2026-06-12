@@ -53,8 +53,8 @@ fun CurrencyDropDownMenu(
                     enabled = true
                 ),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,
@@ -75,12 +75,12 @@ fun CurrencyDropDownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface),
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             shape = RoundedCornerShape(10.dp)
         ) {
             Currencies.entries.forEach { item ->
                 DropdownMenuItem(
-                    modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer),
                     text = {
                         Text(
                             text = "${item.symbol} (${item.name})",

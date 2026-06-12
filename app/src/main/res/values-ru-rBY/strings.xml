@@ -12,6 +12,8 @@
     <string name="year">Год</string>
     <string name="expense_amount_header">Всего</string>
     <string name="expense_records_amount_header">Записей</string>
+    <string name="category_amount_header">Всего</string>
+    <string name="top_category_amount_header">Больше всего</string>
     <string name="expense_history_screen_header">История расходов</string>
     <string name="category_screen_header">Категории расходов</string>
     <string name="statistics_screen_header">Статистика расходов</string>
@@ -37,8 +39,10 @@
     <string name="expense_history_screen_name">Расходы</string>
     <string name="categories_screen_name">Категории</string>
     <string name="statistics_screen_name">Статистика</string>
-    <string name="no_expenses_for_selected_period">Не найдено расходов для выбранного временного периода. Измените период или добавьте расход</string>
-    <string name="no_categories_screen_warning">Список категорий пустой. Создайте первую категорию, чтобы начать использовать приложение</string>
+    <string name="no_expenses">Расходов не найдено</string>
+    <string name="no_expenses_for_selected_period">Для выбранного временного периода нет записей. Измените период или добавьте расход</string>
+    <string name="no_categories">Список категорий пуст</string>
+    <string name="no_categories_description">Создайте первую категорию, чтобы начать использовать приложение</string>
     <string name="no_data_for_statistics">Нет данных для отображения за выбранный период времени. Измените период или добавьте расход</string>
     <string name="no_categories_found">Нет категорий</string>
     <string name="fill_all_fields_warning">Заполните все обязательные поля</string>

@@ -29,6 +29,8 @@
     <string name="year">Year</string>
     <string name="expense_amount_header">In total</string>
     <string name="expense_records_amount_header">Records</string>
+    <string name="category_amount_header">In total</string>
+    <string name="top_category_amount_header">Most expenses</string>
     <string name="expense_history_screen_header">Expense history</string>
     <string name="category_screen_header">Categories of expenses</string>
     <string name="statistics_screen_header">Statistics of expenses</string>
@@ -53,8 +55,10 @@
     <string name="expense_history_screen_name">Expenses</string>
     <string name="categories_screen_name">Categories</string>
     <string name="statistics_screen_name">Statistics</string>
-    <string name="no_expenses_for_selected_period">No expenses found for the selected period. Change period or add new expense</string>
-    <string name="no_categories_screen_warning">The list of categories is empty. Create the first category to get started</string>
+    <string name="no_expenses">No expenses found</string>
+    <string name="no_expenses_for_selected_period">There are no records for the selected time period. Change the period or add an expense</string>
+    <string name="no_categories">The list of categories is empty</string>
+    <string name="no_categories_description">Create the first category to get started</string>
     <string name="no_data_for_statistics">No data to display for the selected period. Change period or add new expense</string>
     <string name="no_categories_found">No categories</string>
     <string name="fill_all_fields_warning">Fill in all required fields</string>
