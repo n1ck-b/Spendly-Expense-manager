@@ -104,12 +104,12 @@ fun CategoriesScreen(
                         CategoriesStatisticsTile(
                             sumForSelectedPeriod = currentState.categories
                                 .sumOf { it.expenseAmount?.toDouble() ?: 0.0 }.toFloat(),
-                            topCategoryName = currentState.categories.maxBy {
+                            topCategoryName = currentState.categories.maxByOrNull {
                                 it.expenseAmount ?: 0.0f
-                            }.categoryName,
-                            topCategorySum = currentState.categories.maxBy {
+                            }?.categoryName,
+                            topCategorySum = currentState.categories.maxByOrNull {
                                 it.expenseAmount ?: 0.0f
-                            }.expenseAmount,
+                            }?.expenseAmount,
                         )
 
                         CategoriesGrid(
@@ -267,7 +267,7 @@ fun CategoriesStatisticsTile(
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
-                        text = "Больше всего",
+                        text = stringResource(R.string.top_category_amount_header),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleSmall
@@ -309,7 +309,12 @@ fun CategoriesGrid(
 fun NoCategoriesFound() {
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(
+                bottom = 96.dp,
+                start = 24.dp,
+                end = 24.dp
+            ),
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

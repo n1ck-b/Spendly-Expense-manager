@@ -240,6 +240,11 @@ fun ExpenseList(
     expensesWithCategory: List<ExpenseWithCategory>,
     onLongItemClick: (Long) -> Unit
 ) {
+
+    if (expensesWithCategory.isEmpty()) {
+        NoExpensesFound()
+    }
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(
@@ -249,11 +254,6 @@ fun ExpenseList(
             end = 24.dp
         )
     ) {
-        if (expensesWithCategory.isEmpty()) {
-            item {
-                NoExpensesFound()
-            }
-        }
         items(expensesWithCategory) { expenseWithCategory ->
             ExpenseListItem(expenseWithCategory, onLongItemClick)
         }
@@ -264,7 +264,12 @@ fun ExpenseList(
 fun NoExpensesFound() {
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(
+                bottom = 96.dp,
+                start = 24.dp,
+                end = 24.dp
+            ),
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

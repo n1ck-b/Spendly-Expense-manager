@@ -40,6 +40,7 @@
     <string name="categories_screen_name">Категории</string>
     <string name="statistics_screen_name">Статистика</string>
     <string name="no_expenses">Расходов не найдено</string>
+    <string name="no_data_to_show">Нет данных для отображения</string>
     <string name="no_expenses_for_selected_period">Для выбранного временного периода нет записей. Измените период или добавьте расход</string>
     <string name="no_categories">Список категорий пуст</string>
     <string name="no_categories_description">Создайте первую категорию, чтобы начать использовать приложение</string>
