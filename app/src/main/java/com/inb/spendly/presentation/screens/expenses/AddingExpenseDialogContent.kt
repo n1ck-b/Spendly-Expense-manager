@@ -200,9 +200,10 @@ fun AmountTextField(
     showErrors: Boolean
 ) {
 
-    var textFieldValue by remember(currentAmount) {
+    var textFieldValue by remember {
         mutableStateOf(
             if (currentAmount % 1 == 0f)
+                // если целое число, переводим в Int чтобы убрать .0
                 currentAmount.toInt().toString()
             else
                 currentAmount.toString()
