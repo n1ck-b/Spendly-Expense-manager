@@ -1,6 +1,5 @@
 package com.inb.spendly.domain
 
-import com.inb.spendly.data.models.ExpenseDbModel
 import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import kotlinx.coroutines.flow.Flow

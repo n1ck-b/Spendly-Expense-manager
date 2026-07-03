@@ -50,6 +50,7 @@ import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.components.BottomNavigationBar
 import com.inb.spendly.presentation.components.DateChips
+import com.inb.spendly.presentation.components.ScreenLoading
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import ir.ehsannarmani.compose_charts.PieChart
@@ -106,7 +107,10 @@ fun StatisticsScreen(
                     }
 
                     StatisticsState.Loading -> {
-                        // TODO
+                        ScreenLoading(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            title = stringResource(R.string.statistics_title_loading)
+                        )
                     }
                 }
             }

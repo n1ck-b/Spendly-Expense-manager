@@ -38,6 +38,7 @@
     <string name="expense_screen_name">Expenses</string>
     <string name="expense_title_no_expenses">No expenses found</string>
     <string name="expense_message_no_expenses">There are no records for the selected time period. Change the period or add an expense</string>
+    <string name="expense_title_loading">Loading expenses…</string>
     <!--Диалог-->
     <string name="expense_dialog_header">New expense</string>
     <string name="expense_dialog_label_amount">Amount</string>
@@ -55,6 +56,7 @@
     <string name="category_message_no_categories">Create the first category to get started</string>
     <string name="category_name_without_category">Without category</string>
     <string name="category_warning_already_exists">Category with this name already exists. Choose different name</string>
+    <string name="category_title_loading">Loading categories…</string>
     <!--Диалог-->
     <string name="category_dialog_header">New category</string>
     <string name="category_dialog_label_name">Category name</string>
@@ -66,6 +68,7 @@
     <string name="statistics_screen_header">Statistics of expenses</string>
     <string name="statistics_screen_name">Statistics</string>
     <string name="statistics_title_no_data">No data to show</string>
+    <string name="statistics_title_loading">Loading statistics…</string>
 
     <!--Диалоги-->
     <string name="dialog_button_cancel">Cancel</string>

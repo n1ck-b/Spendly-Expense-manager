@@ -51,9 +51,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.inb.spendly.R
+import com.inb.spendly.presentation.screens.UiEvent
 import com.inb.spendly.presentation.ui.theme.CategoryColors
 import com.inb.spendly.presentation.ui.theme.CategoryIcons
-import com.inb.spendly.presentation.screens.UiEvent
 
 @Composable
 fun AddingCategoryDialogContent(

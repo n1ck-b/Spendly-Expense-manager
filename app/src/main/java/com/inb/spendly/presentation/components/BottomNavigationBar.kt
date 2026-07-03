@@ -86,9 +86,11 @@ fun RowScope.BottomNavBarItem(
     NavigationBarItem(
         selected = selected,
         onClick = {
-            navController.navigate(item.route) {
-                popUpTo(navController.graph.startDestinationId)
-                launchSingleTop = true
+            if (!selected) {
+                navController.navigate(item.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
             }
         },
         label = {

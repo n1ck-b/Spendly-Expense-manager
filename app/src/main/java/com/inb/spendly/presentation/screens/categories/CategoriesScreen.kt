@@ -46,6 +46,7 @@ import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.components.BottomNavigationBar
 import com.inb.spendly.presentation.components.DateChips
 import com.inb.spendly.presentation.components.FloatingActionButtonAdd
+import com.inb.spendly.presentation.components.ScreenLoading
 import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
@@ -156,7 +157,10 @@ fun CategoriesScreen(
                     }
 
                     CategoryState.Loading -> {
-                        // TODO
+                        ScreenLoading(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            title = stringResource(R.string.category_title_loading)
+                        )
                     }
                 }
             }

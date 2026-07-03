@@ -1,19 +1,17 @@
 package com.inb.spendly.data.repository
 
 import androidx.compose.ui.graphics.toArgb
-import com.inb.spendly.R
-import com.inb.spendly.data.toDbModel
 import com.inb.spendly.data.toCategoryEntities
+import com.inb.spendly.data.toDbModel
 import com.inb.spendly.data.toEntity
-import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.domain.CategoryRepository
-import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.ExpenseRepository
+import com.inb.spendly.domain.entities.Category
+import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.ui.theme.CategoryIcons
 import com.inb.spendly.presentation.ui.theme.DefaultIconColor
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(

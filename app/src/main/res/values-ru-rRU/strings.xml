@@ -21,6 +21,7 @@
     <string name="expense_screen_name">Расходы</string>
     <string name="expense_title_no_expenses">Расходов не найдено</string>
     <string name="expense_message_no_expenses">Для выбранного временного периода нет записей. Измените период или добавьте расход</string>
+    <string name="expense_title_loading">Загрузка расходов…</string>
     <!--Диалог-->
     <string name="expense_dialog_header">Новый расход</string>
     <string name="expense_dialog_label_amount">Сумма</string>
@@ -38,6 +39,7 @@
     <string name="category_message_no_categories">Создайте первую категорию, чтобы начать использовать приложение</string>
     <string name="category_name_without_category">Без категории</string>
     <string name="category_warning_already_exists">Категория с таким названием уже существует. Выберите другое название</string>
+    <string name="category_title_loading">Загрузка категорий…</string>
     <!--Диалог-->
     <string name="category_dialog_header">Новая категория</string>
     <string name="category_dialog_label_name">Название категории</string>
@@ -49,6 +51,7 @@
     <string name="statistics_screen_header">Статистика расходов</string>
     <string name="statistics_screen_name">Статистика</string>
     <string name="statistics_title_no_data">Нет данных для отображения</string>
+    <string name="statistics_title_loading">Загрузка статистики…</string>
 
     <!--Диалоги-->
     <string name="dialog_button_cancel">Отмена</string>
