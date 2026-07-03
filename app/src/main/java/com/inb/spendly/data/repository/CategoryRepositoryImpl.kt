@@ -35,7 +35,7 @@ class CategoryRepositoryImpl @Inject constructor(
                     color = DefaultIconColor.toArgb(),
                     iconId = CategoryIcons.DEFAULT_ICON_KEY
                 )
-                addCategory(withoutCategory)
+                withoutCategory.id = categoryDao.upsertCategory(withoutCategory.toDbModel())
             }
             expensesForCategory.forEach { expense ->
                 expense.categoryId = withoutCategory.id

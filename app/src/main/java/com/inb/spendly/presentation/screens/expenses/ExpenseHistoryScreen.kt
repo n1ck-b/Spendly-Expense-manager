@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.inb.spendly.R
+import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.entities.ExpenseWithCategory
 import com.inb.spendly.presentation.components.ActionDialog
 import com.inb.spendly.presentation.components.BottomNavigationBar
@@ -362,7 +363,8 @@ fun ExpenseListItem(
                         Spacer(modifier = Modifier.size(12.dp))
                         Column {
                             Text(
-                                text = item.category.name,
+                                text = if (item.category.name == NO_CATEGORY) stringResource(R.string.category_name_without_category)
+                                else item.category.name,
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimary
                             )

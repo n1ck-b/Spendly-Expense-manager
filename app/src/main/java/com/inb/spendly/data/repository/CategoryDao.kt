@@ -35,7 +35,7 @@ interface CategoryDao {
     suspend fun getCategoryByNameAndId(name: String, id: Long): CategoryDbModel?
 
     @Upsert
-    suspend fun upsertCategory(category: CategoryDbModel)
+    suspend fun upsertCategory(category: CategoryDbModel): Long
 
     @Query("SELECT * FROM categories WHERE id = :categoryId")
     suspend fun getCategoryById(categoryId: Long): CategoryDbModel

@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.inb.spendly.R
+import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 
@@ -109,7 +110,8 @@ fun CategoriesDropDownMenu(
                     modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer),
                     text = {
                         Text(
-                            text = item.name,
+                            text = if (item.name == NO_CATEGORY) stringResource(R.string.category_name_without_category)
+                            else item.name,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onPrimary
                         )

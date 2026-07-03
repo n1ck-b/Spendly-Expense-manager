@@ -241,7 +241,8 @@ fun ChartLegendItem(
             )
             Text(
                 modifier = Modifier.padding(end = 4.dp),
-                text = category.categoryName,
+                text = if (category.categoryName == NO_CATEGORY) stringResource(R.string.category_name_without_category)
+                else category.categoryName,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start

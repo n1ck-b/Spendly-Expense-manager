@@ -360,7 +360,9 @@ fun CategoriesGridItem(
             .combinedClickable(
                 onClick = {},
                 onLongClick = {
-                    onLongItemClick(item.categoryId)
+                    if (item.categoryName != NO_CATEGORY) {
+                        onLongItemClick(item.categoryId)
+                    }
                 }
             ),
         colors = CardDefaults.cardColors(
