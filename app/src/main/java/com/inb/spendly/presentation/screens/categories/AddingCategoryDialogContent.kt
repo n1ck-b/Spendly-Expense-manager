@@ -28,9 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -53,8 +51,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.inb.spendly.R
-import com.inb.spendly.data.models.Currencies
-import com.inb.spendly.presentation.screens.expenses.CancelSaveButtons
 import com.inb.spendly.presentation.ui.theme.CategoryColors
 import com.inb.spendly.presentation.ui.theme.CategoryIcons
 import com.inb.spendly.presentation.screens.UiEvent
@@ -79,8 +75,8 @@ fun AddingCategoryDialogContent(
         val showColorDialog = remember { mutableStateOf(false) }
 
         val context = LocalContext.current
-        val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
-        val categoryAlreadyExistsWarning = stringResource(R.string.category_already_exists_warning)
+        val fillAllFieldsWarning = stringResource(R.string.warning_fill_all_fields)
+        val categoryAlreadyExistsWarning = stringResource(R.string.category_warning_already_exists)
 
         LaunchedEffect(Unit) {
             viewModel.events.collect { event ->
@@ -177,7 +173,7 @@ fun AddingCategoryScreenHeader() {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.adding_category_screen_header),
+            text = stringResource(R.string.category_dialog_header),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary
         )
@@ -209,14 +205,14 @@ fun CategoryNameTextField(
         },
         label = {
             Text(
-                text = stringResource(R.string.adding_category_screen_name_text_field_label),
+                text = stringResource(R.string.category_dialog_label_name),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
         },
         placeholder = {
             Text(
-                text = stringResource(R.string.adding_category_screen_name_text_field_placeholder),
+                text = stringResource(R.string.category_dialog_placeholder_name),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -279,7 +275,7 @@ fun ChoosingIconCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.adding_category_screen_select_icon),
+                text = stringResource(R.string.category_dialog_label_select_icon),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
@@ -322,7 +318,7 @@ fun ChoosingIconColorCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.adding_category_screen_select_icon_color),
+                text = stringResource(R.string.category_dialog_label_select_icon_color),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
@@ -471,7 +467,7 @@ fun CancelSaveButtons(
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.cancel_button),
+                    text = stringResource(R.string.dialog_button_cancel),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -487,7 +483,7 @@ fun CancelSaveButtons(
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.save_button),
+                    text = stringResource(R.string.dialog_button_save),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

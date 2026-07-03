@@ -22,14 +22,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Category
-import androidx.compose.material.icons.outlined.MoneyOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,14 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.inb.spendly.R
-import com.inb.spendly.data.models.Currencies
 import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
 import com.inb.spendly.presentation.components.ActionDialog
@@ -56,7 +50,6 @@ import com.inb.spendly.presentation.screens.SharedViewModel
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.collections.maxBy
 
 @Composable
 fun CategoriesScreen(
@@ -220,7 +213,7 @@ fun CategoriesStatisticsTile(
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
-                    text = stringResource(R.string.expense_amount_header),
+                    text = stringResource(R.string.expense_tile_amount_in_total),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleSmall
@@ -249,7 +242,7 @@ fun CategoriesStatisticsTile(
                         maxLines = 1
                     )
                     Text(
-                        text = "${stringResource(R.string.top_category_amount_header)} (${
+                        text = "${stringResource(R.string.category_tile_most_expenses)} (${
                             BigDecimal(topCategorySum.toDouble()).setScale(
                                 2,
                                 RoundingMode.HALF_UP
@@ -267,7 +260,7 @@ fun CategoriesStatisticsTile(
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
-                        text = stringResource(R.string.top_category_amount_header),
+                        text = stringResource(R.string.category_tile_most_expenses),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleSmall
@@ -336,13 +329,13 @@ fun NoCategoriesFound() {
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.no_categories),
+            text = stringResource(R.string.category_title_no_categories),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center
         )
         Text(
-            text = stringResource(R.string.no_categories_description),
+            text = stringResource(R.string.category_message_no_categories),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
@@ -394,7 +387,7 @@ fun CategoriesGridItem(
             Spacer(modifier = Modifier.size(12.dp))
             Column {
                 Text(
-                    text = if (item.categoryName == NO_CATEGORY) stringResource(R.string.without_category)
+                    text = if (item.categoryName == NO_CATEGORY) stringResource(R.string.category_name_without_category)
                     else item.categoryName,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimary

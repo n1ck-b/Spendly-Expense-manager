@@ -1,55 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="today">Сегодня</string>
-    <string name="week">Неделя</string>
-    <string name="month">Месяц</string>
-    <string name="year">Год</string>
+    <!--Валюты-->
     <string name="BYN_description">Белорусский рубль</string>
     <string name="USD_description">Доллар США</string>
     <string name="EUR_description">Евро</string>
     <string name="CNY_description">Китайский юань</string>
     <string name="GBP_description">Британский фунт</string>
     <string name="PLN_description">Польский злотый</string>
-    <string name="expense_amount_header">Всего</string>
-    <string name="expense_records_amount_header">Записей</string>
-    <string name="category_amount_header">Всего</string>
-    <string name="top_category_amount_header">Больше всего</string>
-    <string name="expense_history_screen_header">История расходов</string>
+
+    <!--Периоды времени-->
+    <string name="filter_today">Сегодня</string>
+    <string name="filter_week">Неделя</string>
+    <string name="filter_month">Месяц</string>
+    <string name="filter_year">Год</string>
+
+    <!--Расходы-->
+    <string name="expense_tile_amount_in_total">Всего</string>
+    <string name="expense_tile_records">Записей</string>
+    <string name="expense_screen_header">История расходов</string>
+    <string name="expense_screen_name">Расходы</string>
+    <string name="expense_title_no_expenses">Расходов не найдено</string>
+    <string name="expense_message_no_expenses">Для выбранного временного периода нет записей. Измените период или добавьте расход</string>
+    <!--Диалог-->
+    <string name="expense_dialog_header">Новый расход</string>
+    <string name="expense_dialog_label_amount">Сумма</string>
+    <string name="expense_dialog_label_category">Категория</string>
+    <string name="expense_dialog_label_currency">Валюта</string>
+    <string name="expense_dialog_label_note">Комментарий</string>
+    <string name="expense_dialog_placeholder_note">Описание расхода</string>
+    <string name="expense_dialog_label_date">Дата</string>
+
+    <!--Категории-->
+    <string name="category_tile_most_expenses">Больше всего</string>
     <string name="category_screen_header">Категории расходов</string>
+    <string name="category_screen_name">Категории</string>
+    <string name="category_title_no_categories">Список категорий пуст</string>
+    <string name="category_message_no_categories">Создайте первую категорию, чтобы начать использовать приложение</string>
+    <string name="category_name_without_category">Без категории</string>
+    <string name="category_warning_already_exists">Категория с таким названием уже существует. Выберите другое название</string>
+    <!--Диалог-->
+    <string name="category_dialog_header">Новая категория</string>
+    <string name="category_dialog_label_name">Название категории</string>
+    <string name="category_dialog_placeholder_name">Еда</string>
+    <string name="category_dialog_label_select_icon">Выберите иконку</string>
+    <string name="category_dialog_label_select_icon_color">Выберите цвет иконки</string>
+
+    <!--Статистика-->
     <string name="statistics_screen_header">Статистика расходов</string>
-    <string name="adding_expense_screen_header">Новый расход</string>
-    <string name="adding_expense_screen_amount_text_field_label">Сумма</string>
-    <string name="adding_expense_screen_amount_text_field_placeholder">100.00</string>
-    <string name="adding_expense_screen_category_dropdown_label">Категория</string>
-    <string name="adding_expense_screen_currency_dropdown_label">Валюта</string>
-    <string name="adding_expense_screen_note_text_field_label">Комментарий</string>
-    <string name="adding_expense_screen_note_text_field_placeholder">Описание расхода</string>
-    <string name="adding_expense_screen_date_text_field_label">Дата</string>
-    <string name="adding_category_screen_header">Новая категория</string>
-    <string name="adding_category_screen_name_text_field_label">Название категории</string>
-    <string name="adding_category_screen_name_text_field_placeholder">Еда</string>
-    <string name="adding_category_screen_select_icon">Выберите иконку</string>
-    <string name="adding_category_screen_select_icon_color">Выберите цвет иконки</string>
-    <string name="drop_down_select_period">Выберите временной интервал</string>
-    <string name="cancel_button">Отмена</string>
-    <string name="edit_button">Изменить</string>
-    <string name="delete_button">Удалить</string>
-    <string name="save_button">Сохранить</string>
-    <string name="select_button">Выбрать</string>
-    <string name="expense_history_screen_name">Расходы</string>
-    <string name="categories_screen_name">Категории</string>
     <string name="statistics_screen_name">Статистика</string>
-    <string name="no_expenses">Расходов не найдено</string>
-    <string name="no_data_to_show">Нет данных для отображения</string>
-    <string name="no_expenses_for_selected_period">Для выбранного временного периода нет записей. Измените период или добавьте расход</string>
-    <string name="no_categories">Список категорий пуст</string>
-    <string name="no_categories_description">Создайте первую категорию, чтобы начать использовать приложение</string>
-    <string name="no_data_for_statistics">Нет данных для отображения за выбранный период времени. Измените период или добавьте расход</string>
-    <string name="no_categories_found">Нет категорий</string>
-    <string name="fill_all_fields_warning">Заполните все обязательные поля</string>
-    <string name="no_internet_connection">Отсутствует подключение к Интернету. Попробуйте позже</string>
+    <string name="statistics_title_no_data">Нет данных для отображения</string>
+
+    <!--Диалоги-->
+    <string name="dialog_button_cancel">Отмена</string>
+    <string name="dialog_button_edit">Изменить</string>
+    <string name="dialog_button_delete">Удалить</string>
+    <string name="dialog_button_save">Сохранить</string>
+    <string name="dialog_button_select">Выбрать</string>
+    <string name="dialog_title_choose_action">Выберите действие</string>
+
+    <!--Предупреждения и ошибки-->
+    <string name="warning_fill_all_fields">Заполните все обязательные поля</string>
+    <string name="warning_no_internet">Отсутствует подключение к Интернету. Попробуйте позже</string>
     <string name="error_getting_exchange_rates">Ошибка получения курсов валют. Попробуйте позже</string>
-    <string name="category_already_exists_warning">Категория с таким названием уже существует. Выберите другое название</string>
-    <string name="choose_action_update_delete">Выберите действие</string>
-    <string name="without_category">Без категории</string>
+
 </resources>

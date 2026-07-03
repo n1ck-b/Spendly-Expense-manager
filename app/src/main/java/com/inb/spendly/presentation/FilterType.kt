@@ -4,10 +4,10 @@ import androidx.annotation.StringRes
 import com.inb.spendly.R
 
 enum class FilterType(@StringRes val titleResourceId: Int) {
-    TODAY(R.string.today),
-    THIS_WEEK(R.string.week),
-    THIS_MONTH(R.string.month),
-    THIS_YEAR(R.string.year)
+    TODAY(R.string.filter_today),
+    THIS_WEEK(R.string.filter_week),
+    THIS_MONTH(R.string.filter_month),
+    THIS_YEAR(R.string.filter_year)
 }
 
 fun allDateFiltersIds(): List<Int> =

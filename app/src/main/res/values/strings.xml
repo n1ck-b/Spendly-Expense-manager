@@ -16,56 +16,68 @@
     </string-array>
 
     <string name="app_name" translatable="false">Spendly</string>
+
+    <!--Валюты-->
     <string name="BYN_description">Belarusian Ruble</string>
     <string name="USD_description">United States Dollar</string>
     <string name="EUR_description">Euro</string>
     <string name="CNY_description">Chinese Yuan</string>
     <string name="GBP_description">Pound Sterling</string>
     <string name="PLN_description">Polish Zloty</string>
-    <string name="drop_down_select_period">Select a period</string>
-    <string name="today">Today</string>
-    <string name="week">Week</string>
-    <string name="month">Month</string>
-    <string name="year">Year</string>
-    <string name="expense_amount_header">In total</string>
-    <string name="expense_records_amount_header">Records</string>
-    <string name="category_amount_header">In total</string>
-    <string name="top_category_amount_header">Most expenses</string>
-    <string name="expense_history_screen_header">Expense history</string>
+
+    <!--Периоды времени-->
+    <string name="filter_today">Today</string>
+    <string name="filter_week">Week</string>
+    <string name="filter_month">Month</string>
+    <string name="filter_year">Year</string>
+
+    <!--Расходы-->
+    <string name="expense_tile_amount_in_total">In total</string>
+    <string name="expense_tile_records">Records</string>
+    <string name="expense_screen_header">Expense history</string>
+    <string name="expense_screen_name">Expenses</string>
+    <string name="expense_title_no_expenses">No expenses found</string>
+    <string name="expense_message_no_expenses">There are no records for the selected time period. Change the period or add an expense</string>
+    <!--Диалог-->
+    <string name="expense_dialog_header">New expense</string>
+    <string name="expense_dialog_label_amount">Amount</string>
+    <string name="expense_dialog_label_category">Category</string>
+    <string name="expense_dialog_label_currency">Currency</string>
+    <string name="expense_dialog_label_note">Note</string>
+    <string name="expense_dialog_placeholder_note">Description of expense</string>
+    <string name="expense_dialog_label_date">Date</string>
+
+    <!--Категории-->
+    <string name="category_tile_most_expenses">Most expenses</string>
     <string name="category_screen_header">Categories of expenses</string>
+    <string name="category_screen_name">Categories</string>
+    <string name="category_title_no_categories">The list of categories is empty</string>
+    <string name="category_message_no_categories">Create the first category to get started</string>
+    <string name="category_name_without_category">Without category</string>
+    <string name="category_warning_already_exists">Category with this name already exists. Choose different name</string>
+    <!--Диалог-->
+    <string name="category_dialog_header">New category</string>
+    <string name="category_dialog_label_name">Category name</string>
+    <string name="category_dialog_placeholder_name">Food</string>
+    <string name="category_dialog_label_select_icon">Select icon</string>
+    <string name="category_dialog_label_select_icon_color">Select icon color</string>
+
+    <!--Статистика-->
     <string name="statistics_screen_header">Statistics of expenses</string>
-    <string name="adding_expense_screen_header">New expense</string>
-    <string name="adding_expense_screen_amount_text_field_label">Amount</string>
-    <string name="adding_expense_screen_amount_text_field_placeholder">100.00</string>
-    <string name="adding_expense_screen_category_dropdown_label">Category</string>
-    <string name="adding_expense_screen_currency_dropdown_label">Currency</string>
-    <string name="adding_expense_screen_note_text_field_label">Note</string>
-    <string name="adding_expense_screen_note_text_field_placeholder">Description of expense</string>
-    <string name="adding_expense_screen_date_text_field_label">Date</string>
-    <string name="adding_category_screen_header">New category</string>
-    <string name="adding_category_screen_name_text_field_label">Category name</string>
-    <string name="adding_category_screen_name_text_field_placeholder">Food</string>
-    <string name="adding_category_screen_select_icon">Select icon</string>
-    <string name="adding_category_screen_select_icon_color">Select icon color</string>
-    <string name="cancel_button">Cancel</string>
-    <string name="edit_button">Edit</string>
-    <string name="delete_button">Delete</string>
-    <string name="save_button">Save</string>
-    <string name="select_button">Select</string>
-    <string name="expense_history_screen_name">Expenses</string>
-    <string name="categories_screen_name">Categories</string>
     <string name="statistics_screen_name">Statistics</string>
-    <string name="no_expenses">No expenses found</string>
-    <string name="no_data_to_show">No data to show</string>
-    <string name="no_expenses_for_selected_period">There are no records for the selected time period. Change the period or add an expense</string>
-    <string name="no_categories">The list of categories is empty</string>
-    <string name="no_categories_description">Create the first category to get started</string>
-    <string name="no_data_for_statistics">No data to display for the selected period. Change period or add new expense</string>
-    <string name="no_categories_found">No categories</string>
-    <string name="fill_all_fields_warning">Fill in all required fields</string>
-    <string name="no_internet_connection">No Internet connection. Try again later or choose default currency</string>
+    <string name="statistics_title_no_data">No data to show</string>
+
+    <!--Диалоги-->
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_button_edit">Edit</string>
+    <string name="dialog_button_delete">Delete</string>
+    <string name="dialog_button_save">Save</string>
+    <string name="dialog_button_select">Select</string>
+    <string name="dialog_title_choose_action">Choose action</string>
+
+    <!--Предупреждения и ошибки-->
+    <string name="warning_fill_all_fields">Fill in all required fields</string>
+    <string name="warning_no_internet">No Internet connection. Try again later</string>
     <string name="error_getting_exchange_rates">Error getting exchange rates. Try again later</string>
-    <string name="category_already_exists_warning">Category with this name already exists. Choose different name</string>
-    <string name="choose_action_update_delete">Choose action</string>
-    <string name="without_category">Without category</string>
+
 </resources>

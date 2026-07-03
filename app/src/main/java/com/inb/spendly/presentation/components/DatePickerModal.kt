@@ -34,7 +34,7 @@ fun DatePickerModal(
                 }
             ) {
                 Text(
-                    text = stringResource(R.string.select_button)
+                    text = stringResource(R.string.dialog_button_select)
                 )
             }
         },
@@ -43,7 +43,7 @@ fun DatePickerModal(
                 onClick = onDismiss
             ) {
                 Text(
-                    text = stringResource(R.string.cancel_button)
+                    text = stringResource(R.string.dialog_button_cancel)
                 )
             }
         }

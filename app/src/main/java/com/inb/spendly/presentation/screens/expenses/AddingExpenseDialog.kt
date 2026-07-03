@@ -8,17 +8,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.inb.spendly.R
 import com.inb.spendly.domain.Utils.hasInternetConnection
-import com.inb.spendly.presentation.screens.UiEvent
 
 @Composable
 fun AddingExpenseDialog(
@@ -51,7 +47,7 @@ fun AddingExpenseDialog(
                         } else {
                             Toast.makeText(
                                 context,
-                                R.string.no_internet_connection,
+                                R.string.warning_no_internet,
                                 Toast.LENGTH_LONG
                             ).show()
                         }

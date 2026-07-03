@@ -1,9 +1,6 @@
 package com.inb.spendly.presentation.screens.expenses
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,7 +62,7 @@ fun CurrencyDropDownMenu(
             shape = RoundedCornerShape(10.dp),
             label = {
                 Text(
-                    text = stringResource(R.string.adding_expense_screen_currency_dropdown_label),
+                    text = stringResource(R.string.expense_dialog_label_currency),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )

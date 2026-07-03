@@ -60,7 +60,7 @@ fun AddingExpenseDialogContent(
         && currentState.dialogState is ExpenseDialogState.AddingExpense
     ) {
 
-        val fillAllFieldsWarning = stringResource(R.string.fill_all_fields_warning)
+        val fillAllFieldsWarning = stringResource(R.string.warning_fill_all_fields)
 
         val errorGettingExchangeRatesWarning = stringResource(R.string.error_getting_exchange_rates)
 
@@ -185,7 +185,7 @@ fun AddingExpenseScreenHeader() {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.adding_expense_screen_header),
+            text = stringResource(R.string.expense_dialog_header),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary
         )
@@ -218,14 +218,14 @@ fun AmountTextField(
         },
         label = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_amount_text_field_label),
+                text = stringResource(R.string.expense_dialog_label_amount),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
         },
         placeholder = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_amount_text_field_placeholder),
+                text = "100.00",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -285,7 +285,7 @@ fun DateTextField(
         onValueChange = {},
         label = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_date_text_field_label),
+                text = stringResource(R.string.expense_dialog_label_date),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -345,14 +345,14 @@ fun NoteTextField(
         },
         label = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_note_text_field_label),
+                text = stringResource(R.string.expense_dialog_label_note),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
         },
         placeholder = {
             Text(
-                text = stringResource(R.string.adding_expense_screen_note_text_field_placeholder),
+                text = stringResource(R.string.expense_dialog_placeholder_note),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -414,7 +414,7 @@ fun CancelSaveButtons(
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.cancel_button),
+                    text = stringResource(R.string.dialog_button_cancel),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -432,7 +432,7 @@ fun CancelSaveButtons(
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.save_button),
+                    text = stringResource(R.string.dialog_button_save),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

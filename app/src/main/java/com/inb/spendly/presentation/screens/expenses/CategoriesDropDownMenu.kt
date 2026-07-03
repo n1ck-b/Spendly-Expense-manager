@@ -2,11 +2,8 @@ package com.inb.spendly.presentation.screens.expenses
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,7 +12,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -30,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.inb.spendly.R
-import com.inb.spendly.data.models.Currencies
 import com.inb.spendly.domain.entities.Category
 import com.inb.spendly.presentation.ui.theme.CategoryIcons.getIconByKey
 
@@ -96,7 +91,7 @@ fun CategoriesDropDownMenu(
             shape = RoundedCornerShape(10.dp),
             label = {
                 Text(
-                    text = stringResource(R.string.adding_expense_screen_category_dropdown_label),
+                    text = stringResource(R.string.expense_dialog_label_category),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )

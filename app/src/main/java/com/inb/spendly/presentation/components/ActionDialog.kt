@@ -12,23 +12,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -63,20 +58,20 @@ fun ActionDialog(
                 Text(
                     modifier = Modifier
                         .padding(bottom = 8.dp),
-                    text = stringResource(R.string.choose_action_update_delete),
+                    text = stringResource(R.string.dialog_title_choose_action),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center
                 )
                 ActionDialogButton(
-                    text = stringResource(R.string.edit_button),
+                    text = stringResource(R.string.dialog_button_edit),
                     icon = Icons.Outlined.Edit,
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     onClick = onEditButtonClicked
                 )
                 ActionDialogButton(
-                    text = stringResource(R.string.delete_button),
+                    text = stringResource(R.string.dialog_button_delete),
                     icon = Icons.Outlined.DeleteOutline,
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.onErrorContainer,

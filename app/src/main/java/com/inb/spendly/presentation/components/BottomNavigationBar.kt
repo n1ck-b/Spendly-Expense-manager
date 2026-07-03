@@ -40,12 +40,12 @@ fun BottomNavigationBar(
     val bottomNavBarItems = listOf(
         BottomNavBarItem(
             route = CategoriesScreenRoute,
-            name = stringResource(R.string.categories_screen_name),
+            name = stringResource(R.string.category_screen_name),
             icon = Icons.Outlined.Dashboard
         ),
         BottomNavBarItem(
             route = ExpenseHistoryScreenRoute,
-            name = stringResource(R.string.expense_history_screen_name),
+            name = stringResource(R.string.expense_screen_name),
             icon = Icons.AutoMirrored.Outlined.FormatListBulleted
         ),
         BottomNavBarItem(

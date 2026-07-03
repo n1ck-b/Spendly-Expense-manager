@@ -25,7 +25,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -321,13 +320,13 @@ fun NoDataToShow() {
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.no_data_to_show),
+            text = stringResource(R.string.statistics_title_no_data),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center
         )
         Text(
-            text = stringResource(R.string.no_expenses_for_selected_period),
+            text = stringResource(R.string.expense_message_no_expenses),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
@@ -407,7 +406,7 @@ fun StatisticsByCategoriesListItem(
                 Spacer(modifier = Modifier.size(12.dp))
                 Column {
                     Text(
-                        text = if (item.categoryName == NO_CATEGORY) stringResource(R.string.without_category)
+                        text = if (item.categoryName == NO_CATEGORY) stringResource(R.string.category_name_without_category)
                         else item.categoryName,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary

@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.MoneyOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -152,7 +150,7 @@ fun ExpenseHistoryScreen(
 @Composable
 fun ExpenseHistoryScreenHeader() {
     Text(
-        text = stringResource(R.string.expense_history_screen_header),
+        text = stringResource(R.string.expense_screen_header),
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier
             .padding(start = 24.dp, end = 24.dp)
@@ -195,7 +193,7 @@ fun ExpensesStatisticsTile(
                 )
 
                 Text(
-                    text = stringResource(R.string.expense_amount_header),
+                    text = stringResource(R.string.expense_tile_amount_in_total),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleSmall
@@ -225,7 +223,7 @@ fun ExpensesStatisticsTile(
                 )
 
                 Text(
-                    text = stringResource(R.string.expense_records_amount_header),
+                    text = stringResource(R.string.expense_tile_records),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleSmall
@@ -291,13 +289,13 @@ fun NoExpensesFound() {
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.no_expenses),
+            text = stringResource(R.string.expense_title_no_expenses),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center
         )
         Text(
-            text = stringResource(R.string.no_expenses_for_selected_period),
+            text = stringResource(R.string.expense_message_no_expenses),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
