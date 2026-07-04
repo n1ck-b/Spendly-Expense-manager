@@ -27,7 +27,7 @@
 
 **Управление расходами**
 
-![Добавить расход](docs/dialog_add_expense.jpg)
+<img src="docs/dialog_add_expense.jpg" width="450">
 
 **Управление категориями**
 
