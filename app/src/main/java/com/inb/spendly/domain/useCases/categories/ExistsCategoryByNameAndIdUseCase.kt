@@ -11,7 +11,7 @@ class ExistsCategoryByNameAndIdUseCase @Inject constructor (
         categoryName: String,
         categoryId: Long
     ): Boolean {
-        return repository.existsCategoryByName(categoryName)
+        return repository.existsCategoryByNameAndId(categoryName, categoryId)
     }
 
 }

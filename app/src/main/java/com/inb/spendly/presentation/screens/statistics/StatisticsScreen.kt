@@ -38,13 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import co.yml.charts.common.model.PlotType
-import co.yml.charts.ui.piechart.charts.DonutPieChart
-import co.yml.charts.ui.piechart.models.PieChartConfig
-import co.yml.charts.ui.piechart.models.PieChartData
 import com.inb.spendly.R
 import com.inb.spendly.domain.Constants.Companion.NO_CATEGORY
 import com.inb.spendly.domain.entities.CategoryWithFilteredExpenses
@@ -129,48 +124,6 @@ fun StatisticsScreenHeader() {
                 start = 24.dp,
                 end = 24.dp
             )
-    )
-}
-
-@Composable
-fun DonutChartYCharts(
-    categoriesWithExpenses: List<CategoryWithFilteredExpenses>
-) {
-
-    val slices = categoriesWithExpenses.map { category ->
-        PieChartData.Slice(
-            label = category.categoryName,
-            value = category.expenseAmount ?: 0.0f,
-            color = Color(category.categoryColor)
-        )
-    }
-
-    val donutChartData = PieChartData(
-        slices = slices,
-        plotType = PlotType.Donut
-    )
-
-    val donutChartConfig = PieChartConfig(
-        sliceLabelTextColor = MaterialTheme.colorScheme.onPrimary,
-        sliceLabelTextSize = 14.sp,
-        isSumVisible = true,
-        strokeWidth = 60f,
-        chartPadding = 24,
-        backgroundColor = MaterialTheme.colorScheme.background,
-        labelColor = MaterialTheme.colorScheme.onPrimary,
-        sumUnit = "Br",
-        showSliceLabels = true,
-        labelVisible = true,
-        isAnimationEnable = true,
-        labelType = PieChartConfig.LabelType.VALUE
-    )
-
-    DonutPieChart(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background),
-        pieChartData = donutChartData,
-        pieChartConfig = donutChartConfig
     )
 }
 

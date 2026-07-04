@@ -13,26 +13,6 @@ class SharedViewModel @Inject constructor(): ViewModel() {
     private val _selectedFilterType = MutableStateFlow(FilterType.THIS_MONTH)
     val selectedFilterType = _selectedFilterType.asStateFlow()
 
-//    val selectedFilterType: StateFlow<FilterType> =
-//        selectedDateRange
-//            .map { range ->
-//                when (range) {
-//                    FilterType.TODAY.string -> FilterType.TODAY
-//                    FilterType.TODAY.stringRu -> FilterType.TODAY
-//                    FilterType.THIS_WEEK.stringRu -> FilterType.THIS_WEEK
-//                    FilterType.THIS_WEEK.string -> FilterType.THIS_WEEK
-//                    FilterType.THIS_MONTH.stringRu -> FilterType.THIS_MONTH
-//                    FilterType.THIS_MONTH.string -> FilterType.THIS_MONTH
-//                    FilterType.THIS_YEAR.stringRu -> FilterType.THIS_YEAR
-//                    FilterType.THIS_YEAR.string -> FilterType.THIS_YEAR
-//                    else -> FilterType.TODAY
-//                }
-//            }.stateIn(
-//                viewModelScope,
-//                SharingStarted.Eagerly,
-//                FilterType.TODAY
-//            )
-
     fun processCommand(command: SharedCommand) {
         when(command) {
             is SharedCommand.UpdateDateRange -> {

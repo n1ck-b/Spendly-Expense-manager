@@ -9,6 +9,3 @@ enum class FilterType(@StringRes val titleResourceId: Int) {
     THIS_MONTH(R.string.filter_month),
     THIS_YEAR(R.string.filter_year)
 }
-
-fun allDateFiltersIds(): List<Int> =
-    FilterType.entries.map { it.titleResourceId }

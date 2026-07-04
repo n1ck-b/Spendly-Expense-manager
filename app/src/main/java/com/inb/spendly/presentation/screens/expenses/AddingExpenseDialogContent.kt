@@ -205,7 +205,7 @@ fun AmountTextField(
             if (currentAmount == 0f)
                 ""
             else if (currentAmount % 1 == 0f)
-            // если целое число, переводим в Int, чтобы убрать .0
+                // если целое число, переводим в Int, чтобы убрать .0
                 currentAmount.toInt().toString()
             else
                 currentAmount.toString()
