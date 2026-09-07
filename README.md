@@ -55,7 +55,7 @@
 |  | Технологии |
 |------|-----------|
 | UI | Jetpack Compose |
-| Архитектура | MVVM, Clean Architecture |
+| Архитектура | MVI, Clean Architecture |
 | DI | Hilt |
 | База данных | Room |
 | Навигация | Navigation Compose |
